@@ -1,5 +1,6 @@
 package ca.ubc.msl.polyst.model;
 
+import com.google.common.collect.Lists;
 import lombok.*;
 
 import java.util.List;
@@ -15,8 +16,9 @@ import java.util.List;
 public class Base {
 
     private final String reference;
-    private final int cover;
+    private final int depth;
     private final double iupPrediction;
-    private final List<Double> conservation;
+    private double conservation;
+    private List<Double> pst = Lists.newArrayList();
 
 }
