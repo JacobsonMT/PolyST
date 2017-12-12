@@ -1,4 +1,6 @@
 target/
+src/main/resources/static/built/
+node_modules/
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###

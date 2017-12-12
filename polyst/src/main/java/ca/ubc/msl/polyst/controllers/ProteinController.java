@@ -23,12 +23,12 @@ public class ProteinController {
         this.repository = repository;
     }
 
-    @RequestMapping(value = "/proteins/{accession}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/proteins/{accession}", method = RequestMethod.GET)
     public Protein allAccessions(@PathVariable String accession) {
         return repository.getByAccession( accession );
     }
 
-    @RequestMapping(value = "/accessions", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/accessions", method = RequestMethod.GET)
     public List<String> allAccessions() {
         return repository.getAllAccessions();
     }

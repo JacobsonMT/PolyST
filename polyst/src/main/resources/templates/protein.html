@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <meta charset="UTF-8"/>
+    <title th:text="${accession + ' - PolyST'}"></title>
+</head>
+<body>
+
+<div id="react"></div>
+
+<script th:inline="javascript">
+
+    /*<![CDATA[*/
+
+    const accession = /*[[${accession}]]*/ 'accession';
+
+    /*]]>*/
+</script>
+<script src="/built/protein.js"></script>
+
+</body>
+</html>
