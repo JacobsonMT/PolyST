@@ -2,6 +2,7 @@ package ca.ubc.msl.polyst.repositories;
 
 import ca.ubc.msl.polyst.model.Base;
 import ca.ubc.msl.polyst.model.Protein;
+import ca.ubc.msl.polyst.model.ProteinInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -64,9 +65,21 @@ public class FlatFileProteinRepository implements ProteinRepository {
     }
 
 
-    public List<String> getAllAccessions() {
+    public List<ProteinInfo> allProteinInfo() {
         try (Stream<Path> paths = Files.list( Paths.get( flatFileDirectory ) )) {
-            return paths.filter( Files::isRegularFile ).map( p -> p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ) ).collect( Collectors.toList() );
+            return paths.filter( Files::isRegularFile ).map( p -> {
+                try {
+                    return new ProteinInfo(
+                            p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ),
+                            Integer.valueOf( lastLine( p.toFile() ).split( "\t" )[1] ) );
+                } catch (IndexOutOfBoundsException e) {
+                    log.warn( "Issue Obtaining ProteinInfo from: " + p.getFileName() );
+                    return new ProteinInfo(
+                            p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ),0 );
+                }
+            })
+                    .collect( Collectors.toList() );
+//            return paths.filter( Files::isRegularFile ).map( p -> p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ) ).collect( Collectors.toList() );
         } catch (IOException e) {
             log.error( "Error walking data directory!" );
             return null;
@@ -84,14 +97,60 @@ public class FlatFileProteinRepository implements ProteinRepository {
 
         Base base = new Base( line.get( 2 ), Integer.valueOf( line.get( 3 ) ), Double.valueOf( line.get( 4 ) ) );
 
-        if (line.size() > 5) {
+        if ( line.size() > 5 ) {
             base.setConservation( Double.valueOf( line.get( 5 ) ) );
         }
 
-        if (line.size() > 6) {
+        if ( line.size() > 6 ) {
             base.setPst( line.stream().skip( 6 ).map( Double::parseDouble ).collect( Collectors.toList() ) );
         }
         return base;
     };
+
+    private static String lastLine( File file ) {
+
+        RandomAccessFile fileHandler = null;
+        try {
+            fileHandler = new RandomAccessFile( file, "r" );
+            long fileLength = fileHandler.length() - 1;
+            StringBuilder sb = new StringBuilder();
+
+            for ( long filePointer = fileLength; filePointer != -1; filePointer-- ) {
+                fileHandler.seek( filePointer );
+                int readByte = fileHandler.readByte();
+
+                if ( readByte == 0xA ) {
+                    if ( filePointer == fileLength ) {
+                        continue;
+                    }
+                    break;
+
+                } else if ( readByte == 0xD ) {
+                    if ( filePointer == fileLength - 1 ) {
+                        continue;
+                    }
+                    break;
+                }
+
+                sb.append( (char) readByte );
+            }
+
+            return sb.reverse().toString();
+        } catch (java.io.FileNotFoundException e) {
+            log.warn( "No file found for: " + file.getName() );
+            return null;
+        } catch (java.io.IOException e) {
+            log.error( "IO Error for: " + file.getName(), e );
+            return null;
+        } finally {
+            if ( fileHandler != null )
+                try {
+                    fileHandler.close();
+                } catch (IOException e) {
+                /* ignore */
+                }
+        }
+    }
+
 
 }

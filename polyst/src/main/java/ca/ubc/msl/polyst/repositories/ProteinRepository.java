@@ -1,6 +1,7 @@
 package ca.ubc.msl.polyst.repositories;
 
 import ca.ubc.msl.polyst.model.Protein;
+import ca.ubc.msl.polyst.model.ProteinInfo;
 
 import java.util.List;
 
@@ -11,5 +12,5 @@ public interface ProteinRepository {
 
     Protein getByAccession( String accession);
 
-    List<String> getAllAccessions();
+    List<ProteinInfo> allProteinInfo();
 }
