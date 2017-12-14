@@ -5,6 +5,7 @@ import ca.ubc.msl.polyst.model.Protein;
 import ca.ubc.msl.polyst.model.ProteinInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -65,6 +66,7 @@ public class FlatFileProteinRepository implements ProteinRepository {
     }
 
 
+    @Cacheable("protein-info")
     public List<ProteinInfo> allProteinInfo() {
         try (Stream<Path> paths = Files.list( Paths.get( flatFileDirectory ) )) {
             return paths.filter( Files::isRegularFile ).map( p -> {
