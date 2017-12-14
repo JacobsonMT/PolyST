@@ -5,8 +5,14 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const $ = require("jquery");
-const Highcharts = require('highcharts');
-const addHeatmap = require('highcharts/modules/heatmap');
+
+import Highcharts from 'highcharts';
+import HeatMap from 'highcharts/modules/heatmap';
+import Boost from 'highcharts/modules/boost';
+import Exporting from 'highcharts/modules/exporting';
+HeatMap(Highcharts);
+Boost(Highcharts);
+Exporting(Highcharts);
 
 // end::vars[]
 
@@ -28,43 +34,7 @@ class App extends React.Component {
     }
 
     render() {
-        addHeatmap(Highcharts);
-        // const options = {
-        //     title: {
-        //         text: 'Fruit Consumption',
-        //     },
-        //     xAxis: {
-        //         categories: [
-        //             'Apples',
-        //             'Bananas',
-        //             'Oranges',
-        //             'Pineapples',
-        //             'Blueberries',
-        //         ],
-        //     },
-        //     yAxis: {
-        //         title: {
-        //             text: 'Fruit eaten',
-        //         },
-        //     },
-        //     chart: {
-        //         type: 'line',
-        //     },
-        //     series: [
-        //         {
-        //             name: 'Jane',
-        //             data: [1, 0, 4, 0, 3],
-        //         },
-        //         {
-        //             name: 'John',
-        //             data: [5, 7, 3, 2, 4],
-        //         },
-        //         {
-        //             name: 'Doe',
-        //             data: [0, 0, 0, 1, 0],
-        //         },
-        //     ],
-        // };
+ 
         let data = [];
         let categories = [];
         this.state.protein.sequence.forEach(function(base, x) {
@@ -191,22 +161,6 @@ class App extends React.Component {
 }
 // end::app[]
 
-class HeatMap extends React.Component {
-    componentDidMount() {
-        this.chart = new Highcharts[this.props.type || 'Chart'](
-            this.chartEl,
-            this.props.options
-        );
-    }
-
-    componentWillUnmount() {
-        this.chart.destroy();
-    }
-
-    render() {
-        return <div ref={el => (this.chartEl = el)} />;
-    }
-}
 
 class Chart extends React.Component {
     componentDidMount() {
