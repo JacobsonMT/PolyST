@@ -101,7 +101,7 @@ class App extends React.Component {
                 text: accession
             },
 
-            xAxis: {
+            xAxis: [{
                 categories: categories,
                 minPadding: 0,
                 maxPadding: 0,
@@ -116,13 +116,24 @@ class App extends React.Component {
                         fontSize: '8px',
                     },
                 },
-                step: 1,
-                // tickPositions: [0, 6, 12, 18, 24],
+                step: 1
             },
+                {
+                    linkedTo: 0,
+                    minPadding: 0,
+                    maxPadding: 0,
+                    startOnTick: true,
+                    endOnTick: true,
+                    tickWidth: 1,
+                    tickInterval: 50,
+                    padding: 1,
+                    opposite: true
+                }],
 
             yAxis: {
-                // categories: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                categories: ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t'],
                 title: null,
+                tickInterval: 1,
                 startOnTick: true,
                 endOnTick: false,
                 min: 0,
@@ -151,10 +162,10 @@ class App extends React.Component {
             },
 
             tooltip: {
-                // formatter: function () {
-                //     return '<b>' + this.series.xAxis.categories[this.point.x] + '</b> sold <br><b>' +
-                //         this.point.value + '</b> items on <br><b>' + this.series.yAxis.categories[this.point.y] + '</b>';
-                // }
+                formatter: function () {
+                    return '<b>Mutation:</b> ' + this.series.xAxis.categories[this.point.x] + ' ' + this.point.x + ' ' +
+                        this.series.yAxis.categories[this.point.y] + '<br><b>Effect:</b> ' + this.point.value;
+                }
             },
 
             series: [{
