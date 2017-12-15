@@ -17,7 +17,7 @@ public class Base {
 
     private final String reference;
     private final int depth;
-    private final double iupPrediction;
+    private final double iupred;
     private double conservation;
     private List<Double> pst = Lists.newArrayList();
 

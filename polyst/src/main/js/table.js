@@ -37,8 +37,6 @@ class App extends React.Component {
         }
         let data = this.state.data;
 
-        console.log(data);
-
         const columns = [
             {
                 Header: "Accession",
@@ -75,6 +73,7 @@ class App extends React.Component {
                 Cell: cellInfo => (
                     <div style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center'}}>
                         <a href={"/proteins/" + cellInfo.row.accession} target="_blank">Matrix</a>
+                        <a href={"/api/proteins/" + cellInfo.row.accession + "/download"} style={{margin: '0 1em'}}>Download</a>
                     </div>
                 ),
                 // maxWidth: 400
@@ -85,7 +84,7 @@ class App extends React.Component {
         return (
             <div className="site">
                 <div style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center'}}>
-                    <h1>PolyST</h1>
+                    <h1>PolyST+</h1>
                 </div>
                 <ReactTable
                     filterable

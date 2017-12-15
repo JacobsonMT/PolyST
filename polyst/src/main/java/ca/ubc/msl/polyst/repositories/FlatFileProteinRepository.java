@@ -65,6 +65,25 @@ public class FlatFileProteinRepository implements ProteinRepository {
         return null;
     }
 
+    @Override
+    public Base getBase( String accession, int location) {
+        if (location <= 0) {
+            return null;
+        }
+        Protein protein = getByAccession( accession );
+        if (location < protein.getSequence().size()) { // location is 1 based
+            return protein.getSequence().get( location - 1 );
+        } else {
+            return null;
+        }
+
+    }
+
+    @Override
+    public File getRawData( String accession ) {
+        return Paths.get( flatFileDirectory, accession + ".txt" ).toFile();
+    }
+
 
     @Cacheable("protein-info")
     public List<ProteinInfo> allProteinInfo() {
@@ -77,9 +96,9 @@ public class FlatFileProteinRepository implements ProteinRepository {
                 } catch (IndexOutOfBoundsException e) {
                     log.warn( "Issue Obtaining ProteinInfo from: " + p.getFileName() );
                     return new ProteinInfo(
-                            p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ),0 );
+                            p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ), 0 );
                 }
-            })
+            } )
                     .collect( Collectors.toList() );
 //            return paths.filter( Files::isRegularFile ).map( p -> p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ) ).collect( Collectors.toList() );
         } catch (IOException e) {
