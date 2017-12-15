@@ -79,45 +79,6 @@ class App extends React.Component {
             url: "/api/proteins/" + accession
         }).then(function (data) {
             self.setState({protein: data});
-
-
-
-            // /**
-            //  * In order to synchronize tooltips and crosshairs, override the
-            //  * built-in events with handlers defined on the parent element.
-            //  */
-            // $('div.App').bind('mousemove touchmove touchstart', function (e) {
-            //     var chart,
-            //         point,
-            //         i,
-            //         event;
-            //
-            //     for (i = 0; i < Highcharts.charts.length; i = i + 1) {
-            //         chart = Highcharts.charts[i];
-            //         event = chart.pointer.normalize(e.originalEvent); // Find coordinates within the chart
-            //         point = chart.series[0].searchPoint(event, true); // Get the hovered point
-            //
-            //         if (point) {
-            //             point.highlight(e);
-            //         }
-            //     }
-            // });
-            // /**
-            //  * Override the reset function, we don't need to hide the tooltips and crosshairs.
-            //  */
-            // Highcharts.Pointer.prototype.reset = function () {
-            //     return undefined;
-            // };
-            //
-            // /**
-            //  * Highlight a point by showing tooltip, setting hover state and draw crosshair
-            //  */
-            // Highcharts.Point.prototype.highlight = function (event) {
-            //     this.onMouseOver(); // Show the hover marker
-            //     this.series.chart.tooltip.refresh(this); // Show the tooltip
-            //     this.series.chart.xAxis[0].drawCrosshair(event, this); // Show the crosshair
-            // };
-
         });
     }
 
@@ -164,7 +125,6 @@ class App extends React.Component {
                 xAxisVisible={false}
                 enableCredit={false}
                 yAxisType="logarithmic"
-                min={0}
             />)
         }
 
@@ -176,8 +136,6 @@ class App extends React.Component {
                 xAxisVisible={false}
                 enableCredit={false}
                 yAxisType="linear"
-                min={0}
-                max={1}
             />)
         }
 
@@ -189,8 +147,6 @@ class App extends React.Component {
                 xAxisVisible={true}
                 enableCredit={true}
                 yAxisType="linear"
-                min={0}
-                max={1}
             />)
         }
 
@@ -211,7 +167,7 @@ class App extends React.Component {
 class HeatMapChart extends React.Component {
     componentDidMount() {
         const staggerEnabled = (this.props.data.length <= 350 * 20);
-        const staggerLines = staggerEnabled ? Math.ceil(this.props.data.length / (120 * 20) ) : -1;
+        const staggerLines = staggerEnabled ? Math.ceil(this.props.data.length / (120 * 20)) : -1;
         const options = {
 
             chart: {
@@ -252,14 +208,19 @@ class HeatMapChart extends React.Component {
                             mouseOver: function (e) {
                                 var p = this;
                                 window.charts.forEach(function (chart) {
-                                    var point = chart.series[0].data[p.x];
-                                    chart.xAxis[0].removePlotLine('plot-line-sync');
-                                    chart.xAxis[0].addPlotLine({
-                                        value: point.x,
-                                        color: "#cccccc",
-                                        width: 1,
-                                        id: 'plot-line-sync'
-                                    });
+                                    try {
+                                        chart.xAxis[0].removePlotLine('plot-line-sync');
+                                        chart.xAxis[0].addPlotLine({
+                                            value: p.x + 1,
+                                            color: "#cccccc",
+                                            width: 1,
+                                            zIndex: 5,
+                                            id: 'plot-line-sync'
+                                        });
+                                    } catch (e) {
+                                        console.log(e);
+                                    }
+
                                 });
                             }
                         }
@@ -346,7 +307,7 @@ class HeatMapChart extends React.Component {
                     enabled: false,
                     color: '#000000'
                 },
-                turboThreshold: 100000,
+                turboThreshold: 1000,
             }]
 
         };
@@ -388,6 +349,10 @@ class Chart extends React.Component {
                 spacingBottom: 20
             },
 
+            boost: {
+                usePreallocated: true
+            },
+
             plotOptions: {
                 series: {
                     pointStart: 1,
@@ -396,15 +361,18 @@ class Chart extends React.Component {
                             mouseOver: function (e) {
                                 var p = this;
                                 window.charts.forEach(function (chart) {
-                                    var point = chart.series[0].data[p.index];
-                                    chart.xAxis[0].removePlotLine('plot-line-sync');
-                                    chart.xAxis[0].addPlotLine({
-                                        value: point.x,
-                                        color: "#cccccc",
-                                        width: 1,
-                                        id: 'plot-line-sync'
-                                    });
-
+                                    try {
+                                        chart.xAxis[0].removePlotLine('plot-line-sync');
+                                        chart.xAxis[0].addPlotLine({
+                                            value: p.x,
+                                            color: "#cccccc",
+                                            width: 1,
+                                            zIndex: 5,
+                                            id: 'plot-line-sync'
+                                        });
+                                    } catch (e) {
+                                        console.log(e);
+                                    }
                                 });
                             }
                         }
@@ -426,8 +394,8 @@ class Chart extends React.Component {
             yAxis: {
                 title: null,
                 type: this.props.yAxisType,
-                min: this.props.min,
-                max: this.props.max,
+                maxPadding: 0,
+                minPadding:0,
             },
 
             legend: {
@@ -441,6 +409,7 @@ class Chart extends React.Component {
             },
 
             series: [{
+                boostThreshold: 100,
                 name: this.props.title,
                 type: 'area',
                 data: this.props.data,
