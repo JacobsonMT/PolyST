@@ -28,6 +28,7 @@ public class FlatFileProteinRepository implements ProteinRepository {
 
     private static final String flatFileDirectory = "/home/mjacobson/git/PolyST/data/";
 
+    @Cacheable(value = "protein")
     @Override
     public Protein getByAccession( String accession ) {
 
@@ -86,6 +87,7 @@ public class FlatFileProteinRepository implements ProteinRepository {
 
 
     @Cacheable("protein-info")
+    @Override
     public List<ProteinInfo> allProteinInfo() {
         try (Stream<Path> paths = Files.list( Paths.get( flatFileDirectory ) )) {
             return paths.filter( Files::isRegularFile ).map( p -> {
