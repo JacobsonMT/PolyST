@@ -409,7 +409,7 @@ class Chart extends React.Component {
             },
 
             series: [{
-                boostThreshold: 100,
+                boostThreshold: 1000,
                 name: this.props.title,
                 type: 'area',
                 data: this.props.data,
