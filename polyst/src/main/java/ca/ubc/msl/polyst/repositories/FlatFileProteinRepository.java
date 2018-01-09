@@ -26,7 +26,7 @@ public class FlatFileProteinRepository implements ProteinRepository {
 
     private static final Logger log = LoggerFactory.getLogger( FlatFileProteinRepository.class );
 
-    private static final String flatFileDirectory = "/home/mjacobson/git/PolyST/data/";
+    private static final String flatFileDirectory = "/opt/tomcat/PolyST/data/";
 
     @Cacheable(value = "protein")
     @Override
