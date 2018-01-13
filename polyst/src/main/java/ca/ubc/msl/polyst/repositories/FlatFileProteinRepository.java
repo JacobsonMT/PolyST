@@ -78,7 +78,7 @@ public class FlatFileProteinRepository implements ProteinRepository {
     @Override
     public List<ProteinInfo> allProteinInfo() {
         try (Stream<Path> paths = Files.list( Paths.get( flatFileDirectory ) )) {
-            return paths.filter( Files::isRegularFile ).map( p -> {
+            List<ProteinInfo> results = paths.filter( Files::isRegularFile ).map( p -> {
                 try {
                     return new ProteinInfo(
                             p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ),
@@ -90,6 +90,8 @@ public class FlatFileProteinRepository implements ProteinRepository {
                 }
             } )
                     .collect( Collectors.toList() );
+            log.info( "Load Protein Info Complete." );
+            return results;
 //            return paths.filter( Files::isRegularFile ).map( p -> p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ) ).collect( Collectors.toList() );
         } catch (IOException e) {
             log.error( "Error walking data directory!" );
@@ -100,14 +102,14 @@ public class FlatFileProteinRepository implements ProteinRepository {
     private static Function<String, Base> mapBase = ( rawLine ) -> {
         List<String> line = Arrays.asList( rawLine.split( "\t" ) );
 
-        Base base = new Base( line.get( 2 ), Integer.valueOf( line.get( 3 ) ), Double.valueOf( line.get( 4 ) ) );
-
-        if ( line.size() > 5 ) {
-            base.setConservation( Double.valueOf( line.get( 5 ) ) );
-        }
+        Base base = new Base( line.get( 2 ), Integer.valueOf( line.get( 3 ) ), Double.valueOf( line.get( 4 ) ), Double.valueOf( line.get( 5 ) ) );
 
         if ( line.size() > 6 ) {
-            base.setList( line.stream().skip( 6 ).map( Double::parseDouble ).collect( Collectors.toList() ) );
+            base.setConservation( Double.valueOf( line.get( 6 ) ) );
+        }
+
+        if ( line.size() > 7 ) {
+            base.setList( line.stream().skip( 7 ).map( Double::parseDouble ).collect( Collectors.toList() ) );
         }
         return base;
     };
