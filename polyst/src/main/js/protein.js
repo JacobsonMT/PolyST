@@ -217,6 +217,19 @@ class HeatMapChart extends React.Component {
                                             zIndex: 5,
                                             id: 'plot-line-sync'
                                         });
+
+                                        // Synchronized Labels
+                                        let pp = {};
+                                        if (chart.isBoosting) {
+                                            pp = chart.series[0].getPoint({i: p.x});
+                                            pp.plotX = pp.series.xAxis.toPixels(pp.x) - chart.plotLeft;
+                                            pp.plotY = pp.series.yAxis.toPixels(pp.y) - chart.plotTop;
+                                        } else {
+                                            pp = chart.series[0].points[p.x];
+                                        }
+                                        chart.tooltip.refresh(pp); // Show the tooltip
+
+
                                     } catch (e) {
                                         console.log(e);
                                     }
@@ -371,6 +384,20 @@ class Chart extends React.Component {
                                             zIndex: 5,
                                             id: 'plot-line-sync'
                                         });
+
+                                        // Synchronized Labels
+                                        if (p.series.chart !== chart) {
+                                            let pp = {};
+                                            if (chart.isBoosting) {
+                                                pp = chart.series[0].getPoint({i: p.x - 1});
+                                                pp.plotX = pp.series.xAxis.toPixels(pp.x) - chart.plotLeft;
+                                                pp.plotY = pp.series.yAxis.toPixels(pp.y) - chart.plotTop;
+                                            } else {
+                                                pp = chart.series[0].points[p.x - 1];
+                                            }
+                                            chart.tooltip.refresh(pp); // Show the tooltip
+                                        }
+
                                     } catch (e) {
                                         console.log(e);
                                     }
