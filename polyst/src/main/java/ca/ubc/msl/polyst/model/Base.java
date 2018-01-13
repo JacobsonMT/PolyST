@@ -19,6 +19,6 @@ public class Base {
     private final int depth;
     private final double iupred;
     private double conservation;
-    private List<Double> pst = Lists.newArrayList();
+    private List<Double> list = Lists.newArrayList();
 
 }

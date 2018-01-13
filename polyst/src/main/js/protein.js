@@ -95,10 +95,10 @@ class App extends React.Component {
             depthData.push(base.depth);
             iupData.push(base.iupred);
             conservationData.push(base.conservation);
-            if (base.pst.length === 0) {
-                base.pst = new Array(20).fill(0);
+            if (base.list.length === 0) {
+                base.list = new Array(20).fill(0);
             }
-            base.pst.forEach(function (val, y) {
+            base.list.forEach(function (val, y) {
                 // if (y < 5) {
                 data.push([x, y, val]);
                 // }

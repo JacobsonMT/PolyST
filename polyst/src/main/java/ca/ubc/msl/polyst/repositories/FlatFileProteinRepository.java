@@ -97,12 +97,6 @@ public class FlatFileProteinRepository implements ProteinRepository {
         }
     }
 
-//    private static Base mapBase( String[] rawLine ) {
-//        List<String> line = Arrays.asList( rawLine );
-//        List<Double> pst = line.stream().skip( Math.max( 0, line.size() - 20 ) ).map( Double::parseDouble ).collect( Collectors.toList() );
-//        return new Base( line.get( 2 ), Integer.valueOf( line.get( 3 ) ), Double.valueOf( line.get( 4 ) ), Double.valueOf( line.get( 5 ) ), pst );
-//    }
-
     private static Function<String, Base> mapBase = ( rawLine ) -> {
         List<String> line = Arrays.asList( rawLine.split( "\t" ) );
 
@@ -113,7 +107,7 @@ public class FlatFileProteinRepository implements ProteinRepository {
         }
 
         if ( line.size() > 6 ) {
-            base.setPst( line.stream().skip( 6 ).map( Double::parseDouble ).collect( Collectors.toList() ) );
+            base.setList( line.stream().skip( 6 ).map( Double::parseDouble ).collect( Collectors.toList() ) );
         }
         return base;
     };

@@ -102,8 +102,8 @@ public class ProteinController {
             return new ResponseEntity<>( "Incorrect Reference. Reference at this location (1 based) is: " +  base.getReference(), HttpStatus.BAD_REQUEST );
         }
 
-        if (base.getPst().size() > mutation.ordinal() ) {
-            return new ResponseEntity<>( base.getPst().get( mutation.ordinal() ), HttpStatus.OK );
+        if (base.getList().size() > mutation.ordinal() ) {
+            return new ResponseEntity<>( base.getList().get( mutation.ordinal() ), HttpStatus.OK );
         } else {
             return new ResponseEntity<>( "No data for this query.", HttpStatus.BAD_REQUEST );
         }
