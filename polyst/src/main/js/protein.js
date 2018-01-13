@@ -117,16 +117,16 @@ class App extends React.Component {
             />)
         }
 
-        if (depthData.length !== 0) {
-            charts.push(<Chart
-                title="Depth"
-                key="depth"
-                data={depthData}
-                xAxisVisible={false}
-                enableCredit={false}
-                yAxisType="logarithmic"
-            />)
-        }
+        // if (depthData.length !== 0) {
+        //     charts.push(<Chart
+        //         title="Depth"
+        //         key="depth"
+        //         data={depthData}
+        //         xAxisVisible={false}
+        //         enableCredit={false}
+        //         yAxisType="logarithmic"
+        //     />)
+        // }
 
         if (iupData.length !== 0) {
             charts.push(<Chart
