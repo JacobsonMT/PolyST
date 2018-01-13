@@ -373,7 +373,13 @@ class HeatMapChart extends React.Component {
                     color: '#000000'
                 },
                 turboThreshold: 1000,
-            }]
+            }],
+
+            exporting: {
+                filename: accession,
+                sourceWidth: 1200,
+                sourceHeight: 300,
+            }
 
         };
 
@@ -541,7 +547,13 @@ class Chart extends React.Component {
                 marker: {
                     enabled: false
                 }
-            }]
+            }],
+
+            exporting: {
+                filename: accession + "-" + this.props.title,
+                sourceWidth: 1200,
+                sourceHeight: 300,
+            }
         };
 
         this.chart = new Highcharts[this.props.type || 'Chart'](
