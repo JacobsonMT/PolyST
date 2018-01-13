@@ -166,8 +166,6 @@ class App extends React.Component {
 
 class HeatMapChart extends React.Component {
     componentDidMount() {
-        const staggerEnabled = (this.props.data.length <= 350 * 20);
-        const staggerLines = staggerEnabled ? Math.ceil(this.props.data.length / (120 * 20)) : -1;
         const categories = this.props.categories;
         const options = {
 
@@ -179,7 +177,7 @@ class HeatMapChart extends React.Component {
                         // align: 'right', // by default
                         // verticalAlign: 'top', // by default
                         x: 0,
-                        y: -55
+                        y: -40
                     }
                 },
                 height: 300,
@@ -187,6 +185,7 @@ class HeatMapChart extends React.Component {
                 marginRight: 75,
                 // marginTop: 40,
                 // marginBottom: 80,
+                plotBorderWidth: 1,
                 events : {
                     load: function() {
                         console.log( "loading chart", this );
@@ -280,6 +279,7 @@ class HeatMapChart extends React.Component {
                 startOnTick: false,
                 endOnTick: false,
                 allowDecimals: false,
+                tickWidth: 0,
             }, {
                 // visible: this.props.data.length <= 100,
                 linkedTo: 0,
@@ -291,7 +291,9 @@ class HeatMapChart extends React.Component {
                 tickInterval: 1,
                 tickWidth: 0,
                 tickLength: 0,
-                opposite: true,
+                opposite: false,
+                lineWidth: 0,
+                offset:-9,
                 labels: {
                     step: 1,
                     formatter: function (e) {
@@ -301,7 +303,10 @@ class HeatMapChart extends React.Component {
                             return "";
                         }
 
-                    }
+                    },
+                    style: {
+                        fontSize: '9px',
+                    },
                 }
             }],
 
@@ -344,7 +349,7 @@ class HeatMapChart extends React.Component {
                 margin: 0,
                 verticalAlign: 'top',
                 y: 28,
-                symbolHeight: 233 - 9 * staggerLines,
+                symbolHeight: 220,
                 navigation: {
                     enabled: false,
                     arrowSize: 0,
