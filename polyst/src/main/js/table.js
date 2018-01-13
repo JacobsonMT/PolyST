@@ -82,10 +82,7 @@ class App extends React.Component {
 
 
         return (
-            <div className="site">
-                <div style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center'}}>
-                    <h1>LIST</h1>
-                </div>
+            <div>
                 <div className="proteinContainer">
                     <ProteinForm />
                 </div>
