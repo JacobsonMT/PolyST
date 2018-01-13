@@ -100,7 +100,7 @@ class App extends React.Component {
             }
             base.list.forEach(function (val, y) {
                 // if (y < 5) {
-                data.push([x, y, val]);
+                data.push([x+1, y, val]);
                 // }
             });
 
@@ -168,6 +168,7 @@ class HeatMapChart extends React.Component {
     componentDidMount() {
         const staggerEnabled = (this.props.data.length <= 350 * 20);
         const staggerLines = staggerEnabled ? Math.ceil(this.props.data.length / (120 * 20)) : -1;
+        const categories = this.props.categories;
         const options = {
 
             chart: {
@@ -178,7 +179,7 @@ class HeatMapChart extends React.Component {
                         // align: 'right', // by default
                         // verticalAlign: 'top', // by default
                         x: 0,
-                        y: -40
+                        y: -55
                     }
                 },
                 height: 300,
@@ -186,7 +187,6 @@ class HeatMapChart extends React.Component {
                 marginRight: 75,
                 // marginTop: 40,
                 // marginBottom: 80,
-                plotBorderWidth: 1,
                 events : {
                     load: function() {
                         console.log( "loading chart", this );
@@ -209,11 +209,14 @@ class HeatMapChart extends React.Component {
 
                         // Smooth hacks
                         window.charts.forEach(function (chart) {
-                            chart.xAxis[0].setExtremes(min + 0.5, max + 1.5);
+                            chart.xAxis[0].setExtremes(min - 0.5, max + 0.5);
                         });
 
                         window.heatmapchart.xAxis[0].setExtremes(min, max);
-                        window.heatmapchart.showResetZoom();
+
+                        if (!heatmapchart.resetZoomButton) {
+                            window.heatmapchart.showResetZoom();
+                        }
 
                         return false;
                     }
@@ -232,7 +235,6 @@ class HeatMapChart extends React.Component {
             },
 
             plotOptions: {
-                pointStart: 1,
                 series: {
                     point: {
                         events: {
@@ -242,7 +244,7 @@ class HeatMapChart extends React.Component {
                                     try {
                                         chart.xAxis[0].removePlotLine('plot-line-sync');
                                         chart.xAxis[0].addPlotLine({
-                                            value: p.x + 1,
+                                            value: p.x,
                                             color: "#525252",
                                             width: 1,
                                             zIndex: 5,
@@ -252,11 +254,11 @@ class HeatMapChart extends React.Component {
                                         // Synchronized Labels
                                         let pp = {};
                                         if (chart.isBoosting) {
-                                            pp = chart.series[0].getPoint({i: p.x});
+                                            pp = chart.series[0].getPoint({i: p.x - 1});
                                             pp.plotX = pp.series.xAxis.toPixels(pp.x) - chart.plotLeft;
                                             pp.plotY = pp.series.yAxis.toPixels(pp.y) - chart.plotTop;
                                         } else {
-                                            pp = chart.series[0].data[p.x];
+                                            pp = chart.series[0].data[p.x - 1];
                                         }
                                         chart.tooltip.refresh(pp); // Show the tooltip
 
@@ -272,24 +274,36 @@ class HeatMapChart extends React.Component {
                 }
             },
 
-            xAxis: {
-                categories: this.props.categories,
+            xAxis: [{
                 minPadding: 0,
                 maxPadding: 0,
-                startOnTick: true,
-                endOnTick: true,
-                tickWidth: 0,
+                startOnTick: false,
+                endOnTick: false,
+                allowDecimals: false,
+            }, {
+                // visible: this.props.data.length <= 100,
+                linkedTo: 0,
+                allowDecimals: false,
+                minPadding: 0,
+                maxPadding: 0,
+                startOnTick: false,
+                endOnTick: false,
                 tickInterval: 1,
-                padding: 1,
+                tickWidth: 0,
+                tickLength: 0,
+                opposite: true,
                 labels: {
-                    enabled: staggerEnabled,
-                    staggerLines: staggerLines,
-                    style: {
-                        fontSize: '8px',
-                    },
-                },
-                step: 1
-            },
+                    step: 1,
+                    formatter: function (e) {
+                        if (this.axis.max - this.axis.min < 100) {
+                            return categories[this.value - 1];
+                        } else {
+                            return "";
+                        }
+
+                    }
+                }
+            }],
 
             yAxis: {
                 categories: ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'],
@@ -339,7 +353,7 @@ class HeatMapChart extends React.Component {
 
             tooltip: {
                 formatter: function () {
-                    return '<b>Mutation:</b> ' + this.series.xAxis.categories[this.point.x] + ' ' + (this.point.x + 1) + ' ' +
+                    return '<b>Mutation:</b> ' + categories[this.point.x - 1] + ' ' + this.point.x + ' ' +
                         this.series.yAxis.categories[this.point.y] + '<br><b>Effect:</b> ' + this.point.value;
                 }
             },
@@ -428,8 +442,11 @@ class Chart extends React.Component {
                             chart.xAxis[0].setExtremes(min - 0.5, max + 0.5);
                         });
 
-                        window.heatmapchart.xAxis[0].setExtremes(min - 1, max - 1);
-                        window.heatmapchart.showResetZoom();
+                        window.heatmapchart.xAxis[0].setExtremes(min, max);
+
+                        if (!heatmapchart.resetZoomButton) {
+                            window.heatmapchart.showResetZoom();
+                        }
 
                         return false;
                     }
@@ -484,6 +501,8 @@ class Chart extends React.Component {
             xAxis: {
                 min: 0.5,
                 max: this.props.data.length + 0.5,
+                minTickInterval: 1,
+                allowDecimals: false,
                 crosshair: true,
                 minPadding: 0,
                 maxPadding: 0,
