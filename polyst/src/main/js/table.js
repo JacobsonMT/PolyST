@@ -134,7 +134,11 @@ class ProteinForm extends React.Component {
             data : JSON.stringify(proteinRequests),
             contentType : "application/json"
         } ).then(function (data) {
-            self.setState({output: data.join("\n")});
+            let output = [];
+            lines.forEach(function(l, k) {
+                output.push(l + "=" + data[k]);
+            });
+            self.setState({output: output.join("\n")});
         });
         event.preventDefault();
     }
