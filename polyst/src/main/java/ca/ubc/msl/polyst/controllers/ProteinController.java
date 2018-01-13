@@ -79,13 +79,6 @@ public class ProteinController {
                                              @PathVariable String ref,
                                              @PathVariable String alt ) {
 
-        Mutation mutation;
-        try {
-            mutation = Mutation.valueOf( alt.toUpperCase() );
-        } catch (Exception e) {
-            return new ResponseEntity<>( "Unknown alternate.", HttpStatus.BAD_REQUEST );
-        }
-
         Protein protein = repository.getByAccession( accession );
 
         if ( protein == null ) {
@@ -100,6 +93,13 @@ public class ProteinController {
 
         if ( !base.getReference().equalsIgnoreCase( ref ) ) {
             return new ResponseEntity<>( "Incorrect Reference. Reference at this location (1 based) is: " +  base.getReference(), HttpStatus.BAD_REQUEST );
+        }
+
+        Mutation mutation;
+        try {
+            mutation = Mutation.valueOf( alt.toUpperCase() );
+        } catch (Exception e) {
+            return new ResponseEntity<>( "Unknown alternate.", HttpStatus.BAD_REQUEST );
         }
 
         if (base.getList().size() > mutation.ordinal() ) {
