@@ -133,7 +133,7 @@ class App extends React.Component {
                 title="IUPred"
                 key="iupred"
                 data={iupData}
-                xAxisVisible={false}
+                xAxisVisible={true}
                 enableCredit={false}
                 yAxisType="linear"
             />)
@@ -404,7 +404,7 @@ class Chart extends React.Component {
             credits: this.props.enableCredit,
 
             chart: {
-                height: 175,
+                height: 200,
                 marginLeft: 40,
                 marginRight: 75,
                 spacingTop: 20,
