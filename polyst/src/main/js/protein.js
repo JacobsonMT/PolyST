@@ -259,9 +259,10 @@ class HeatMapChart extends React.Component {
                 step: 1,
                 tickWidth: 0,
                 labels: {
+                    align: 'center',
                     step: 1,
                     style: {
-                        fontSize: '8px',
+                        fontSize: '9px',
                     },
                 },
             },
@@ -270,7 +271,7 @@ class HeatMapChart extends React.Component {
                 min: 0,
                 max: 1,
                 stops: [[0, '#ffffcc'],
-                    [0.7, '#a1dab4'],
+                    [0.6, '#a1dab4'],
                     [0.8, '#41b6c4'],
                     [0.9, '#2c7fb8'],
                     [0.95, '#253494']],
