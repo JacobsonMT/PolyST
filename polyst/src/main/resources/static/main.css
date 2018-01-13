@@ -59,6 +59,22 @@ div.proteinContainer textarea {
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
 
+textarea::-webkit-input-placeholder {
+    color: #dcdcdc;
+}
+
+textarea:-moz-placeholder { /* Firefox 18- */
+    color: #dcdcdc;
+}
+
+textarea::-moz-placeholder {  /* Firefox 19+ */
+    color: #dcdcdc;
+}
+
+textarea:-ms-input-placeholder {
+    color: #dcdcdc;
+}
+
 div.proteinContainer textarea.output {
     white-space: pre;
     overflow-wrap: normal;
