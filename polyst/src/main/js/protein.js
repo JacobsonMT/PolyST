@@ -414,6 +414,9 @@ class Chart extends React.Component {
                 name: this.props.title,
                 type: 'area',
                 data: this.props.data,
+                marker: {
+                    enabled: false
+                }
             }]
         };
 
