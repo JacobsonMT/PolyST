@@ -91,7 +91,7 @@ class App extends React.Component {
                     resizable
                     data={data}
                     columns={columns}
-                    defaultPageSize={15}
+                    defaultPageSize={10}
                     className="-striped -highlight"
                 />
             </div>
