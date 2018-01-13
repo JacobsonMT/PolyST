@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -48,9 +49,10 @@ public class FlatFileProteinRepository implements ProteinRepository {
             protein.setSequence( sequence );
 
             return protein;
-
+        } catch (NoSuchFileException ex) {
+            log.debug( "No file found for: " + accession );
         } catch (FileNotFoundException ex) {
-            log.warn( "No file found for: " + accession );
+            log.warn( "File not accessible: " + accession );
         } catch (IOException ex) {
             log.error( "IO Error for: " + accession, ex );
         } finally {
@@ -67,20 +69,6 @@ public class FlatFileProteinRepository implements ProteinRepository {
     }
 
     @Override
-    public Base getBase( String accession, int location) {
-        if (location <= 0) {
-            return null;
-        }
-        Protein protein = getByAccession( accession );
-        if (location < protein.getSequence().size()) { // location is 1 based
-            return protein.getSequence().get( location - 1 );
-        } else {
-            return null;
-        }
-
-    }
-
-    @Override
     public File getRawData( String accession ) {
         return Paths.get( flatFileDirectory, accession + ".txt" ).toFile();
     }
@@ -90,7 +78,7 @@ public class FlatFileProteinRepository implements ProteinRepository {
     @Override
     public List<ProteinInfo> allProteinInfo() {
         try (Stream<Path> paths = Files.list( Paths.get( flatFileDirectory ) )) {
-            return paths.filter( Files::isRegularFile ).map( p -> {
+            List<ProteinInfo> results = paths.filter( Files::isRegularFile ).map( p -> {
                 try {
                     return new ProteinInfo(
                             p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ),
@@ -102,6 +90,8 @@ public class FlatFileProteinRepository implements ProteinRepository {
                 }
             } )
                     .collect( Collectors.toList() );
+            log.info( "Load Protein Info Complete." );
+            return results;
 //            return paths.filter( Files::isRegularFile ).map( p -> p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ) ).collect( Collectors.toList() );
         } catch (IOException e) {
             log.error( "Error walking data directory!" );
@@ -109,23 +99,17 @@ public class FlatFileProteinRepository implements ProteinRepository {
         }
     }
 
-//    private static Base mapBase( String[] rawLine ) {
-//        List<String> line = Arrays.asList( rawLine );
-//        List<Double> pst = line.stream().skip( Math.max( 0, line.size() - 20 ) ).map( Double::parseDouble ).collect( Collectors.toList() );
-//        return new Base( line.get( 2 ), Integer.valueOf( line.get( 3 ) ), Double.valueOf( line.get( 4 ) ), Double.valueOf( line.get( 5 ) ), pst );
-//    }
-
     private static Function<String, Base> mapBase = ( rawLine ) -> {
         List<String> line = Arrays.asList( rawLine.split( "\t" ) );
 
-        Base base = new Base( line.get( 2 ), Integer.valueOf( line.get( 3 ) ), Double.valueOf( line.get( 4 ) ) );
-
-        if ( line.size() > 5 ) {
-            base.setConservation( Double.valueOf( line.get( 5 ) ) );
-        }
+        Base base = new Base( line.get( 2 ), Integer.valueOf( line.get( 3 ) ), Double.valueOf( line.get( 4 ) ), Double.valueOf( line.get( 5 ) ) );
 
         if ( line.size() > 6 ) {
-            base.setPst( line.stream().skip( 6 ).map( Double::parseDouble ).collect( Collectors.toList() ) );
+            base.setConservation( Double.valueOf( line.get( 6 ) ) );
+        }
+
+        if ( line.size() > 7 ) {
+            base.setList( line.stream().skip( 7 ).map( Double::parseDouble ).collect( Collectors.toList() ) );
         }
         return base;
     };

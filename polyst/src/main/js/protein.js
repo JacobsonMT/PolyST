@@ -86,26 +86,33 @@ class App extends React.Component {
 
         let data = [];
         let categories = [];
-        let depthData = [];
+        let depth = [];
         let iupData = [];
-        let conservationData = [];
+        let espritzData = [];
+
+        let conservation = [];
         this.state.protein.sequence.forEach(function (base, x) {
             // if (x < 100) {
             categories.push(base.reference);
-            depthData.push(base.depth);
+            depth.push(base.depth);
             iupData.push(base.iupred);
-            conservationData.push(base.conservation);
-            if (base.pst.length === 0) {
-                base.pst = new Array(20).fill(0);
+            espritzData.push(base.espritz);
+            conservation.push(base.conservation);
+            if (base.list.length === 0) {
+                base.list = new Array(20).fill(0);
             }
-            base.pst.forEach(function (val, y) {
+            base.list.forEach(function (val, y) {
                 // if (y < 5) {
-                data.push([x, y, val]);
+                data.push([x+1, y, val]);
                 // }
             });
 
             // }
         });
+
+        let predictionData = [{name: "IUPred", type: "area", data: iupData},{name: "ESpritz", type: "line", color: "red", data: espritzData}];
+        let conservationData = [{name: "Conservation", type: "area", data: conservation}];
+        // let depthData = [{name:"Depth", data:depth}];
 
 
         let charts = [];
@@ -117,29 +124,29 @@ class App extends React.Component {
             />)
         }
 
-        if (depthData.length !== 0) {
-            charts.push(<Chart
-                title="Depth"
-                key="depth"
-                data={depthData}
-                xAxisVisible={false}
-                enableCredit={false}
-                yAxisType="logarithmic"
-            />)
-        }
+        // if (depthData[0].data.length !== 0) {
+        //     charts.push(<Chart
+        //         title="Depth"
+        //         key="depth"
+        //         data={depthData}
+        //         xAxisVisible={true}
+        //         enableCredit={false}
+        //         yAxisType="logarithmic"
+        //     />)
+        // }
 
-        if (iupData.length !== 0) {
+        if (predictionData.every(function(v) {return v.data.length !== 0})) {
             charts.push(<Chart
-                title="IUPred"
+                title="Disorder Prediction"
                 key="iupred"
-                data={iupData}
-                xAxisVisible={false}
+                data={predictionData}
+                xAxisVisible={true}
                 enableCredit={false}
                 yAxisType="linear"
             />)
         }
 
-        if (conservationData.length !== 0) {
+        if (conservationData.every(function(v) {return v.data.length !== 0})) {
             charts.push(<Chart
                 title="Conservation"
                 key="conservation"
@@ -166,8 +173,7 @@ class App extends React.Component {
 
 class HeatMapChart extends React.Component {
     componentDidMount() {
-        const staggerEnabled = (this.props.data.length <= 350 * 20);
-        const staggerLines = staggerEnabled ? Math.ceil(this.props.data.length / (120 * 20)) : -1;
+        const categories = this.props.categories;
         const options = {
 
             chart: {
@@ -186,7 +192,41 @@ class HeatMapChart extends React.Component {
                 marginRight: 75,
                 // marginTop: 40,
                 // marginBottom: 80,
-                plotBorderWidth: 1
+                plotBorderWidth: 1,
+                events : {
+                    load: function() {
+                        console.log( "loading chart", this );
+                    },
+                    selection: function (event) {
+
+                        if (event.resetSelection) {
+                            window.charts.forEach(function (chart) {
+                                // Chosen instead of zoomOut as is doesn't trigger selection
+                                chart.zoom();
+                            });
+                            window.heatmapchart.zoom();
+                            return false;
+                        }
+
+
+                        var extremesObject = event.xAxis[0],
+                            min = Math.round(extremesObject.min),
+                            max = Math.round(extremesObject.max);
+
+                        // Smooth hacks
+                        window.charts.forEach(function (chart) {
+                            chart.xAxis[0].setExtremes(min - 0.5, max + 0.5);
+                        });
+
+                        window.heatmapchart.xAxis[0].setExtremes(min, max);
+
+                        if (!heatmapchart.resetZoomButton) {
+                            window.heatmapchart.showResetZoom();
+                        }
+
+                        return false;
+                    }
+                }
             },
 
             boost: {
@@ -201,7 +241,6 @@ class HeatMapChart extends React.Component {
             },
 
             plotOptions: {
-                pointStart: 1,
                 series: {
                     point: {
                         events: {
@@ -211,12 +250,29 @@ class HeatMapChart extends React.Component {
                                     try {
                                         chart.xAxis[0].removePlotLine('plot-line-sync');
                                         chart.xAxis[0].addPlotLine({
-                                            value: p.x + 1,
-                                            color: "#cccccc",
+                                            value: p.x,
+                                            color: "#525252",
                                             width: 1,
                                             zIndex: 5,
                                             id: 'plot-line-sync'
                                         });
+
+                                        let pps = [];
+                                        chart.series.forEach(function(s) {
+                                            let pp = {};
+                                            if (chart.isBoosting) {
+                                                pp = s.getPoint({i: p.x - 1});
+                                                pp.plotX = s.xAxis.toPixels(pp.x) - chart.plotLeft;
+                                                pp.plotY = s.yAxis.toPixels(pp.y) - chart.plotTop;
+                                            } else {
+                                                pp = s.data[p.x - 1];
+                                            }
+                                            pps.push(pp);
+                                        });
+
+                                        chart.tooltip.refresh(pps); // Show the tooltip
+
+
                                     } catch (e) {
                                         console.log(e);
                                     }
@@ -228,24 +284,42 @@ class HeatMapChart extends React.Component {
                 }
             },
 
-            xAxis: {
-                categories: this.props.categories,
+            xAxis: [{
                 minPadding: 0,
                 maxPadding: 0,
-                startOnTick: true,
-                endOnTick: true,
+                startOnTick: false,
+                endOnTick: false,
+                allowDecimals: false,
                 tickWidth: 0,
+            }, {
+                // visible: this.props.data.length <= 100,
+                linkedTo: 0,
+                allowDecimals: false,
+                minPadding: 0,
+                maxPadding: 0,
+                startOnTick: false,
+                endOnTick: false,
                 tickInterval: 1,
-                padding: 1,
+                tickWidth: 0,
+                tickLength: 0,
+                opposite: false,
+                lineWidth: 0,
+                offset:-9,
                 labels: {
-                    enabled: staggerEnabled,
-                    staggerLines: staggerLines,
-                    style: {
-                        fontSize: '8px',
+                    step: 1,
+                    formatter: function (e) {
+                        if (this.axis.max - this.axis.min < 100) {
+                            return categories[this.value - 1];
+                        } else {
+                            return "";
+                        }
+
                     },
-                },
-                step: 1
-            },
+                    style: {
+                        fontSize: '9px',
+                    },
+                }
+            }],
 
             yAxis: {
                 categories: ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'],
@@ -259,9 +333,10 @@ class HeatMapChart extends React.Component {
                 step: 1,
                 tickWidth: 0,
                 labels: {
+                    align: 'center',
                     step: 1,
                     style: {
-                        fontSize: '8px',
+                        fontSize: '9px',
                     },
                 },
             },
@@ -269,8 +344,9 @@ class HeatMapChart extends React.Component {
             colorAxis: {
                 min: 0,
                 max: 1,
-                stops: [[0, '#ffffcc'],
-                    [0.7, '#a1dab4'],
+                stops: [[0, '#ffffff'],
+                    [0.1, '#ffffcc'],
+                    [0.6, '#a1dab4'],
                     [0.8, '#41b6c4'],
                     [0.9, '#2c7fb8'],
                     [0.95, '#253494']],
@@ -284,7 +360,7 @@ class HeatMapChart extends React.Component {
                 margin: 0,
                 verticalAlign: 'top',
                 y: 28,
-                symbolHeight: 233 - 9 * staggerLines,
+                symbolHeight: 220,
                 navigation: {
                     enabled: false,
                     arrowSize: 0,
@@ -293,14 +369,14 @@ class HeatMapChart extends React.Component {
 
             tooltip: {
                 formatter: function () {
-                    return '<b>Mutation:</b> ' + this.series.xAxis.categories[this.point.x] + ' ' + (this.point.x + 1) + ' ' +
-                        this.series.yAxis.categories[this.point.y] + '<br><b>Effect:</b> ' + this.point.value;
+                    return 'Mutation: <b>' + categories[this.point.x - 1] + ' ' + this.point.x + ' ' +
+                        this.series.yAxis.categories[this.point.y] + '<br></b>Effect: <b>' + this.point.value + '</b>';
                 }
             },
 
             series: [{
                 boostThreshold: 100,
-                name: 'PolyST',
+                name: 'LIST',
                 borderWidth: 0,
                 data: this.props.data,
                 dataLabels: {
@@ -308,7 +384,13 @@ class HeatMapChart extends React.Component {
                     color: '#000000'
                 },
                 turboThreshold: 1000,
-            }]
+            }],
+
+            exporting: {
+                filename: accession,
+                sourceWidth: 1200,
+                sourceHeight: 300,
+            }
 
         };
 
@@ -316,6 +398,8 @@ class HeatMapChart extends React.Component {
             this.chartEl,
             options
         );
+
+        window.heatmapchart = this.chart;
 
     }
 
@@ -342,11 +426,53 @@ class Chart extends React.Component {
             credits: this.props.enableCredit,
 
             chart: {
-                height: 175,
+                height: 200,
                 marginLeft: 40,
                 marginRight: 75,
                 spacingTop: 20,
-                spacingBottom: 20
+                spacingBottom: 20,
+                zoomType: 'x',
+                resetZoomButton: {
+                    position: {
+                        // align: 'right', // by default
+                        // verticalAlign: 'top', // by default
+                        x: 0,
+                        y: -40
+                    }
+                },
+                events : {
+                    load: function() {
+                        console.log( "loading chart", this );
+                    },
+                    selection: function (event) {
+
+                        if (event.resetSelection) {
+                            window.charts.forEach(function (chart) {
+                                // Chosen instead of zoomOut as is doesn't trigger selection
+                                chart.zoom();
+                            });
+                            window.heatmapchart.zoom();
+                            return false;
+                        }
+
+                        var extremesObject = event.xAxis[0],
+                            min = Math.round(extremesObject.min),
+                            max = Math.round(extremesObject.max);
+
+                        // Smooth hacks
+                        window.charts.forEach(function (chart) {
+                            chart.xAxis[0].setExtremes(min - 0.5, max + 0.5);
+                        });
+
+                        window.heatmapchart.xAxis[0].setExtremes(min, max);
+
+                        if (!heatmapchart.resetZoomButton) {
+                            window.heatmapchart.showResetZoom();
+                        }
+
+                        return false;
+                    }
+                }
             },
 
             boost: {
@@ -365,11 +491,31 @@ class Chart extends React.Component {
                                         chart.xAxis[0].removePlotLine('plot-line-sync');
                                         chart.xAxis[0].addPlotLine({
                                             value: p.x,
-                                            color: "#cccccc",
+                                            color: "#525252",
                                             width: 1,
                                             zIndex: 5,
                                             id: 'plot-line-sync'
                                         });
+
+                                        // Synchronized Labels
+                                        if (p.series.chart !== chart) {
+                                            let pps = [];
+                                            chart.series.forEach(function(s) {
+                                                let pp = {};
+                                                if (chart.isBoosting) {
+                                                    pp = s.getPoint({i: p.x - 1});
+                                                    pp.plotX = s.xAxis.toPixels(pp.x) - chart.plotLeft;
+                                                    pp.plotY = s.yAxis.toPixels(pp.y) - chart.plotTop;
+                                                } else {
+                                                    pp = s.data[p.x - 1];
+                                                }
+                                                pps.push(pp);
+                                            });
+
+                                            chart.tooltip.refresh(pps); // Show the tooltip
+
+                                        }
+
                                     } catch (e) {
                                         console.log(e);
                                     }
@@ -382,7 +528,9 @@ class Chart extends React.Component {
 
             xAxis: {
                 min: 0.5,
-                max: this.props.data.length + 0.5,
+                max: this.props.data[0].data.length + 0.5,
+                minTickInterval: 1,
+                allowDecimals: false,
                 crosshair: true,
                 minPadding: 0,
                 maxPadding: 0,
@@ -399,22 +547,44 @@ class Chart extends React.Component {
             },
 
             legend: {
-                enabled: false,
+                enabled: this.props.data.length > 1,
+                align: 'right',
+                verticalAlign: 'top',
+                x: -60,
+                y: -5,
+                floating: true,
             },
 
             tooltip: {
-                formatter: function () {
-                    return '<b>Position:</b> ' + this.x + '<br>' + '<b>' + this.series.name + ':</b> ' + this.y;
-                }
+                shared: true,
             },
 
-            series: [{
-                boostThreshold: 1000,
-                name: this.props.title,
-                type: 'area',
-                data: this.props.data,
-            }]
+            series: [],
+
+            exporting: {
+                filename: accession + "-" + this.props.title,
+                sourceWidth: 1200,
+                sourceHeight: 300,
+            }
         };
+
+        this.props.data.forEach(function(series) {
+            options.series.push({
+                boostThreshold: 1000,
+                name: series.name,
+                type: series.type,
+                data: series.data,
+                color: series.color,
+                marker: {
+                    enabled: false,
+                    states: {
+                        hover: {
+                            enabled: false,
+                        }
+                    }
+                }
+            })
+        });
 
         this.chart = new Highcharts[this.props.type || 'Chart'](
             this.chartEl,

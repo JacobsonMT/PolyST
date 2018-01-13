@@ -17,6 +17,21 @@ public class HomeController {
         return "index";
     }
 
+    @RequestMapping(value = "/api")
+    public String apiDocumentation() {
+        return "api";
+    }
+
+    @RequestMapping(value = "/about")
+    public String about() {
+        return "about";
+    }
+
+    @RequestMapping(value = "/contact")
+    public String contact() {
+        return "contact";
+    }
+
 
     @RequestMapping(value = "/proteins/{accession}", method = RequestMethod.GET)
     public String protein( @PathVariable String accession, Model model) {

@@ -82,16 +82,16 @@ class App extends React.Component {
 
 
         return (
-            <div className="site">
-                <div style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center'}}>
-                    <h1>PolyST+</h1>
+            <div>
+                <div className="proteinContainer">
+                    <ProteinForm />
                 </div>
                 <ReactTable
                     filterable
                     resizable
                     data={data}
                     columns={columns}
-                    defaultPageSize={15}
+                    defaultPageSize={10}
                     className="-striped -highlight"
                 />
             </div>
@@ -99,6 +99,58 @@ class App extends React.Component {
     }
 }
 // end::app[]
+
+class ProteinForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            value: ''
+        };
+
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleChange(event) {
+        this.setState({value: event.target.value});
+    }
+
+    handleSubmit(event) {
+        let proteinRequests = [];
+        let lines = this.state.value.split('\n');
+        for(let i = 0;i < lines.length;i++){
+            let l = $.trim(lines[i]).split(":");
+            proteinRequests.push({"accession":l[0], "location":parseInt(l[1]), "ref":l[2], "alt":l[3]});
+        }
+
+        const self = this;
+        $.ajax( {
+            cache : false,
+            type : 'POST',
+            url : '/api/proteins',
+            data : JSON.stringify(proteinRequests),
+            contentType : "application/json"
+        } ).then(function (data) {
+            let output = [];
+            lines.forEach(function(l, k) {
+                output.push(l + "=" + data[k]);
+            });
+            self.setState({output: output.join("\n")});
+        });
+        event.preventDefault();
+    }
+
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <textarea className="input" value={this.state.value} onChange={this.handleChange}
+                          placeholder="Example:                                         Q8WVH0:112:D:G                                         P53365:312:N:K                                         Q9ULP0:254:T:V                                         Q8NHW4:15:A:M                                         Q96EW2:436:I:Y"/>
+                <input type="submit" value=">>" />
+                <textarea className="output" value={this.state.output} disabled/>
+            </form>
+        );
+    }
+}
 
 // tag::render[]
 ReactDOM.render(

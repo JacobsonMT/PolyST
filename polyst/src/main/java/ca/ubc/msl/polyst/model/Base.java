@@ -18,7 +18,8 @@ public class Base {
     private final String reference;
     private final int depth;
     private final double iupred;
+    private final double espritz;
     private double conservation;
-    private List<Double> pst = Lists.newArrayList();
+    private List<Double> list = Lists.newArrayList();
 
 }
