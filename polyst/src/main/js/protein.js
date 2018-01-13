@@ -212,7 +212,7 @@ class HeatMapChart extends React.Component {
                                         chart.xAxis[0].removePlotLine('plot-line-sync');
                                         chart.xAxis[0].addPlotLine({
                                             value: p.x + 1,
-                                            color: "#cccccc",
+                                            color: "#525252",
                                             width: 1,
                                             zIndex: 5,
                                             id: 'plot-line-sync'
@@ -366,7 +366,7 @@ class Chart extends React.Component {
                                         chart.xAxis[0].removePlotLine('plot-line-sync');
                                         chart.xAxis[0].addPlotLine({
                                             value: p.x,
-                                            color: "#cccccc",
+                                            color: "#525252",
                                             width: 1,
                                             zIndex: 5,
                                             id: 'plot-line-sync'
