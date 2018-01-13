@@ -300,7 +300,7 @@ class HeatMapChart extends React.Component {
 
             series: [{
                 boostThreshold: 100,
-                name: 'PolyST',
+                name: 'LIST',
                 borderWidth: 0,
                 data: this.props.data,
                 dataLabels: {
