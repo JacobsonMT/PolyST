@@ -84,7 +84,7 @@ class App extends React.Component {
         return (
             <div className="site">
                 <div style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center'}}>
-                    <h1>PolyST+</h1>
+                    <h1>LIST</h1>
                 </div>
                 <ReactTable
                     filterable
