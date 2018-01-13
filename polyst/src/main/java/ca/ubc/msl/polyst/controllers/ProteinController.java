@@ -5,14 +5,15 @@ import ca.ubc.msl.polyst.model.Mutation;
 import ca.ubc.msl.polyst.model.Protein;
 import ca.ubc.msl.polyst.model.ProteinInfo;
 import ca.ubc.msl.polyst.repositories.ProteinRepository;
+import com.google.common.collect.Lists;
+import lombok.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -25,6 +26,20 @@ import java.util.List;
  */
 @RestController
 public class ProteinController {
+
+    private static final Logger log = LoggerFactory.getLogger( ProteinController.class );
+
+    @Getter
+    @Setter
+    @RequiredArgsConstructor
+    @EqualsAndHashCode(of = {"accession"})
+    @ToString
+    static final class ProteinRequest {
+        private final String accession;
+        private final int location;
+        private final String ref;
+        private final String alt;
+    }
 
     private final ProteinRepository repository;
 
@@ -42,7 +57,13 @@ public class ProteinController {
     public ResponseEntity<?> getByAccession( @PathVariable String accession,
                                              @PathVariable int location ) {
 
-        Base base = repository.getBase( accession, location );
+        Protein protein = repository.getByAccession( accession );
+
+        if ( protein == null ) {
+            return new ResponseEntity<>( "Protein accession unavailable.", HttpStatus.BAD_REQUEST );
+        }
+
+        Base base = protein.getBase( location );
 
         if ( base == null ) {
             return new ResponseEntity<>( "Cannot find location (1 based).", HttpStatus.BAD_REQUEST );
@@ -65,7 +86,13 @@ public class ProteinController {
             return new ResponseEntity<>( "Unknown alternate.", HttpStatus.BAD_REQUEST );
         }
 
-        Base base = repository.getBase( accession, location );
+        Protein protein = repository.getByAccession( accession );
+
+        if ( protein == null ) {
+            return new ResponseEntity<>( "Protein accession unavailable.", HttpStatus.BAD_REQUEST );
+        }
+
+        Base base = protein.getBase( location );
 
         if ( base == null ) {
             return new ResponseEntity<>( "Cannot find location (1 based).", HttpStatus.BAD_REQUEST );
@@ -86,6 +113,17 @@ public class ProteinController {
     @RequestMapping(value = "/api/proteins", method = RequestMethod.GET)
     public List<ProteinInfo> allProteins() {
         return repository.allProteinInfo();
+    }
+
+    @RequestMapping(value = "/api/proteins", method = RequestMethod.POST)
+    public List<Object> manyProteins(@RequestBody List<ProteinRequest> proteinRequests) {
+        // This can be expanded for more versatility and efficiency with many calls to same protein
+        List<Object> res = Lists.newArrayList();
+        for ( ProteinRequest pr : proteinRequests ) {
+            ResponseEntity<?> re = getByAccession( pr.getAccession(), pr.getLocation(), pr.getRef(), pr.getAlt() );
+            res.add( re.getBody().toString() );
+        }
+        return res;
     }
 
     @RequestMapping(value = "/api/proteins/{accession}/download", method = RequestMethod.GET)

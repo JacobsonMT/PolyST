@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -48,9 +49,10 @@ public class FlatFileProteinRepository implements ProteinRepository {
             protein.setSequence( sequence );
 
             return protein;
-
+        } catch (NoSuchFileException ex) {
+            log.debug( "No file found for: " + accession );
         } catch (FileNotFoundException ex) {
-            log.warn( "No file found for: " + accession );
+            log.warn( "File not accessible: " + accession );
         } catch (IOException ex) {
             log.error( "IO Error for: " + accession, ex );
         } finally {
@@ -64,20 +66,6 @@ public class FlatFileProteinRepository implements ProteinRepository {
         }
 
         return null;
-    }
-
-    @Override
-    public Base getBase( String accession, int location) {
-        if (location <= 0) {
-            return null;
-        }
-        Protein protein = getByAccession( accession );
-        if (location < protein.getSequence().size()) { // location is 1 based
-            return protein.getSequence().get( location - 1 );
-        } else {
-            return null;
-        }
-
     }
 
     @Override
