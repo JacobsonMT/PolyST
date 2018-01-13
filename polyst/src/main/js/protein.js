@@ -186,7 +186,38 @@ class HeatMapChart extends React.Component {
                 marginRight: 75,
                 // marginTop: 40,
                 // marginBottom: 80,
-                plotBorderWidth: 1
+                plotBorderWidth: 1,
+                events : {
+                    load: function() {
+                        console.log( "loading chart", this );
+                    },
+                    selection: function (event) {
+
+                        if (event.resetSelection) {
+                            window.charts.forEach(function (chart) {
+                                // Chosen instead of zoomOut as is doesn't trigger selection
+                                chart.zoom();
+                            });
+                            window.heatmapchart.zoom();
+                            return false;
+                        }
+
+
+                        var extremesObject = event.xAxis[0],
+                            min = Math.round(extremesObject.min),
+                            max = Math.round(extremesObject.max);
+
+                        // Smooth hacks
+                        window.charts.forEach(function (chart) {
+                            chart.xAxis[0].setExtremes(min + 0.5, max + 1.5);
+                        });
+
+                        window.heatmapchart.xAxis[0].setExtremes(min, max);
+                        window.heatmapchart.showResetZoom();
+
+                        return false;
+                    }
+                }
             },
 
             boost: {
@@ -225,7 +256,7 @@ class HeatMapChart extends React.Component {
                                             pp.plotX = pp.series.xAxis.toPixels(pp.x) - chart.plotLeft;
                                             pp.plotY = pp.series.yAxis.toPixels(pp.y) - chart.plotTop;
                                         } else {
-                                            pp = chart.series[0].points[p.x];
+                                            pp = chart.series[0].data[p.x];
                                         }
                                         chart.tooltip.refresh(pp); // Show the tooltip
 
@@ -331,6 +362,8 @@ class HeatMapChart extends React.Component {
             options
         );
 
+        window.heatmapchart = this.chart;
+
     }
 
     componentWillUnmount() {
@@ -360,7 +393,46 @@ class Chart extends React.Component {
                 marginLeft: 40,
                 marginRight: 75,
                 spacingTop: 20,
-                spacingBottom: 20
+                spacingBottom: 20,
+                zoomType: 'x',
+                resetZoomButton: {
+                    position: {
+                        // align: 'right', // by default
+                        // verticalAlign: 'top', // by default
+                        x: 0,
+                        y: -40
+                    }
+                },
+                events : {
+                    load: function() {
+                        console.log( "loading chart", this );
+                    },
+                    selection: function (event) {
+
+                        if (event.resetSelection) {
+                            window.charts.forEach(function (chart) {
+                                // Chosen instead of zoomOut as is doesn't trigger selection
+                                chart.zoom();
+                            });
+                            window.heatmapchart.zoom();
+                            return false;
+                        }
+
+                        var extremesObject = event.xAxis[0],
+                            min = Math.round(extremesObject.min),
+                            max = Math.round(extremesObject.max);
+
+                        // Smooth hacks
+                        window.charts.forEach(function (chart) {
+                            chart.xAxis[0].setExtremes(min - 0.5, max + 0.5);
+                        });
+
+                        window.heatmapchart.xAxis[0].setExtremes(min - 1, max - 1);
+                        window.heatmapchart.showResetZoom();
+
+                        return false;
+                    }
+                }
             },
 
             boost: {
@@ -393,7 +465,7 @@ class Chart extends React.Component {
                                                 pp.plotX = pp.series.xAxis.toPixels(pp.x) - chart.plotLeft;
                                                 pp.plotY = pp.series.yAxis.toPixels(pp.y) - chart.plotTop;
                                             } else {
-                                                pp = chart.series[0].points[p.x - 1];
+                                                pp = chart.series[0].data[p.x - 1];
                                             }
                                             chart.tooltip.refresh(pp); // Show the tooltip
                                         }
