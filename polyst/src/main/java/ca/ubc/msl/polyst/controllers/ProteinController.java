@@ -82,7 +82,7 @@ public class ProteinController {
         Mutation mutation;
         try {
             mutation = Mutation.valueOf( alt.toUpperCase() );
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return new ResponseEntity<>( "Unknown alternate.", HttpStatus.BAD_REQUEST );
         }
 
