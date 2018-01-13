@@ -86,15 +86,18 @@ class App extends React.Component {
 
         let data = [];
         let categories = [];
-        let depthData = [];
+        let depth = [];
         let iupData = [];
-        let conservationData = [];
+        let espritzData = [];
+
+        let conservation = [];
         this.state.protein.sequence.forEach(function (base, x) {
             // if (x < 100) {
             categories.push(base.reference);
-            depthData.push(base.depth);
+            depth.push(base.depth);
             iupData.push(base.iupred);
-            conservationData.push(base.conservation);
+            espritzData.push(base.espritz);
+            conservation.push(base.conservation);
             if (base.list.length === 0) {
                 base.list = new Array(20).fill(0);
             }
@@ -107,6 +110,10 @@ class App extends React.Component {
             // }
         });
 
+        let predictionData = [{name: "IUPred", type: "area", data: iupData},{name: "ESpritz", type: "line", color: "red", data: espritzData}];
+        let conservationData = [{name: "Conservation", type: "area", data: conservation}];
+        // let depthData = [{name:"Depth", data:depth}];
+
 
         let charts = [];
         if (data.length !== 0) {
@@ -117,29 +124,29 @@ class App extends React.Component {
             />)
         }
 
-        // if (depthData.length !== 0) {
+        // if (depthData[0].data.length !== 0) {
         //     charts.push(<Chart
         //         title="Depth"
         //         key="depth"
         //         data={depthData}
-        //         xAxisVisible={false}
+        //         xAxisVisible={true}
         //         enableCredit={false}
         //         yAxisType="logarithmic"
         //     />)
         // }
 
-        if (iupData.length !== 0) {
+        if (predictionData.every(function(v) {return v.data.length !== 0})) {
             charts.push(<Chart
-                title="IUPred"
+                title="Disorder Prediction"
                 key="iupred"
-                data={iupData}
+                data={predictionData}
                 xAxisVisible={true}
                 enableCredit={false}
                 yAxisType="linear"
             />)
         }
 
-        if (conservationData.length !== 0) {
+        if (conservationData.every(function(v) {return v.data.length !== 0})) {
             charts.push(<Chart
                 title="Conservation"
                 key="conservation"
@@ -250,16 +257,20 @@ class HeatMapChart extends React.Component {
                                             id: 'plot-line-sync'
                                         });
 
-                                        // Synchronized Labels
-                                        let pp = {};
-                                        if (chart.isBoosting) {
-                                            pp = chart.series[0].getPoint({i: p.x - 1});
-                                            pp.plotX = pp.series.xAxis.toPixels(pp.x) - chart.plotLeft;
-                                            pp.plotY = pp.series.yAxis.toPixels(pp.y) - chart.plotTop;
-                                        } else {
-                                            pp = chart.series[0].data[p.x - 1];
-                                        }
-                                        chart.tooltip.refresh(pp); // Show the tooltip
+                                        let pps = [];
+                                        chart.series.forEach(function(s) {
+                                            let pp = {};
+                                            if (chart.isBoosting) {
+                                                pp = s.getPoint({i: p.x - 1});
+                                                pp.plotX = s.xAxis.toPixels(pp.x) - chart.plotLeft;
+                                                pp.plotY = s.yAxis.toPixels(pp.y) - chart.plotTop;
+                                            } else {
+                                                pp = s.data[p.x - 1];
+                                            }
+                                            pps.push(pp);
+                                        });
+
+                                        chart.tooltip.refresh(pps); // Show the tooltip
 
 
                                     } catch (e) {
@@ -358,8 +369,8 @@ class HeatMapChart extends React.Component {
 
             tooltip: {
                 formatter: function () {
-                    return '<b>Mutation:</b> ' + categories[this.point.x - 1] + ' ' + this.point.x + ' ' +
-                        this.series.yAxis.categories[this.point.y] + '<br><b>Effect:</b> ' + this.point.value;
+                    return 'Mutation: <b>' + categories[this.point.x - 1] + ' ' + this.point.x + ' ' +
+                        this.series.yAxis.categories[this.point.y] + '<br></b>Effect: <b>' + this.point.value + '</b>';
                 }
             },
 
@@ -488,15 +499,21 @@ class Chart extends React.Component {
 
                                         // Synchronized Labels
                                         if (p.series.chart !== chart) {
-                                            let pp = {};
-                                            if (chart.isBoosting) {
-                                                pp = chart.series[0].getPoint({i: p.x - 1});
-                                                pp.plotX = pp.series.xAxis.toPixels(pp.x) - chart.plotLeft;
-                                                pp.plotY = pp.series.yAxis.toPixels(pp.y) - chart.plotTop;
-                                            } else {
-                                                pp = chart.series[0].data[p.x - 1];
-                                            }
-                                            chart.tooltip.refresh(pp); // Show the tooltip
+                                            let pps = [];
+                                            chart.series.forEach(function(s) {
+                                                let pp = {};
+                                                if (chart.isBoosting) {
+                                                    pp = s.getPoint({i: p.x - 1});
+                                                    pp.plotX = s.xAxis.toPixels(pp.x) - chart.plotLeft;
+                                                    pp.plotY = s.yAxis.toPixels(pp.y) - chart.plotTop;
+                                                } else {
+                                                    pp = s.data[p.x - 1];
+                                                }
+                                                pps.push(pp);
+                                            });
+
+                                            chart.tooltip.refresh(pps); // Show the tooltip
+
                                         }
 
                                     } catch (e) {
@@ -511,7 +528,7 @@ class Chart extends React.Component {
 
             xAxis: {
                 min: 0.5,
-                max: this.props.data.length + 0.5,
+                max: this.props.data[0].data.length + 0.5,
                 minTickInterval: 1,
                 allowDecimals: false,
                 crosshair: true,
@@ -530,24 +547,19 @@ class Chart extends React.Component {
             },
 
             legend: {
-                enabled: false,
+                enabled: this.props.data.length > 1,
+                align: 'right',
+                verticalAlign: 'top',
+                x: -60,
+                y: -5,
+                floating: true,
             },
 
             tooltip: {
-                formatter: function () {
-                    return '<b>Position:</b> ' + this.x + '<br>' + '<b>' + this.series.name + ':</b> ' + this.y;
-                }
+                shared: true,
             },
 
-            series: [{
-                boostThreshold: 1000,
-                name: this.props.title,
-                type: 'area',
-                data: this.props.data,
-                marker: {
-                    enabled: false
-                }
-            }],
+            series: [],
 
             exporting: {
                 filename: accession + "-" + this.props.title,
@@ -555,6 +567,24 @@ class Chart extends React.Component {
                 sourceHeight: 300,
             }
         };
+
+        this.props.data.forEach(function(series) {
+            options.series.push({
+                boostThreshold: 1000,
+                name: series.name,
+                type: series.type,
+                data: series.data,
+                color: series.color,
+                marker: {
+                    enabled: false,
+                    states: {
+                        hover: {
+                            enabled: false,
+                        }
+                    }
+                }
+            })
+        });
 
         this.chart = new Highcharts[this.props.type || 'Chart'](
             this.chartEl,
