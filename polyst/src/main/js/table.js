@@ -118,9 +118,13 @@ class ProteinForm extends React.Component {
     handleSubmit(event) {
         let proteinRequests = [];
         let lines = this.state.value.split('\n');
+        let trimmed = [];
         for(let i = 0;i < lines.length;i++){
             let l = $.trim(lines[i]).split(":");
-            proteinRequests.push({"accession":l[0], "location":parseInt(l[1]), "ref":l[2], "alt":l[3]});
+            if (l.length > 1) {
+                proteinRequests.push({"accession": l[0], "location": parseInt(l[1]), "ref": l[2], "alt": l[3]});
+                trimmed.push(l);
+            }
         }
 
         const self = this;
@@ -132,8 +136,8 @@ class ProteinForm extends React.Component {
             contentType : "application/json"
         } ).then(function (data) {
             let output = [];
-            lines.forEach(function(l, k) {
-                output.push(l + "=" + data[k]);
+            trimmed.forEach(function(l, k) {
+                output.push(l.join(":") + "=" + data[k]);
             });
             self.setState({output: output.join("\n")});
         });
