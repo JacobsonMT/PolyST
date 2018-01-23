@@ -64,6 +64,13 @@ Exporting(Highcharts);
     };
 }(Highcharts));
 
+$('#react').bind('mouseleave', function(e) {
+    window.charts.forEach(function (chart) {
+        chart.tooltip.hide();
+        chart.xAxis[0].removePlotLine('plot-line-sync');
+    });
+});
+
 // tag::app[]
 class App extends React.Component {
 
@@ -476,7 +483,8 @@ class Chart extends React.Component {
             },
 
             boost: {
-                usePreallocated: true
+                usePreallocated: false,
+                useGPUTranslations: true,
             },
 
             plotOptions: {

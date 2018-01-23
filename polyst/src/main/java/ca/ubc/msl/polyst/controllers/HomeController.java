@@ -22,9 +22,19 @@ public class HomeController {
         return "api";
     }
 
-    @RequestMapping(value = "/about")
+    @RequestMapping(value = "/help")
     public String about() {
-        return "about";
+        return "help";
+    }
+
+    @RequestMapping(value = "/citing")
+    public String citing() {
+        return "citing";
+    }
+
+    @RequestMapping(value = "/benchmark")
+    public String benchmark() {
+        return "benchmark";
     }
 
     @RequestMapping(value = "/contact")
