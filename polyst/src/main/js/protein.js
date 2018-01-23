@@ -476,7 +476,8 @@ class Chart extends React.Component {
             },
 
             boost: {
-                usePreallocated: true
+                usePreallocated: false,
+                useGPUTranslations: true,
             },
 
             plotOptions: {
