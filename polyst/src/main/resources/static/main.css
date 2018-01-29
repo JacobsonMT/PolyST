@@ -27,7 +27,6 @@ div.proteinContainer {
     flex-direction: column;
     text-align: center;
     margin-bottom: 20px;
-    margin-top: 75px;
 }
 
 div.proteinContainer textarea {
@@ -50,19 +49,19 @@ div.proteinContainer textarea {
 }
 
 textarea::-webkit-input-placeholder {
-    color: #dcdcdc;
+    color: #d2d2d2;
 }
 
 textarea:-moz-placeholder { /* Firefox 18- */
-    color: #dcdcdc;
+    color: #d2d2d2;
 }
 
 textarea::-moz-placeholder {  /* Firefox 19+ */
-    color: #dcdcdc;
+    color: #d2d2d2;
 }
 
 textarea:-ms-input-placeholder {
-    color: #dcdcdc;
+    color: #d2d2d2;
 }
 
 div.proteinContainer textarea.output {

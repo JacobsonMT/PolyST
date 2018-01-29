@@ -117,7 +117,7 @@ class App extends React.Component {
             // }
         });
 
-        let predictionData = [{name: "IUPred", type: "area", data: iupData},{name: "ESpritz", type: "line", color: "red", data: espritzData}];
+        let predictionData = [{name: "IUPred -l", type: "area", data: iupData},{name: "ESpritz -D", type: "line", color: "red", data: espritzData}];
         let conservationData = [{name: "Conservation", type: "area", data: conservation}];
         // let depthData = [{name:"Depth", data:depth}];
 
@@ -170,6 +170,15 @@ class App extends React.Component {
 
         return (
             <div className="App">
+                <div style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center'}}>
+                    <a href={"//www.uniprot.org/uniprot/" + accession} target="_blank" style={{margin: '0 1em'}}>
+                        <img
+                            src="/uniprot_rgb_320x146.png"
+                            style={{width: `40px`, margin: "0", verticalAlign: 'middle'}}
+                        />
+                    </a>
+                    <h3>{accession}</h3>
+                </div>
                 {charts}
             </div>
         );
@@ -244,7 +253,7 @@ class HeatMapChart extends React.Component {
 
 
             title: {
-                text: accession
+                text: ""
             },
 
             plotOptions: {

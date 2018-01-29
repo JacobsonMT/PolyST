@@ -46,8 +46,8 @@ class App extends React.Component {
                     <div style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center'}}>
                         <a href={"//www.uniprot.org/uniprot/" + row.value} target="_blank" style={{margin: '0 1em'}}>
                             <img
-                                src="//www.ebi.ac.uk/sites/ebi.ac.uk/files/documents/uniprot_rgb_320x146.png"
-                                style={{width: `40px`, margin: "0"}}
+                                src="/uniprot_rgb_320x146.png"
+                                style={{width: `40px`, margin: "0", verticalAlign: 'middle'}}
                             />
                         </a>
                         {row.value}
@@ -147,10 +147,11 @@ class ProteinForm extends React.Component {
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
+                <h3>Predict Phenotyic Degree of Mutation</h3>
                 <textarea className="input" value={this.state.value} onChange={this.handleChange}
-                          placeholder="Example:                                         Q8WVH0:112:D:G                                         P53365:312:N:K                                         Q9ULP0:254:T:V                                         Q8NHW4:15:A:M                                         Q96EW2:436:I:Y"/>
+                          placeholder="Example Input:                                         Q8WVH0:112:D:G                                         P53365:312:N:K                                         Q9ULP0:254:T:V                                         Q8NHW4:15:A:M                                         Q96EW2:436:I:Y"/>
                 <input type="submit" value=">>" />
-                <textarea className="output" value={this.state.output} disabled/>
+                <textarea className="output" value={this.state.output} placeholder="Output Predictions" disabled/>
             </form>
         );
     }
