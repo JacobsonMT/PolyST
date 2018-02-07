@@ -204,9 +204,9 @@ class HeatMapChart extends React.Component {
                     }
                 },
                 height: 300,
-                marginLeft: 40,
+                marginLeft: 50,
                 marginRight: 75,
-                // marginTop: 40,
+                marginTop: 40,
                 // marginBottom: 80,
                 plotBorderWidth: 1,
                 events : {
@@ -405,7 +405,37 @@ class HeatMapChart extends React.Component {
             exporting: {
                 filename: accession,
                 sourceWidth: 1200,
-                sourceHeight: 300,
+                sourceHeight: 500,
+
+                chartOptions: {
+                    xAxis: {
+                        labels: {
+                            style: {
+                                fontSize: '32px'
+                            },
+                            rotation: 45
+                        }
+
+                    },
+                    yAxis: {
+                        labels: {
+                            style: {
+                                fontSize: '18px'
+                            }
+                        }
+
+                    },
+                    legend: {
+                        symbolHeight: 372,
+                    },
+                    colorAxis: {
+                        labels: {
+                            style: {
+                                fontSize: '18px'
+                            }
+                        }
+                    }
+                }
             }
 
         };
@@ -443,7 +473,7 @@ class Chart extends React.Component {
 
             chart: {
                 height: 200,
-                marginLeft: 40,
+                marginLeft: 50,
                 marginRight: 75,
                 spacingTop: 20,
                 spacingBottom: 20,
@@ -581,7 +611,26 @@ class Chart extends React.Component {
             exporting: {
                 filename: accession + "-" + this.props.title,
                 sourceWidth: 1200,
-                sourceHeight: 300,
+                sourceHeight: 500,
+                chartOptions: {
+                    xAxis: {
+                        labels: {
+                            style: {
+                                fontSize: '32px'
+                            },
+                            rotation: 45
+                        }
+
+                    },
+                    yAxis: {
+                        labels: {
+                            style: {
+                                fontSize: '18px'
+                            }
+                        }
+
+                    },
+                }
             }
         };
 

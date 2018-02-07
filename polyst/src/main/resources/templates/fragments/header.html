@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="title" th:fragment="title">
+    <h1><a th:href="@{/}" th:text="${@siteSettings.title}">LIST</a></h1>
+    <h4 th:text="${@siteSettings.msl}">Michael Smith Laboratories, University of British Columbia</h4>
+</div>
+<div class="navbar" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center;" th:fragment="navbar">
+    <ul>
+        <li><a class="active" th:href="@{/}">Home</a></li>
+        <li><a th:href="@{/benchmarking}">Benchmarking</a></li>
+        <li><a th:href="@{/help}">Help</a></li>
+        <li><a th:href="@{/citing}">Citing</a></li>
+        <li class="navright"><a th:href="@{/contact}">Contact</a></li>
+    </ul>
+
+</div>
+</body>
+</html>
+
+Example Input:
+Q8WVH0:112:D:G
+P53365:312:N:K
+Q9ULP0:254:T:V
+Q8NHW4:15:A:M
+Q96EW2:436:I:Y

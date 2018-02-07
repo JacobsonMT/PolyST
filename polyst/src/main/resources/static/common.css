@@ -25,6 +25,13 @@ div.navbar {
     margin-bottom: 25px;
 }
 
+div.title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
 div.title > h1 {
     font-size: 3em;
     margin: 0 25px;
@@ -33,6 +40,15 @@ div.title > h1 {
     -webkit-flex: 1;
     -ms-flex: 1;
     flex: 1;
+}
+
+div.title > h1 > a {
+    text-decoration: none;
+    color: inherit;
+}
+
+div.title > h4 {
+    font-weight: normal;
 }
 
 div.title > p {
