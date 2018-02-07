@@ -82,10 +82,6 @@ class App extends React.Component {
 
 
         return (
-            <div>
-                <div className="proteinContainer">
-                    <ProteinForm />
-                </div>
                 <ReactTable
                     filterable
                     resizable
@@ -94,7 +90,6 @@ class App extends React.Component {
                     defaultPageSize={10}
                     className="-striped -highlight"
                 />
-            </div>
         );
     }
 }
@@ -137,7 +132,7 @@ class ProteinForm extends React.Component {
         } ).then(function (data) {
             let output = [];
             trimmed.forEach(function(l, k) {
-                output.push(l.join(":") + "=" + data[k]);
+                output.push(l.join(":") + "\t" + data[k]);
             });
             self.setState({output: output.join("\n")});
         });
@@ -147,7 +142,6 @@ class ProteinForm extends React.Component {
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
-                <h3>Predict Phenotyic Degree of Mutation</h3>
                 <textarea className="input" value={this.state.value} onChange={this.handleChange}
                           placeholder="Example Input:                                         Q8WVH0:112:D:G                                         P53365:312:N:K                                         Q9ULP0:254:T:V                                         Q8NHW4:15:A:M                                         Q96EW2:436:I:Y"/>
                 <input type="submit" value=">>" />
@@ -159,7 +153,11 @@ class ProteinForm extends React.Component {
 
 // tag::render[]
 ReactDOM.render(
+    <ProteinForm />,
+    document.getElementById('protein-form')
+);
+ReactDOM.render(
     <App />,
-    document.getElementById('react')
+    document.getElementById('react-table')
 );
 // end::render[]

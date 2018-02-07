@@ -32,9 +32,9 @@ public class HomeController {
         return "citing";
     }
 
-    @RequestMapping(value = "/benchmark")
+    @RequestMapping(value = "/benchmarking")
     public String benchmark() {
-        return "benchmark";
+        return "benchmarking";
     }
 
     @RequestMapping(value = "/contact")

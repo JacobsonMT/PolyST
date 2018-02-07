@@ -16,7 +16,7 @@ div.site .ReactTable, div.site .rt-table {
     -moz-border-radius: 5px;
 }
 
-div.proteinContainer {
+div#protein-container {
     position: relative;
     display: -webkit-box;
     display: -ms-flexbox;
@@ -29,7 +29,7 @@ div.proteinContainer {
     margin-bottom: 20px;
 }
 
-div.proteinContainer textarea {
+div#protein-container textarea {
     resize: none;
     vertical-align: middle;
     display: inline-block;
@@ -64,13 +64,13 @@ textarea:-ms-input-placeholder {
     color: #d2d2d2;
 }
 
-div.proteinContainer textarea.output {
+div#protein-container textarea.output {
     white-space: pre;
     overflow-wrap: normal;
     overflow-x: auto;
 }
 
-div.proteinContainer input {
+div#protein-container input {
     margin: 0 20px;
     background: #2a88ad;
     padding: 8px 20px 8px 20px;

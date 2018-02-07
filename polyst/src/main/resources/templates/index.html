@@ -1,30 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
     <meta charset="UTF-8"/>
-    <title>LIST</title>
+    <title th:text="${@siteSettings.title}">LIST</title>
     <link rel="stylesheet" href="/common.css"/>
     <link rel="stylesheet" href="/main.css"/>
 </head>
 <body>
 
 <div class="site">
-    <div class="title" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center;">
-        <h1>LIST</h1>
-        <p>Michael Smith Laboratories, University of British Columbia</p>
-    </div>
-    <div class="navbar" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center;">
-        <ul>
-            <li><a class="active" href="/">Home</a></li>
-            <li><a href="/benchmark">Benchmark</a></li>
-            <li><a href="/help">Help</a></li>
-            <li><a href="/citing">Citing</a></li>
-            <li class="navright"><a href="/contact">Contact</a></li>
-        </ul>
+    <div th:replace="fragments/header :: title" th:remove="tag">...</div>
+    <div th:replace="fragments/header :: navbar" th:remove="tag">...</div>
+    <div>
 
+        <div id="protein-container">
+            <h3 th:text="${@siteSettings.subtitle}">Predicting the Deleteriousness Level of Amino Acid Mutations</h3>
+            <div id="protein-form"></div>
+        </div>
+        <div id="react-table"></div>
     </div>
-
-<div id="react"></div>
 
 </div>
 
