@@ -9,9 +9,11 @@ import Highcharts from "highcharts";
 import HeatMap from "highcharts/modules/heatmap";
 import Boost from "highcharts/modules/boost";
 import Exporting from "highcharts/modules/exporting";
+import OfflineExporting from "highcharts/modules/offline-exporting";
 HeatMap(Highcharts);
 Boost(Highcharts);
 Exporting(Highcharts);
+OfflineExporting(Highcharts);
 
 // end::vars[]
 
