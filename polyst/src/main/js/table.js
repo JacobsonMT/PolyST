@@ -46,7 +46,7 @@ class App extends React.Component {
                     <div style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center'}}>
                         <a href={"//www.uniprot.org/uniprot/" + row.value} target="_blank" style={{margin: '0 1em'}}>
                             <img
-                                src="/uniprot_rgb_320x146.png"
+                                src="/img/uniprot_rgb_320x146.png"
                                 style={{width: `40px`, margin: "0", verticalAlign: 'middle'}}
                             />
                         </a>

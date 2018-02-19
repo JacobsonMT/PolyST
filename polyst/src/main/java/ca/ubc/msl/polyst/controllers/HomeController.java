@@ -42,6 +42,15 @@ public class HomeController {
         return "contact";
     }
 
+    @RequestMapping(value = "/humans")
+    public String humans() {
+        return "humans";
+    }
+
+    @RequestMapping(value = "/humans.txt")
+    public String humanstxt() {
+        return "humans";
+    }
 
     @RequestMapping(value = "/proteins/{accession}", method = RequestMethod.GET)
     public String protein( @PathVariable String accession, Model model) {

@@ -3,14 +3,14 @@
 <head lang="en">
     <meta charset="UTF-8"/>
     <title th:text="${@siteSettings.title}">LIST</title>
-    <link rel="stylesheet" href="/common.css"/>
-    <link rel="stylesheet" href="/main.css"/>
+    <link rel="stylesheet" href="/css/common.css"/>
+    <link rel="stylesheet" href="/css/main.css"/>
 </head>
 <body>
 
 <div class="site">
     <div th:replace="fragments/header :: title" th:remove="tag">...</div>
-    <div th:replace="fragments/header :: navbar" th:remove="tag">...</div>
+    <div th:replace="fragments/header :: navbar(home)" th:remove="tag">...</div>
     <div>
 
         <div id="protein-container">

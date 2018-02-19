@@ -92,3 +92,22 @@ div.navbar > ul > li > a {
 div.navbar > ul > li > a.active {
     background-color: #2a87ad;
 }
+
+.section {
+    padding-left: 20px;
+}
+
+.section-title {
+    margin-left: 10px;
+    border-width: 1px;
+    border-bottom-style: inset;
+}
+
+.block-center {
+    display: block;
+    margin: auto;
+}
+
+.right {
+    float: right;
+}
