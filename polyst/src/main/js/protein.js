@@ -3,7 +3,7 @@
 // tag::vars[]
 const React = require('react');
 const ReactDOM = require('react-dom');
-const $ = require("jquery");
+window.jQuery = window.$ = require('jquery');
 
 import Highcharts from "highcharts";
 import HeatMap from "highcharts/modules/heatmap";
@@ -177,7 +177,7 @@ class App extends React.Component {
                             style={{width: `40px`, margin: "0", verticalAlign: 'middle'}}
                         />
                     </a>
-                    <h3>{accession}</h3>
+                    <h2 style={{margin: "0"}}>{accession}</h2>
                 </div>
                 {charts}
             </div>
@@ -204,7 +204,7 @@ class HeatMapChart extends React.Component {
                     }
                 },
                 height: 300,
-                marginLeft: 50,
+                marginLeft: 60,
                 marginRight: 75,
                 marginTop: 40,
                 // marginBottom: 80,
@@ -307,6 +307,11 @@ class HeatMapChart extends React.Component {
                 endOnTick: false,
                 allowDecimals: false,
                 tickWidth: 0,
+                labels: {
+                    style: {
+                        fontSize: '1.5em',
+                    },
+                }
             }, {
                 // visible: this.props.data.length <= 100,
                 linkedTo: 0,
@@ -332,7 +337,7 @@ class HeatMapChart extends React.Component {
 
                     },
                     style: {
-                        fontSize: '9px',
+                        fontSize: '0.95em',
                     },
                 }
             }],
@@ -352,7 +357,7 @@ class HeatMapChart extends React.Component {
                     align: 'center',
                     step: 1,
                     style: {
-                        fontSize: '9px',
+                        fontSize: '1em',
                     },
                 },
             },
@@ -366,6 +371,11 @@ class HeatMapChart extends React.Component {
                     [0.8, '#41b6c4'],
                     [0.9, '#2c7fb8'],
                     [0.95, '#253494']],
+                labels: {
+                    style: {
+                        fontSize: '1.2em'
+                    }
+                }
                 // minColor: '#FFFFFF',
                 // maxColor: '#000099' //Highcharts.getOptions().colors[0]
             },
@@ -408,30 +418,41 @@ class HeatMapChart extends React.Component {
                 sourceHeight: 500,
 
                 chartOptions: {
+                    chart : {
+                        marginTop: 60,
+                    },
+                    title: {
+                        text: accession,
+                        style: {
+                            fontSize: '3em'
+                        }
+                    },
                     xAxis: {
+                        tickPixelInterval: 150,
                         labels: {
                             style: {
-                                fontSize: '32px'
-                            },
-                            rotation: 45
-                        }
+                                fontSize: '3em'
+                            }
+                        },
+                        tickWidth: null,
 
                     },
                     yAxis: {
                         labels: {
                             style: {
-                                fontSize: '18px'
+                                fontSize: '1.5em'
                             }
                         }
 
                     },
                     legend: {
-                        symbolHeight: 372,
+                        symbolHeight: 370,
+                        y: 48, // increased martinTop by 20
                     },
                     colorAxis: {
                         labels: {
                             style: {
-                                fontSize: '18px'
+                                fontSize: '1.8em'
                             }
                         }
                     }
@@ -466,14 +487,17 @@ class Chart extends React.Component {
                 text: this.props.title,
                 align: 'left',
                 margin: 0,
-                x: 40
+                x: 40,
+                style: {
+                    fontSize: '1.8em',
+                },
             },
 
             credits: this.props.enableCredit,
 
             chart: {
                 height: 200,
-                marginLeft: 50,
+                marginLeft: 60,
                 marginRight: 75,
                 spacingTop: 20,
                 spacingBottom: 20,
@@ -583,7 +607,12 @@ class Chart extends React.Component {
                 maxPadding: 0,
                 startOnTick: false,
                 endOnTick: false,
-                visible: this.props.xAxisVisible
+                visible: this.props.xAxisVisible,
+                labels: {
+                    style: {
+                        fontSize: '1.5em',
+                    },
+                }
             },
 
             yAxis: {
@@ -591,6 +620,11 @@ class Chart extends React.Component {
                 type: this.props.yAxisType,
                 maxPadding: 0,
                 minPadding:0,
+                labels: {
+                    style: {
+                        fontSize: '1.2em',
+                    },
+                }
             },
 
             legend: {
@@ -600,6 +634,9 @@ class Chart extends React.Component {
                 x: -60,
                 y: -5,
                 floating: true,
+                itemStyle: {
+                        fontSize: '1.2em',
+                }
             },
 
             tooltip: {
@@ -613,19 +650,29 @@ class Chart extends React.Component {
                 sourceWidth: 1200,
                 sourceHeight: 500,
                 chartOptions: {
+                    title: {
+                        style: {
+                            fontSize: '3em',
+                        },
+                    },
+                    legend: {
+                        itemStyle: {
+                            fontSize: '2.5em',
+                        }
+                    },
                     xAxis: {
+                        tickPixelInterval: 150,
                         labels: {
                             style: {
-                                fontSize: '32px'
-                            },
-                            rotation: 45
+                                fontSize: '3em'
+                            }
                         }
 
                     },
                     yAxis: {
                         labels: {
                             style: {
-                                fontSize: '18px'
+                                fontSize: '2em'
                             }
                         }
 
