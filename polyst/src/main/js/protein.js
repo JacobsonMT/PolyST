@@ -664,6 +664,11 @@ class Chart extends React.Component {
                         marginTop: 60,
                         marginRight: 20,
                         marginLeft: 80,
+                        events: {
+                            load: function() {
+                                this.xAxis[0].removePlotLine('plot-line-sync');
+                            }
+                        }
                     },
                     title: {
                         style: {
