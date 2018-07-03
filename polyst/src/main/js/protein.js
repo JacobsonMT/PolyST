@@ -73,6 +73,10 @@ $('#react').bind('mouseleave', function(e) {
     });
 });
 
+$('#font-size').bind('input', function () {
+    $('svg').css({'font-size':this.value+'px'});
+});
+
 // tag::app[]
 class App extends React.Component {
 
@@ -346,7 +350,7 @@ class HeatMapChart extends React.Component {
                 }
             }],
 
-            yAxis: {
+            yAxis: [{
                 categories: ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'],
                 title: null,
                 tickInterval: 1,
@@ -357,6 +361,7 @@ class HeatMapChart extends React.Component {
                 padding: 1,
                 step: 1,
                 tickWidth: 0,
+                tickPositions: [0,2,4,6,8,10,12,14,16,18,20],
                 labels: {
                     align: 'center',
                     step: 1,
@@ -365,7 +370,29 @@ class HeatMapChart extends React.Component {
                         color: '#000000',
                     },
                 },
-            },
+            },{
+                linkedTo: 0,
+                categories: ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'],
+                title: null,
+                tickInterval: 1,
+                startOnTick: true,
+                endOnTick: false,
+                min: 0,
+                max: 19,
+                padding: 1,
+                step: 1,
+                tickWidth: 0,
+                tickPositions: [1,3,5,7,9,11,13,15,17,19],
+                offset: 12,
+                labels: {
+                    align: 'center',
+                    step: 1,
+                    style: {
+                        fontSize: '1em',
+                        color: '#000000',
+                    },
+                },
+            },],
 
             colorAxis: {
                 min: 0,
@@ -421,13 +448,14 @@ class HeatMapChart extends React.Component {
             }],
 
             exporting: {
+                allowHTML: true,
                 filename: accession,
                 sourceWidth: 1200,
                 sourceHeight: 500,
 
                 chartOptions: {
                     chart : {
-                        marginTop: 60,
+                        marginTop: 60
                     },
                     title: {
                         text: accession,
@@ -436,33 +464,33 @@ class HeatMapChart extends React.Component {
                         }
                     },
                     xAxis: {
-                        tickPixelInterval: 150,
-                        labels: {
-                            style: {
-                                fontSize: '3em'
-                            }
-                        },
+                        // tickPixelInterval: 150,
+                        // labels: {
+                        //     style: {
+                        //         fontSize: '3em'
+                        //     }
+                        // },
                         tickWidth: null,
 
                     },
-                    yAxis: {
-                        labels: {
-                            style: {
-                                fontSize: '1.5em'
-                            }
-                        }
-
-                    },
+                    // yAxis: {
+                    //     labels: {
+                    //         style: {
+                    //             fontSize: '1.5em'
+                    //         }
+                    //     }
+                    //
+                    // },
                     legend: {
                         symbolHeight: 350,
                     },
-                    colorAxis: {
-                        labels: {
-                            style: {
-                                fontSize: '1.5em'
-                            }
-                        }
-                    }
+                    // colorAxis: {
+                    //     labels: {
+                    //         style: {
+                    //             fontSize: '1.5em'
+                    //         }
+                    //     }
+                    // }
                 }
             }
 
@@ -640,7 +668,7 @@ class Chart extends React.Component {
                 enabled: this.props.data.length > 1,
                 align: 'right',
                 verticalAlign: 'top',
-                x: -60,
+                x: -90,
                 y: -5,
                 floating: true,
                 itemStyle: {
@@ -676,28 +704,28 @@ class Chart extends React.Component {
                         },
                     },
                     legend: {
-                        itemStyle: {
-                            fontSize: '2.5em',
-                        },
+                        // itemStyle: {
+                        //     fontSize: '2.5em',
+                        // },
                         symbolPadding: 10,
                     },
-                    xAxis: {
-                        tickPixelInterval: 150,
-                        labels: {
-                            style: {
-                                fontSize: '3em'
-                            }
-                        }
-
-                    },
-                    yAxis: {
-                        labels: {
-                            style: {
-                                fontSize: '3em'
-                            }
-                        }
-
-                    },
+                    // xAxis: {
+                    //     tickPixelInterval: 150,
+                    //     labels: {
+                    //         style: {
+                    //             fontSize: '3em'
+                    //         }
+                    //     }
+                    //
+                    // },
+                    // yAxis: {
+                    //     labels: {
+                    //         style: {
+                    //             fontSize: '3em'
+                    //         }
+                    //     }
+                    //
+                    // },
                 }
             }
         };
