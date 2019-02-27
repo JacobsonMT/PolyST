@@ -7,59 +7,44 @@
 
 </head>
 <body>
-    <div class="site">
-        <div th:replace="fragments/header :: title" th:remove="tag">...</div>
-        <div th:replace="fragments/header :: navbar(help)" th:remove="tag">...</div>
+<div class="site">
+    <div th:replace="fragments/header :: title" th:remove="tag">...</div>
+    <div th:replace="fragments/header :: navbar(help)" th:remove="tag">...</div>
 
-        <div class="content">
-            <div class="section">
-                <h2 class="section-title">Section One</h2>
-                <div class="section-content">
-                    <p><b>Lorem ipsum dolor</b> sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                        ut labore et dolore magna aliqua. Sit amet aliquam id diam maecenas. Adipiscing tristique risus
-                        nec feugiat in fermentum posuere urna nec. Ac auctor augue mauris augue neque gravida in
-                        fermentum. Aliquam nulla facilisi cras fermentum. Justo laoreet sit amet cursus. Habitant
-                        morbi tristique senectus et. Morbi non arcu risus quis varius quam. Ultrices vitae auctor
-                        eu augue. Maecenas ultricies mi eget mauris pharetra et. Euismod quis viverra nibh cras
-                        pulvinar mattis nunc sed. Pellentesque dignissim enim sit amet venenatis.</p>
-                    <img src="/img/placeholder.png"/>
-                </div>
-            </div>
-            <div class="section">
-                <h2 class="section-title">Section Two</h2>
-                <div class="section-content">
-                    <p><b>Lorem ipsum dolor</b> sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                        ut labore et dolore magna aliqua. Pulvinar elementum integer enim neque. Viverra accumsan in
-                        nisl nisi scelerisque. Massa tempor nec feugiat nisl pretium fusce id velit ut. Porttitor leo a
-                        diam sollicitudin tempor id. Fusce ut placerat orci nulla pellentesque dignissim enim sit.
-                        Consectetur lorem donec massa sapien faucibus et molestie ac feugiat. Egestas sed sed risus
-                        pretium quam vulputate dignissim suspendisse. Facilisis sed odio morbi quis commodo odio aenean.
-                        Adipiscing tristique risus nec feugiat. Massa ultricies mi quis hendrerit. Felis bibendum ut
-                        tristique et egestas quis ipsum suspendisse. Urna et pharetra pharetra massa massa ultricies.
-                        Sit amet dictum sit amet justo donec enim. In cursus turpis massa tincidunt dui ut ornare. Vel
-                        orci porta non pulvinar neque laoreet suspendisse. Sit amet purus gravida quis blandit turpis
-                        cursus in hac.</p>
-                    <img class="block-center" src="/img/placeholder.png"/>
-                </div>
-            </div>
-            <div class="section">
-                <h2 class="section-title">Section Three</h2>
-                <div class="section-content">
-                    <p><b>Lorem ipsum dolor</b> sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                        ut labore et dolore magna aliqua. Sapien pellentesque habitant morbi tristique senectus et netus
-                        et malesuada. Nunc faucibus a pellentesque sit amet porttitor eget. Ante in nibh mauris cursus.
-                        Malesuada fames ac turpis egestas integer eget aliquet. Molestie nunc non blandit massa enim nec
-                        dui. Faucibus a pellentesque sit amet porttitor eget dolor morbi. Diam donec adipiscing
-                        tristique risus nec feugiat in fermentum posuere. Hendrerit gravida rutrum quisque non tellus
-                        orci. Ultrices neque ornare aenean euismod elementum nisi quis eleifend. Leo a diam sollicitudin
-                        tempor. Sit amet est placerat in. Donec enim diam vulputate ut pharetra sit. Viverra suspendisse
-                        potenti nullam ac tortor vitae purus faucibus. Pulvinar pellentesque habitant morbi tristique
-                        senectus et netus et.</p>
-                    <img class="right" src="/img/placeholder.png"/>
-                </div>
+    <div class="content">
+
+        <div class="section">
+            <div class="section-content">
+                <p>
+                    <b>LIST</b> predicts the deleteriousness of amino acid mutations in human proteomes. The current release, 0.9 includes precomputed predictions of ~20,000 SwissProt protein sequences identified by their UniProt accession number. Prediction scores in the range [0 .. 1], where lower scores indicate more benign and higher indicate deleteriousness effect. <br /><br />
+                    <b>Per Mutation:</b> To obtain LIST prediction for a list of mutations, copy and paste these mutations in the input text box and then click [>>]. Each entry should have the following format: <i>AC:Pos:RefAA:AlleleAA</i> <br />
+                    <i>&emsp; AC:</i> protein accession number. <br />
+                    <i>&emsp; Pos:</i> protein position. <br />
+                    <i>&emsp; RefAA:</i> the reference amino acid at position <i>Pos</i>. <br />
+                    <i>&emsp; AlleleAA:</i> the allele amino acid. <br />
+                    <br />
+                    <dt>Example Input:</dt>
+                <dd>A0A0A0MRZ7:28:P:G </dd>
+                <dd>A0A0A0MRZ7:112:Y:F </dd>
+                <dd>A0A096LP49:133:E:K </dd>
+                <dd>A0A0J9YX94:197:T:K </dd>
+                <dd>P07766:192:R:T </dd> <br />
+                <dt>Output:</dt>
+                <dd>A0A0A0MRZ7:28:P:G&emsp; 0.951352 </dd>
+                <dd>A0A0A0MRZ7:112:Y:F&emsp; 0.498739 </dd>
+                <dd>A0A096LP49:133:E:K&emsp; 0.731489 </dd>
+                <dd>A0A0J9YX94:197:T:K&emsp; 0.829466 </dd>
+                <dd>P07766:192:R:T&emsp; 0.885529 </dd><br />
+                </p>
+
+                <p>
+                    <b>Per Protein:</b> One can also visualize/download LIST scores for all possible mutation of a specific protein sequence identified by its accession number.<br />
+                    Enter an accession value under <i>Accession</i> and then select:<br /> <i>Download:</i> to download all scores, or<br /> <i>Matrix:</i> to display an interactive matrix with all possible mutant amino acid scores color coded. <br />&emsp; To zoom in, use the mouse to select the region of interest, then one can zoom out by clicking [<i>Reset zoom</i>]. <br />
+                </p>
             </div>
         </div>
-
     </div>
+
+</div>
 </body>
 </html>
