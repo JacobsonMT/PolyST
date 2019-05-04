@@ -1,5 +1,7 @@
 package ca.ubc.msl.polyst.controllers;
 
+import ca.ubc.msl.polyst.repositories.ProteinRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +14,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class HomeController {
 
+    private final ProteinRepository repository;
+
+    @Autowired
+    public HomeController( ProteinRepository repository ) {
+        this.repository = repository;
+    }
+
     @RequestMapping(value = "/")
-    public String index() {
+    public String index(Model model) {
+        model.addAttribute("proteins", repository.allProteinInfo());
         return "index";
     }
 
@@ -54,7 +64,7 @@ public class HomeController {
 
     @RequestMapping(value = "/proteins/{accession}", method = RequestMethod.GET)
     public String protein( @PathVariable String accession, Model model) {
-        model.addAttribute("accession", accession);
+        model.addAttribute("protein", repository.getByAccession( accession ));
         return "/protein";
     }
 }

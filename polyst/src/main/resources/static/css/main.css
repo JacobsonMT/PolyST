@@ -88,3 +88,38 @@ div#protein-container input {
     -webkit-appearance: button;
     cursor: pointer;
 }
+
+.align-middle {
+    vertical-align: middle;
+}
+
+.mr-2 {
+    margin-right: .5rem!important;
+}
+
+.mr-1 {
+    margin-right: .25rem!important;
+}
+
+#protein-table {
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    background-color: #89a2a5;
+}
+
+#protein-table_filter {
+    margin-bottom:5px;
+}
+
+#protein-table_length {
+    margin-bottom:5px;
+}
+
+#protein-table a {
+    text-decoration: none;
+}
+
+#protein-table a:hover {
+    text-decoration: underline;
+}
