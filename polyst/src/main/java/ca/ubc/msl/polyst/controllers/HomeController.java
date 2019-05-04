@@ -22,8 +22,7 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/")
-    public String index(Model model) {
-        model.addAttribute("proteins", repository.allProteinInfo());
+    public String index() {
         return "index";
     }
 
