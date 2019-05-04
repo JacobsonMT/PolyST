@@ -5,6 +5,7 @@ import ca.ubc.msl.polyst.model.Protein;
 import ca.ubc.msl.polyst.model.ProteinInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +28,8 @@ public class FlatFileProteinRepository implements ProteinRepository {
 
     private static final Logger log = LoggerFactory.getLogger( FlatFileProteinRepository.class );
 
-    private static final String flatFileDirectory = "/home/mjacobson/git/PolyST/data/";
+    @Value("${polyst.dataDir}")
+    private String flatFileDirectory;
 
     @Cacheable(value = "protein")
     @Override
