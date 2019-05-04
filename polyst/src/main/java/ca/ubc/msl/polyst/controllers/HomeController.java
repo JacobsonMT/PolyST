@@ -65,6 +65,6 @@ public class HomeController {
     @RequestMapping(value = "/proteins/{accession}", method = RequestMethod.GET)
     public String protein( @PathVariable String accession, Model model) {
         model.addAttribute("protein", repository.getByAccession( accession ));
-        return "/protein";
+        return "protein";
     }
 }
