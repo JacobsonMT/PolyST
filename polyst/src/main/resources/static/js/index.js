@@ -1,6 +1,7 @@
 $(document).ready(function () {
 
     $('#protein-table').DataTable({
+        deferRender:    true,
         ajax: {
             url: 'api/proteins',
             dataSrc: ''
