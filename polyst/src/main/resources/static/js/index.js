@@ -9,7 +9,7 @@ $(document).ready(function () {
         columnDefs: [
             {
                 targets: 0,
-                className: 'dt-left',
+                className: 'dt-left mono-font-body',
                 data: "accession",
                 render: function ( data, type, row, meta ) {
                     return '<span class="align-middle">' +
@@ -23,7 +23,7 @@ $(document).ready(function () {
             {
                 targets: 1,
                 data: "size",
-                className: 'dt-right'
+                className: 'dt-right mono-font-body'
             },
             {
                 targets: 2,

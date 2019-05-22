@@ -1,5 +1,13 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Serif+Pro&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap');
+
 body {
     margin-top: 0;
+    font-family: "Source Serif Pro", serif;
+}
+
+.mono-font {
+    font-family: 'Source Code Pro' , monospace;
 }
 
 div.site {

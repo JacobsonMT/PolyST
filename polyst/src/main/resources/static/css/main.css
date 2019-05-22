@@ -33,7 +33,7 @@ div#protein-container textarea {
     resize: none;
     vertical-align: middle;
     display: inline-block;
-    width: 250px;
+    width: 300px;
     height: 200px;
     padding: 6px 12px;
     font-size: 14px;
@@ -122,4 +122,21 @@ div#protein-container input {
 
 #protein-table a:hover {
     text-decoration: underline;
+}
+
+table.dataTable tbody th, table.dataTable tbody td {
+    padding: 6px !important;
+}
+
+table.dataTable tbody td.mono-font-body {
+    font-family: 'Source Code Pro' , monospace;
+}
+
+@media screen and (max-width: 1200px) {
+
+    div#protein-container textarea {
+        display: block;
+        margin: 10px auto;
+    }
+
 }
