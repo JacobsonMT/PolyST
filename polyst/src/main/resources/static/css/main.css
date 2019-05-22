@@ -131,3 +131,12 @@ table.dataTable tbody th, table.dataTable tbody td {
 table.dataTable tbody td.mono-font-body {
     font-family: 'Source Code Pro' , monospace;
 }
+
+@media screen and (max-width: 1200px) {
+
+    div#protein-container textarea {
+        display: block;
+        margin: 10px auto;
+    }
+
+}
