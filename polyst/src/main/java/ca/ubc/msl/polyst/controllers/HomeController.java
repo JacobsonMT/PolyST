@@ -26,11 +26,6 @@ public class HomeController {
         return "index";
     }
 
-    @RequestMapping(value = "/api")
-    public String apiDocumentation() {
-        return "api";
-    }
-
     @RequestMapping(value = "/help")
     public String about() {
         return "help";
