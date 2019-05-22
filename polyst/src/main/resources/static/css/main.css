@@ -123,3 +123,11 @@ div#protein-container input {
 #protein-table a:hover {
     text-decoration: underline;
 }
+
+table.dataTable tbody th, table.dataTable tbody td {
+    padding: 6px !important;
+}
+
+table.dataTable tbody td.mono-font-body {
+    font-family: 'Source Code Pro' , monospace;
+}
