@@ -9,7 +9,6 @@
 <div class="navbar" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center;" th:fragment="navbar(activeTab)">
     <ul>
         <li><a th:class="${activeTab == null || activeTab == 'home'} ? 'active' : null" th:href="@{/}" >Home</a></li>
-        <li><a th:class="${activeTab == 'benchmarking'} ? 'active' : null" th:href="@{/benchmarking}">Benchmarking</a></li>
         <li><a th:class="${activeTab == 'help'} ? 'active' : null" th:href="@{/help}">Help</a></li>
         <li><a th:class="${activeTab == 'citing'} ? 'active' : null" th:href="@{/citing}">Citing</a></li>
         <li class="navright"><a th:class="${activeTab == 'contact'} ? 'active' : null" th:href="@{/contact}">Contact</a></li>
