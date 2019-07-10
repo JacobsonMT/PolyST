@@ -36,11 +36,6 @@ public class HomeController {
         return "citing";
     }
 
-    @RequestMapping(value = "/benchmarking")
-    public String benchmark() {
-        return "benchmarking";
-    }
-
     @RequestMapping(value = "/contact")
     public String contact() {
         return "contact";

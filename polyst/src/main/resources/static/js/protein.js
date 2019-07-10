@@ -565,6 +565,7 @@ function createChart(title,
                 style: {
                     fontSize: '1.5em',
                     color: '#000000',
+                    textOverflow: 'none',
                 },
             }
         },
