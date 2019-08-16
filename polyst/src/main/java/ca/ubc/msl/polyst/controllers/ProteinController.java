@@ -1,14 +1,10 @@
 package ca.ubc.msl.polyst.controllers;
 
-import ca.ubc.msl.polyst.model.Base;
-import ca.ubc.msl.polyst.model.Mutation;
-import ca.ubc.msl.polyst.model.Protein;
-import ca.ubc.msl.polyst.model.ProteinInfo;
+import ca.ubc.msl.polyst.model.*;
 import ca.ubc.msl.polyst.repositories.ProteinRepository;
 import com.google.common.collect.Lists;
 import lombok.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +15,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by mjacobson on 11/12/17.
  */
+@Log4j2
 @RestController
 public class ProteinController {
-
-    private static final Logger log = LoggerFactory.getLogger( ProteinController.class );
 
     @Getter
     @Setter
@@ -113,6 +112,79 @@ public class ProteinController {
     @RequestMapping(value = "/api/proteins", method = RequestMethod.GET)
     public List<ProteinInfo> allProteins() {
         return repository.allProteinInfo();
+    }
+
+    @RequestMapping(value = "/api/proteins/datatable", method = RequestMethod.POST)
+    public DataTablesResponse<ProteinInfo> proteinDatatable(@RequestBody final DataTablesRequest dataTablesRequest ) {
+        List<ProteinInfo> rawResults = repository.allProteinInfo();
+        Stream<ProteinInfo> resultStream = rawResults.stream();
+
+        List<Predicate<ProteinInfo>> filters = Lists.newArrayList();
+        for ( DataTablesRequest.Column col : dataTablesRequest.getColumns() ) {
+            if ( col.isSearchable() ) {
+                switch( col.getData() ) {
+                    case "accession":
+                        filters.add( pi -> pi.getAccession().toLowerCase().contains( dataTablesRequest.getSearch().getValue().toLowerCase() ) );
+                        break;
+                    case "size":
+                        filters.add( pi -> String.valueOf( pi.getSize() ).toLowerCase().contains( dataTablesRequest.getSearch().getValue().toLowerCase() ) );
+                        break;
+                    default:
+                        // Do Nothing
+                }
+            }
+        }
+        if ( !filters.isEmpty() ) {
+            resultStream = resultStream.filter( pi -> filters.stream().anyMatch( t -> t.test( pi )) );
+        }
+
+
+        List<Comparator<ProteinInfo>> sorts = Lists.newArrayList();
+        for ( DataTablesRequest.Order order : dataTablesRequest.getOrders() ) {
+            try {
+                DataTablesRequest.Column col = dataTablesRequest.getColumns().get( order.getColumn() );
+                Comparator<ProteinInfo> c;
+                switch( col.getData() ) {
+                    case "accession":
+                        c = Comparator.comparing( ProteinInfo::getAccession );
+                        sorts.add( order.getDir().equals( "asc" ) ? c : c.reversed() );
+                        break;
+                    case "size":
+                        c = Comparator.comparing( ProteinInfo::getSize );
+                        sorts.add( order.getDir().equals( "asc" ) ? c : c.reversed() );
+                        break;
+                    default:
+                        // Do Nothing
+                }
+
+            } catch ( IndexOutOfBoundsException e ) {
+                // Ignore
+                log.warn( "Attempted to order by column that doesn't exist: " + order.getColumn() );
+            }
+        }
+        if ( !sorts.isEmpty() ) {
+            Comparator<ProteinInfo> comp = Comparator.nullsLast( null );
+            for ( Comparator<ProteinInfo> comparator : sorts ) {
+                comp = comp.thenComparing( comparator );
+            }
+            resultStream = resultStream.sorted( comp );
+        }
+
+        List<ProteinInfo> filteredOrderedResults = resultStream.collect( Collectors.toList());
+
+        resultStream = filteredOrderedResults.stream().skip( dataTablesRequest.getStart() );
+
+        if ( dataTablesRequest.getLength() >= 0 ) {
+            resultStream = resultStream.limit( dataTablesRequest.getLength() );
+        }
+
+        DataTablesResponse<ProteinInfo> response = new DataTablesResponse<>();
+        response.setData( resultStream.collect( Collectors.toList()) );
+        response.setDraw( dataTablesRequest.getDraw() );
+        response.setRecordsTotal( rawResults.size() );
+        response.setRecordsFiltered( filteredOrderedResults.size() );
+
+        return response;
     }
 
     @RequestMapping(value = "/api/proteins", method = RequestMethod.POST)
