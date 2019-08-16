@@ -3,9 +3,19 @@ $(document).ready(function () {
     $('#protein-table').DataTable({
         deferRender:    true,
         ajax: {
-            url: 'api/proteins',
-            dataSrc: ''
+            url: 'api/proteins/datatable',
+            // dataSrc: '',
+            data: function (data) {
+                return JSON.stringify(data);
+            },
+            processData: false,
+            dataType: "json",
+            contentType: "application/json;charset=UTF-8",
+            type: "POST"
         },
+        searchDelay: 400,
+        "processing": true,
+        "serverSide": true,
         columnDefs: [
             {
                 targets: 0,
@@ -14,7 +24,7 @@ $(document).ready(function () {
                 render: function ( data, type, row, meta ) {
                     return '<span class="align-middle">' +
                         '<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: left;">' +
-                        '<a href="//www.uniprot.org/uniprot/' + data + '" target="_blank" class="mr-2"><img src="/img/uniprot_rgb_320x146.png" style="width:40px;margin:0;vertical-align: middle;"/></a>' +
+                        '<a href="//www.uniprot.org/uniprot/' + data + '" target="_blank" class="mr-2 uniprot-url"></a>' +
                         data +
                         '</div>' +
                         '</span>';
@@ -28,6 +38,8 @@ $(document).ready(function () {
             {
                 targets: 2,
                 data: "accession",
+                searchable: false,
+                orderable: false,
                 className: 'dt-center',
                 render: function ( data, type, row, meta ) {
                     return '<span class="align-middle">' +
@@ -38,6 +50,33 @@ $(document).ready(function () {
             }
         ]
     });
+
+    var dtable = $('#protein-table').dataTable().api();
+    var searchWait = 0;
+    var searchWaitInterval;
+    $('.dataTables_filter input')
+        .unbind() // Unbind previous default bindings
+        .bind("input", function(e) { // Bind our desired behavior
+            var item = $(this);
+            searchWait = 0;
+
+            if($(item).val() == "") {
+                dtable.search("").draw();
+                return;
+            }
+
+            if(!searchWaitInterval) searchWaitInterval = setInterval(function(){
+                if(searchWait>=3){
+                    clearInterval(searchWaitInterval);
+                    searchWaitInterval = '';
+                    searchTerm = $(item).val();
+                    dtable.search(searchTerm).draw();
+                    searchWait = 0;
+                }
+                searchWait++;
+            },200);
+
+        });
 
     $("#protein-form").submit(function(event) {
         event.preventDefault();
