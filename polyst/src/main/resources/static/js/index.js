@@ -51,6 +51,33 @@ $(document).ready(function () {
         ]
     });
 
+    var dtable = $('#protein-table').dataTable().api();
+    var searchWait = 0;
+    var searchWaitInterval;
+    $('.dataTables_filter input')
+        .unbind() // Unbind previous default bindings
+        .bind("input", function(e) { // Bind our desired behavior
+            var item = $(this);
+            searchWait = 0;
+
+            if($(item).val() == "") {
+                dtable.search("").draw();
+                return;
+            }
+
+            if(!searchWaitInterval) searchWaitInterval = setInterval(function(){
+                if(searchWait>=3){
+                    clearInterval(searchWaitInterval);
+                    searchWaitInterval = '';
+                    searchTerm = $(item).val();
+                    dtable.search(searchTerm).draw();
+                    searchWait = 0;
+                }
+                searchWait++;
+            },200);
+
+        });
+
     $("#protein-form").submit(function(event) {
         event.preventDefault();
         let proteinRequests = [];
