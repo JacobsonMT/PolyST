@@ -43,8 +43,8 @@ $(document).ready(function () {
                 className: 'dt-center',
                 render: function ( data, type, row, meta ) {
                     return '<span class="align-middle">' +
-                        '<a href="proteins/' + data + '" target="_blank" class="align-middle mr-2"><i class="fas fa-chart-area mr-1"></i>Matrix</a>' +
-                        '<a href="api/proteins/' + data + '/download" target="_blank" class="align-middle"><i class="fas fa-file-download mr-1"></i>Download</a>' +
+                        '<a href="/taxa/' + taxa.id + '/proteins/' + data + '" target="_blank" class="align-middle mr-2"><i class="fas fa-chart-area mr-1"></i>Matrix</a>' +
+                        '<a href="/api/taxa/' + taxa.id + '/proteins/' + data + '/download" target="_blank" class="align-middle"><i class="fas fa-file-download mr-1"></i>Download</a>' +
                         '</span>';
                 }
             }
