@@ -83,8 +83,8 @@ public class FlatFileProteinRepository implements ProteinRepository {
                 try {
                     return new ProteinInfo(
                             p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ),
-                            Integer.valueOf( lastLine( p.toFile() ).split( "\t" )[1] ) );
-                } catch (IndexOutOfBoundsException e) {
+                            Integer.parseInt( lastLine( p.toFile() ).split( "\t" )[1] ) );
+                } catch (Exception e) {
                     log.warn( "Issue Obtaining ProteinInfo from: " + p.getFileName() + " in taxa: " + taxa );
                     return new ProteinInfo(
                             p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ), 0 );
@@ -106,10 +106,10 @@ public class FlatFileProteinRepository implements ProteinRepository {
     private static Function<String, Base> mapBase = ( rawLine ) -> {
         List<String> line = Arrays.asList( rawLine.split( "\t" ) );
 
-        Base base = new Base( line.get( 2 ), Integer.valueOf( line.get( 3 ) ), Double.valueOf( line.get( 4 ) ), Double.valueOf( line.get( 5 ) ) );
+        Base base = new Base( line.get( 2 ), Integer.parseInt( line.get( 3 ) ), Double.parseDouble( line.get( 4 ) ), Double.parseDouble( line.get( 5 ) ) );
 
         if ( line.size() > 6 ) {
-            base.setConservation( Double.valueOf( line.get( 6 ) ) );
+            base.setConservation( Double.parseDouble( line.get( 6 ) ) );
         }
 
         if ( line.size() > 7 ) {
