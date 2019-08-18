@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <title th:text="${(taxa != null ? taxa.shortName + ' - ' : '')  + @siteSettings.title}">LIST</title>
+    <object th:include="fragments/head :: head" th:remove="tag" />
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"/>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"/>
+
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const taxa = /*[[${taxa}]]*/ 'taxa';
+        /*]]>*/
+    </script>
+    <script th:src="@{/js/taxa.js}"></script>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common-taxa.css}"/>
+
+</head>
+<body>
+
+<div class="site">
+    <div th:replace="fragments/header :: title" th:remove="tag">...</div>
+    <div th:replace="fragments/header :: navbar(taxa)" th:remove="tag">...</div>
+    <div>
+
+        <div id="protein-container">
+            <h3 style="margin-bottom: 0.25rem;" th:text="${@siteSettings.subtitle}">Predicting the Deleteriousness of Amino Acid Mutations</h3>
+            <h4 style="margin: 0;" class="text-muted" th:if="${taxa != null}" th:text="${taxa.longName}"></h4>
+            <h5 style="margin-top: 0.25rem; margin-bottom:0.25rem;" class="text-muted"  th:if="${taxa != null}" th:text="${'OX: ' + taxa.id}"></h5>
+            <div>
+                <form id="protein-form" >
+                    <textarea class="input"
+                          placeholder="Example Input:                                         Q8WVH0:112:D:G                                         P53365:312:N:K                                         Q9ULP0:254:T:V                                         Q8NHW4:15:A:M                                         Q96EW2:436:I:Y"></textarea>
+                    <input type="submit" value=">>" />
+                    <textarea class="output" placeholder="Output Predictions" disabled="disabled"></textarea>
+                </form>
+            </div>
+        </div>
+        <div>
+            <div th:replace="fragments/protein-table :: protein-table"
+                 th:remove="tag">...
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

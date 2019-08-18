@@ -119,3 +119,7 @@ div.navbar > ul > li > a.active {
 .right {
     float: right;
 }
+
+.text-muted {
+    color: #6c757d;
+}

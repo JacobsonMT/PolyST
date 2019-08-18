@@ -3,6 +3,7 @@ package ca.ubc.msl.polyst.repositories;
 import ca.ubc.msl.polyst.model.Base;
 import ca.ubc.msl.polyst.model.Protein;
 import ca.ubc.msl.polyst.model.ProteinInfo;
+import ca.ubc.msl.polyst.model.Taxa;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,10 +11,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -33,13 +32,13 @@ public class FlatFileProteinRepository implements ProteinRepository {
 
     @Cacheable(value = "protein")
     @Override
-    public Protein getByAccession( String accession ) {
+    public Protein getByAccession( Taxa taxa, String accession ) {
 
         InputStream is = null;
 
         try {
 
-            Path file = Paths.get( flatFileDirectory, accession + ".txt" );
+            Path file = Paths.get( flatFileDirectory, taxa.getSubdirectory(), accession + ".txt" );
 
 
             is = Files.newInputStream( file );
@@ -52,18 +51,18 @@ public class FlatFileProteinRepository implements ProteinRepository {
 
             return protein;
         } catch (NoSuchFileException ex) {
-            log.debug( "No file found for: " + accession );
-        } catch (FileNotFoundException ex) {
-            log.warn( "File not accessible: " + accession );
+            log.debug( "No file found for: " + accession + " in taxa: " + taxa );
+        } catch (FileNotFoundException | InvalidPathException ex) {
+            log.warn( "File not accessible: " + accession + " in taxa: " + taxa );
         } catch (IOException ex) {
-            log.error( "IO Error for: " + accession, ex );
+            log.error( "IO Error for: " + accession + " in taxa: " + taxa, ex );
         } finally {
             try {
                 if ( is != null ) {
                     is.close();
                 }
             } catch (IOException ex) {
-                log.error( "IO Error when closing: " + accession, ex );
+                log.error( "IO Error when closing: " + accession + " in taxa: " + taxa, ex );
             }
         }
 
@@ -71,33 +70,36 @@ public class FlatFileProteinRepository implements ProteinRepository {
     }
 
     @Override
-    public File getRawData( String accession ) {
-        return Paths.get( flatFileDirectory, accession + ".txt" ).toFile();
+    public File getRawData( Taxa taxa, String accession ) {
+        return Paths.get( flatFileDirectory, taxa.getSubdirectory(), accession + ".txt" ).toFile();
     }
 
 
-    @Cacheable("protein-info")
+    @Cacheable(value="protein-info", unless="#result == null or #result.size()==0")
     @Override
-    public List<ProteinInfo> allProteinInfo() {
-        try (Stream<Path> paths = Files.list( Paths.get( flatFileDirectory ) )) {
+    public List<ProteinInfo> allProteinInfo( Taxa taxa ) {
+        try (Stream<Path> paths = Files.list( Paths.get( flatFileDirectory, taxa.getSubdirectory() ) )) {
             List<ProteinInfo> results = paths.filter( Files::isRegularFile ).map( p -> {
                 try {
                     return new ProteinInfo(
                             p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ),
                             Integer.valueOf( lastLine( p.toFile() ).split( "\t" )[1] ) );
                 } catch (IndexOutOfBoundsException e) {
-                    log.warn( "Issue Obtaining ProteinInfo from: " + p.getFileName() );
+                    log.warn( "Issue Obtaining ProteinInfo from: " + p.getFileName() + " in taxa: " + taxa );
                     return new ProteinInfo(
                             p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ), 0 );
                 }
             } )
                     .collect( Collectors.toList() );
-            log.info( "Load Protein Info Complete." );
+            log.info( "Load Protein Info Complete for " + taxa.getShortName() );
             return results;
 //            return paths.filter( Files::isRegularFile ).map( p -> p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ) ).collect( Collectors.toList() );
         } catch (IOException e) {
             log.error( "Error walking data directory!" );
             return null;
+        } catch ( InvalidPathException e ) {
+            log.error( "Requested invalid taxa: " + taxa );
+            return new ArrayList<>();
         }
     }
 

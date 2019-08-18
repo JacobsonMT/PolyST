@@ -6,7 +6,7 @@
          dynamicConfig="true">
 
     <cache name="protein-info"
-           maxElementsInMemory="1"
+           maxElementsInMemory="20"
            eternal="false"
            overflowToDisk="false"
            timeToLiveSeconds="64800"

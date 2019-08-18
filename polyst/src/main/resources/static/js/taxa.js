@@ -3,7 +3,7 @@ $(document).ready(function () {
     $('#protein-table').DataTable({
         deferRender:    true,
         ajax: {
-            url: 'api/proteins/datatable',
+            url: '/api/taxa/' + taxa.id + '/proteins/datatable',
             // dataSrc: '',
             data: function (data) {
                 return JSON.stringify(data);
@@ -94,7 +94,7 @@ $(document).ready(function () {
         $.ajax( {
             cache : false,
             type : 'POST',
-            url : '/api/proteins',
+            url : '/api/taxa/' + taxa.id + '/proteins',
             data : JSON.stringify(proteinRequests),
             contentType : "application/json"
         } ).then(function (data) {

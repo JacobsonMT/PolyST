@@ -1,0 +1,62 @@
+polyst:
+  taxa:
+    9606:
+      shortName: Human
+      longName: Homo sapiens
+      id: 9606
+      subdirectory: d9606
+      active: true
+    10090:
+      shortName: Mouse
+      longName: Mus musculus
+      id: 10090
+      subdirectory: d10090
+      active: false
+    9823:
+      shortName: Wild board
+      longName: Sus scrofa
+      id: 9823
+      subdirectory: d9823
+      active: false
+    9913:
+      shortName: Cow
+      longName: Bos taurus
+      id: 9913
+      subdirectory: d9913
+      active: false
+    9940:
+      shortName: Sheep
+      longName: Ovis aries
+      id: 9940
+      subdirectory: d9940
+      active: false
+    7955:
+      shortName: Zebrafish
+      longName: Danio rerio
+      id: 7955
+      subdirectory: d7955
+      active: false
+    9031:
+      shortName: Chicken
+      longName: Gallus gallus
+      id: 9031
+      subdirectory: d9031
+      active: false
+    9443:
+      shortName: Primates
+      longName: Primates
+      id: 9443
+      subdirectory: d9443
+      active: false
+    40674:
+      shortName: Mammals
+      longName: Mammalia excluding Primates, Mouse, Wild boar, Cow, and Sheep
+      id: 40674
+      subdirectory: d40674
+      active: false
+    7742:
+      shortName: Vertebrates
+      longName: Vertebrata excluding Mammalia, Zebrafish, and Chicken
+      id: 7742
+      subdirectory: d7742
+      active: false

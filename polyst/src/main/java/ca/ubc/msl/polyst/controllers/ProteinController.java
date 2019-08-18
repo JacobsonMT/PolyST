@@ -2,6 +2,7 @@ package ca.ubc.msl.polyst.controllers;
 
 import ca.ubc.msl.polyst.model.*;
 import ca.ubc.msl.polyst.repositories.ProteinRepository;
+import ca.ubc.msl.polyst.settings.TaxaSettings;
 import com.google.common.collect.Lists;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
@@ -31,7 +33,7 @@ public class ProteinController {
     @Getter
     @Setter
     @RequiredArgsConstructor
-    @EqualsAndHashCode(of = {"accession"})
+    @EqualsAndHashCode( of = {"accession"} )
     @ToString
     static final class ProteinRequest {
         private final String accession;
@@ -41,22 +43,36 @@ public class ProteinController {
     }
 
     private final ProteinRepository repository;
+    private final TaxaSettings taxaSettings;
 
     @Autowired
-    public ProteinController( ProteinRepository repository ) {
+    public ProteinController( ProteinRepository repository, TaxaSettings taxaSettings ) {
         this.repository = repository;
+        this.taxaSettings = taxaSettings;
     }
 
-    @RequestMapping(value = "/api/proteins/{accession}", method = RequestMethod.GET)
-    public Protein getByAccession( @PathVariable String accession ) {
-        return repository.getByAccession( accession );
+    @RequestMapping( value = "/api/taxa/{taxaId}/proteins/{accession}", method = RequestMethod.GET )
+    public Protein getByAccession( @PathVariable int taxaId, @PathVariable String accession ) {
+        Taxa taxa = taxaSettings.getTaxa( taxaId );
+
+        if ( taxa == null ) {
+            return null;
+        }
+        return repository.getByAccession( taxa, accession );
     }
 
-    @RequestMapping(value = "/api/proteins/{accession}/{location}", method = RequestMethod.GET)
-    public ResponseEntity<?> getByAccession( @PathVariable String accession,
+    @RequestMapping( value = "/api/taxa/{taxaId}/proteins/{accession}/{location}", method = RequestMethod.GET )
+    public ResponseEntity<?> getByAccession( @PathVariable int taxaId,
+                                             @PathVariable String accession,
                                              @PathVariable int location ) {
 
-        Protein protein = repository.getByAccession( accession );
+        Taxa taxa = taxaSettings.getTaxa( taxaId );
+
+        if ( taxa == null ) {
+            return new ResponseEntity<>( "Taxa unavailable.", HttpStatus.BAD_REQUEST );
+        }
+
+        Protein protein = repository.getByAccession( taxa, accession );
 
         if ( protein == null ) {
             return new ResponseEntity<>( "Protein accession unavailable.", HttpStatus.BAD_REQUEST );
@@ -68,17 +84,24 @@ public class ProteinController {
             return new ResponseEntity<>( "Cannot find location (1 based).", HttpStatus.BAD_REQUEST );
         }
 
-        return new ResponseEntity<>( base , HttpStatus.OK );
+        return new ResponseEntity<>( base, HttpStatus.OK );
 
     }
 
-    @RequestMapping(value = "/api/proteins/{accession}/{location}/{ref}/{alt}", method = RequestMethod.GET)
-    public ResponseEntity<?> getByAccession( @PathVariable String accession,
+    @RequestMapping( value = "/api/taxa/{taxaId}/proteins/{accession}/{location}/{ref}/{alt}", method = RequestMethod.GET )
+    public ResponseEntity<?> getByAccession( @PathVariable int taxaId,
+                                             @PathVariable String accession,
                                              @PathVariable int location,
                                              @PathVariable String ref,
                                              @PathVariable String alt ) {
 
-        Protein protein = repository.getByAccession( accession );
+        Taxa taxa = taxaSettings.getTaxa( taxaId );
+
+        if ( taxa == null ) {
+            return new ResponseEntity<>( "Taxa unavailable.", HttpStatus.BAD_REQUEST );
+        }
+
+        Protein protein = repository.getByAccession( taxa, accession );
 
         if ( protein == null ) {
             return new ResponseEntity<>( "Protein accession unavailable.", HttpStatus.BAD_REQUEST );
@@ -91,17 +114,17 @@ public class ProteinController {
         }
 
         if ( !base.getReference().equalsIgnoreCase( ref ) ) {
-            return new ResponseEntity<>( "Incorrect Reference. Reference at this location (1 based) is: " +  base.getReference(), HttpStatus.BAD_REQUEST );
+            return new ResponseEntity<>( "Incorrect Reference. Reference at this location (1 based) is: " + base.getReference(), HttpStatus.BAD_REQUEST );
         }
 
         Mutation mutation;
         try {
             mutation = Mutation.valueOf( alt.toUpperCase() );
-        } catch (Exception e) {
+        } catch ( Exception e ) {
             return new ResponseEntity<>( "Unknown alternate.", HttpStatus.BAD_REQUEST );
         }
 
-        if (base.getList().size() > mutation.ordinal() ) {
+        if ( base.getList().size() > mutation.ordinal() ) {
             return new ResponseEntity<>( base.getList().get( mutation.ordinal() ), HttpStatus.OK );
         } else {
             return new ResponseEntity<>( "No data for this query.", HttpStatus.BAD_REQUEST );
@@ -109,20 +132,35 @@ public class ProteinController {
 
     }
 
-    @RequestMapping(value = "/api/proteins", method = RequestMethod.GET)
-    public List<ProteinInfo> allProteins() {
-        return repository.allProteinInfo();
+    @RequestMapping( value = "/api/taxa/{taxaId}/proteins", method = RequestMethod.GET )
+    public List<ProteinInfo> allProteins( @PathVariable int taxaId ) {
+        Taxa taxa = taxaSettings.getTaxa( taxaId );
+
+        if ( taxa == null ) {
+            return null;
+        }
+
+        return repository.allProteinInfo( taxa );
     }
 
-    @RequestMapping(value = "/api/proteins/datatable", method = RequestMethod.POST)
-    public DataTablesResponse<ProteinInfo> proteinDatatable(@RequestBody final DataTablesRequest dataTablesRequest ) {
-        List<ProteinInfo> rawResults = repository.allProteinInfo();
+    @RequestMapping( value = "/api/taxa/{taxaId}/proteins/datatable", method = RequestMethod.POST )
+    public DataTablesResponse<ProteinInfo> proteinDatatable( @PathVariable int taxaId,
+                                                             @RequestBody final DataTablesRequest dataTablesRequest ) {
+        Taxa taxa = taxaSettings.getTaxa( taxaId );
+
+        if ( taxa == null ) {
+            DataTablesResponse<ProteinInfo> response = new DataTablesResponse<>();
+            response.setError( "Unsupported Taxa" );
+            return response;
+        }
+
+        List<ProteinInfo> rawResults = repository.allProteinInfo( taxa );
         Stream<ProteinInfo> resultStream = rawResults.stream();
 
         List<Predicate<ProteinInfo>> filters = Lists.newArrayList();
         for ( DataTablesRequest.Column col : dataTablesRequest.getColumns() ) {
             if ( col.isSearchable() ) {
-                switch( col.getData() ) {
+                switch ( col.getData() ) {
                     case "accession":
                         filters.add( pi -> pi.getAccession().toLowerCase().contains( dataTablesRequest.getSearch().getValue().toLowerCase() ) );
                         break;
@@ -135,7 +173,7 @@ public class ProteinController {
             }
         }
         if ( !filters.isEmpty() ) {
-            resultStream = resultStream.filter( pi -> filters.stream().anyMatch( t -> t.test( pi )) );
+            resultStream = resultStream.filter( pi -> filters.stream().anyMatch( t -> t.test( pi ) ) );
         }
 
 
@@ -144,7 +182,7 @@ public class ProteinController {
             try {
                 DataTablesRequest.Column col = dataTablesRequest.getColumns().get( order.getColumn() );
                 Comparator<ProteinInfo> c;
-                switch( col.getData() ) {
+                switch ( col.getData() ) {
                     case "accession":
                         c = Comparator.comparing( ProteinInfo::getAccession );
                         sorts.add( order.getDir().equals( "asc" ) ? c : c.reversed() );
@@ -170,7 +208,7 @@ public class ProteinController {
             resultStream = resultStream.sorted( comp );
         }
 
-        List<ProteinInfo> filteredOrderedResults = resultStream.collect( Collectors.toList());
+        List<ProteinInfo> filteredOrderedResults = resultStream.collect( Collectors.toList() );
 
         resultStream = filteredOrderedResults.stream().skip( dataTablesRequest.getStart() );
 
@@ -179,7 +217,7 @@ public class ProteinController {
         }
 
         DataTablesResponse<ProteinInfo> response = new DataTablesResponse<>();
-        response.setData( resultStream.collect( Collectors.toList()) );
+        response.setData( resultStream.collect( Collectors.toList() ) );
         response.setDraw( dataTablesRequest.getDraw() );
         response.setRecordsTotal( rawResults.size() );
         response.setRecordsFiltered( filteredOrderedResults.size() );
@@ -187,26 +225,47 @@ public class ProteinController {
         return response;
     }
 
-    @RequestMapping(value = "/api/proteins", method = RequestMethod.POST)
-    public List<Object> manyProteins(@RequestBody List<ProteinRequest> proteinRequests) {
+    @RequestMapping( value = "/api/taxa/{taxaId}/proteins", method = RequestMethod.POST )
+    public List<Object> manyProteins( @PathVariable int taxaId,
+                                      @RequestBody List<ProteinRequest> proteinRequests ) {
+
+        Taxa taxa = taxaSettings.getTaxa( taxaId );
+
+        if ( taxa == null ) {
+            return null;
+        }
+
         // This can be expanded for more versatility and efficiency with many calls to same protein
         List<Object> res = Lists.newArrayList();
         for ( ProteinRequest pr : proteinRequests ) {
-            ResponseEntity<?> re = getByAccession( pr.getAccession(), pr.getLocation(), pr.getRef(), pr.getAlt() );
+            ResponseEntity<?> re = getByAccession( taxa.getId(), pr.getAccession(), pr.getLocation(), pr.getRef(), pr.getAlt() );
             res.add( re.getBody().toString() );
         }
         return res;
     }
 
-    @RequestMapping(value = "/api/proteins/{accession}/download", method = RequestMethod.GET)
-    public void downloadByAccession( HttpServletResponse response, @PathVariable String accession ) throws IOException {
-        File file = (File) repository.getRawData( accession );
+    @RequestMapping( value = "/api/taxa/{taxaId}/proteins/{accession}/download", method = RequestMethod.GET )
+    public void downloadByAccession( HttpServletResponse response,
+                                     @PathVariable int taxaId,
+                                     @PathVariable String accession ) throws IOException {
+
+        Taxa taxa = taxaSettings.getTaxa( taxaId );
+
+        if ( taxa == null ) {
+            String errorMessage = "Sorry. Taxa " + taxaId + " is not supported";
+            OutputStream outputStream = response.getOutputStream();
+            outputStream.write( errorMessage.getBytes( StandardCharsets.UTF_8 ) );
+            outputStream.close();
+            return;
+        }
+
+        File file = ( File ) repository.getRawData( taxa, accession );
 
 
         if ( !file.exists() ) {
             String errorMessage = "Sorry. The file you are looking for does not exist";
             OutputStream outputStream = response.getOutputStream();
-            outputStream.write( errorMessage.getBytes( Charset.forName( "UTF-8" ) ) );
+            outputStream.write( errorMessage.getBytes( StandardCharsets.UTF_8 ) );
             outputStream.close();
             return;
         }
@@ -226,7 +285,7 @@ public class ProteinController {
         /* "Content-Disposition : attachment" will be directly download, may provide save as popup, based on your browser setting*/
         response.setHeader( "Content-Disposition", String.format( "attachment; filename=\"%s\"", file.getName() ) );
 
-        response.setContentLength( (int) file.length() );
+        response.setContentLength( ( int ) file.length() );
 
         InputStream inputStream = new BufferedInputStream( new FileInputStream( file ) );
 
