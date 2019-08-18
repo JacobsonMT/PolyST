@@ -150,6 +150,10 @@ public class ProteinController {
 
         if ( taxa == null ) {
             DataTablesResponse<ProteinInfo> response = new DataTablesResponse<>();
+            response.setData( Lists.newArrayList() );
+            response.setDraw( dataTablesRequest.getDraw() );
+            response.setRecordsTotal( 0 );
+            response.setRecordsFiltered( 0 );
             response.setError( "Unsupported Taxa" );
             return response;
         }

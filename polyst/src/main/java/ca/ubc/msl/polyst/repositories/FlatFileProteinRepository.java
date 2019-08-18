@@ -96,7 +96,7 @@ public class FlatFileProteinRepository implements ProteinRepository {
 //            return paths.filter( Files::isRegularFile ).map( p -> p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ) ).collect( Collectors.toList() );
         } catch (IOException e) {
             log.error( "Error walking data directory!" );
-            return null;
+            return new ArrayList<>();
         } catch ( InvalidPathException e ) {
             log.error( "Requested invalid taxa: " + taxa );
             return new ArrayList<>();
