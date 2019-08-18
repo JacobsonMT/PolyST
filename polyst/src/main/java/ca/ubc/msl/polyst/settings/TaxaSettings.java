@@ -5,10 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.util.PropertySource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +39,6 @@ public class TaxaSettings {
     }
 
     public List<Taxa> getActiveTaxa() {
-        return taxa.values().stream().filter( Taxa::isActive ).collect( Collectors.toList());
+        return taxa.values().stream().filter( Taxa::isActive ).sorted( Comparator.comparing( Taxa::getShortName )).collect( Collectors.toList());
     }
 }
