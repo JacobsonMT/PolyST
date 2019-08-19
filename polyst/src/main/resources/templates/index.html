@@ -37,6 +37,7 @@
                 </div>
                 <div class="card-body">
                     <h5 class="card-title" th:text="${'OX: ' + taxa.id}"></h5>
+                    <p class="card-text" th:text="${'Count: ' + @flatFileProteinRepository.allProteinInfo(taxa).size()}"></p>
                     <a href="#" th:href="@{'/taxa/' + ${taxa.id}}" class="btn btn-info">View Proteins</a>
                 </div>
             </div>
