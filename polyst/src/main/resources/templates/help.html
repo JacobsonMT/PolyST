@@ -2,48 +2,94 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
     <title th:text="${@siteSettings.title}">LIST</title>
-    <object th:include="fragments/head :: head" th:remove="tag" />
+    <object th:include="fragments/head :: head" th:remove="tag"/>
 
+    <style>
+        .submit-example {
+            background: #2a88ad;
+            padding: 2px 5px 2px 5px;
+            border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.12);
+            font: normal 30px 'Bitter', serif;
+            -moz-box-shadow: inset 0 2px 2px 0 rgba(255, 255, 255, 0.17);
+            -webkit-box-shadow: inset 0 2px 2px 0 rgba(255, 255, 255, 0.17);
+            box-shadow: inset 0 2px 2px 0 rgba(255, 255, 255, 0.17);
+            border: 1px solid #257c9e;
+            font-size: 15px;
+            -webkit-appearance: button;
+            cursor: auto !important;
+        }
+
+        .submit-example:focus {
+            outline: none;
+        }
+    </style>
 </head>
 <body>
-<div class="site">
-    <div th:replace="fragments/header :: title" th:remove="tag">...</div>
-    <div th:replace="fragments/header :: navbar(help)" th:remove="tag">...</div>
+<div th:replace="fragments/navbar :: navbar(help)">...</div>
+<div class="container-fluid p-4">
 
-    <div class="content">
+    <div class="main-content p-4">
+        <p>
+            <b>LIST</b> predicts the deleteriousness of amino acid mutations in human proteomes. The current release,
+            0.9 includes precomputed predictions of ~20,000 SwissProt protein sequences identified by their UniProt
+            accession number. Prediction scores in the range [0 .. 1], where lower scores indicate more benign and
+            higher indicate deleteriousness effect.
+        </p>
+        <p>
+            <b>Per Mutation:</b> To obtain LIST prediction for a list of mutations, copy and paste these mutations in
+            the input text box and then click <button class="submit-example">>></button>. Each entry should have the following format: <i>AC:Pos:RefAA:AlleleAA</i>
+        </p>
 
-        <div class="section">
-            <div class="section-content">
-                <p>
-                    <b>LIST</b> predicts the deleteriousness of amino acid mutations in human proteomes. The current release, 0.9 includes precomputed predictions of ~20,000 SwissProt protein sequences identified by their UniProt accession number. Prediction scores in the range [0 .. 1], where lower scores indicate more benign and higher indicate deleteriousness effect. <br /><br />
-                    <b>Per Mutation:</b> To obtain LIST prediction for a list of mutations, copy and paste these mutations in the input text box and then click [>>]. Each entry should have the following format: <i>AC:Pos:RefAA:AlleleAA</i> <br />
-                    <i>&emsp; AC:</i> protein accession number. <br />
-                    <i>&emsp; Pos:</i> protein position. <br />
-                    <i>&emsp; RefAA:</i> the reference amino acid at position <i>Pos</i>. <br />
-                    <i>&emsp; AlleleAA:</i> the allele amino acid. <br />
-                    <br />
-                    <dt>Example Input:</dt>
-                <dd>A0A0A0MRZ7:28:P:G </dd>
-                <dd>A0A0A0MRZ7:112:Y:F </dd>
-                <dd>A0A096LP49:133:E:K </dd>
-                <dd>A0A0J9YX94:197:T:K </dd>
-                <dd>P07766:192:R:T </dd> <br />
-                <dt>Output:</dt>
-                <dd>A0A0A0MRZ7:28:P:G&emsp; 0.951352 </dd>
-                <dd>A0A0A0MRZ7:112:Y:F&emsp; 0.498739 </dd>
-                <dd>A0A096LP49:133:E:K&emsp; 0.731489 </dd>
-                <dd>A0A0J9YX94:197:T:K&emsp; 0.829466 </dd>
-                <dd>P07766:192:R:T&emsp; 0.885529 </dd><br />
-                </p>
+        <ul>
+            <li><i>AC:</i> protein accession number.</li>
+            <li><i>Pos:</i> protein position.</li>
+            <li><i>RefAA:</i> the reference amino acid at position <i>Pos</i>.</li>
+            <li><i>AlleleAA:</i> the allele amino acid.</li>
+        </ul>
 
-                <p>
-                    <b>Per Protein:</b> One can also visualize/download LIST scores for all possible mutation of a specific protein sequence identified by its accession number.<br />
-                    Enter an accession value under <i>Accession</i> and then select:<br /> <i>Download:</i> to download all scores, or<br /> <i>Matrix:</i> to display an interactive matrix with all possible mutant amino acid scores color coded. <br />&emsp; To zoom in, use the mouse to select the region of interest, then one can zoom out by clicking [<i>Reset zoom</i>]. <br />
-                </p>
-            </div>
+        <div style="padding-left:1rem;">
+        <b>Example Input:</b>
+        <pre style="padding-left: 1rem;"><code>A0A0A0MRZ7:28:P:G
+A0A0A0MRZ7:112:Y:F
+A0A096LP49:133:E:K
+A0A0J9YX94:197:T:K
+P07766:192:R:T</code></pre>
+
+        <b>Output:</b>
+            <pre style="padding-left: 1rem;"><code>A0A0A0MRZ7:28:P:G&#9;0.951352
+A0A0A0MRZ7:112:Y:F&#9;0.498739
+A0A096LP49:133:E:K&#9;0.731489
+A0A0J9YX94:197:T:K&#9;0.829466
+P07766:192:R:T&#9;0.885529</code></pre>
+
         </div>
+
+        <p>
+            <b>Per Protein:</b> One can also visualize/download LIST scores for all possible mutation of a specific
+            protein sequence identified by its accession number.
+        </p>
+        <div style="padding-left:1rem;">
+            <p>
+            Enter an accession value under <i>Accession</i> and then select:
+            <br/>
+            <i>Download:</i> to download all scores, or
+            <br/>
+            <i>Matrix:</i> to display an interactive matrix with all possible mutant amino acid scores
+            color coded.
+            <br/>&emsp;
+            To zoom in, use the mouse to select the region of interest, then one can zoom out
+            by clicking [<i>Reset zoom</i>].
+            </p>
+        </div>
+
     </div>
 
+
 </div>
+<div th:replace="fragments/footer" th:remove="tag">...</div>
 </body>
 </html>

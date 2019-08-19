@@ -5,7 +5,7 @@
     <object th:include="fragments/head :: head" th:remove="tag" />
 
     <style>
-        div#protein-container {
+        .main-content {
             position: relative;
             display: -webkit-box;
             display: -ms-flexbox;
@@ -18,99 +18,36 @@
             margin-bottom: 20px;
         }
 
-        div.card {
-            display: inline-block;
-            min-width: 200px;
-            word-wrap: break-word;
-            background-color: #fff;
-            background-clip: border-box;
-            border: 1px solid rgba(0,0,0,.125);
-            border-radius: .25rem;
-        }
-
-        .card-header:first-child {
-            border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0;
-        }
-
-        div.card-header {
-            padding: .75rem 1.25rem;
-            margin-bottom: 0;
-            background-color: rgba(0,0,0,.03);
-            border-bottom: 1px solid rgba(0,0,0,.125);
-        }
-
-        div.card-body {
-            -webkit-box-flex: 1;
-            -ms-flex: 1 1 auto;
-            flex: 1 1 auto;
-            padding: 1.25rem;
-        }
-
-        .btn {
-            display: inline-block;
-            font-weight: 400;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            border: 1px solid transparent;
-            padding: .375rem .75rem;
-            font-size: 1rem;
-            line-height: 1.5;
-            border-radius: .25rem;
-            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-            text-decoration: none;
-        }
-
-        .btn-info {
-            color: #fff;
-            background-color: #107484;
-            border-color: #107484;
-        }
-
-        .btn-info:hover {
-            color: #fff;
-            background-color: #138496;
-            border-color: #117a8b;
-        }
-
-        .btn-info.focus, .btn-info:focus {
-            box-shadow: 0 0 0 0.2rem rgba(23,162,184,.5);
-            outline: 0;
-        }
-
-        div.taxa-id {
-            margin-bottom: 0.25rem;
-        }
     </style>
 </head>
 <body>
 
-<div class="site">
-    <div th:replace="fragments/header :: title" th:remove="tag">...</div>
-    <div th:replace="fragments/header :: navbar(home)" th:remove="tag">...</div>
-    <div>
 
-        <div id="protein-container">
-            <h3 th:text="${@siteSettings.subtitle}">Predicting the Deleteriousness of Amino Acid Mutations</h3>
-            <p>Select a species to continue:</p>
-            <div>
-                <div class="card taxa-card" th:each="taxa: ${@taxaSettings.getActiveTaxa()}">
-                    <div class="card-header">
-                        <span th:remove="tag" th:text="${taxa.shortName}"></span>
-                    </div>
-                    <div class="card-body">
-                        <div class="taxa-id" th:text="${'OX: ' + taxa.id}"></div>
-                        <a href="#" th:href="@{'/taxa/' + ${taxa.id}}" class="btn btn-info">View Proteins</a>
-                    </div>
+
+
+<div th:replace="fragments/navbar :: navbar(home)">...</div>
+<div class="container-fluid p-4">
+
+    <div class="main-content p-4" >
+        <h4 class="mb-4">Select a species to continue:</h4>
+        <div>
+            <div class="card taxa-card" th:each="taxa: ${@taxaSettings.getActiveTaxa()}" style="width:200px;display: inline-block;">
+                <div class="card-header">
+                    <span th:remove="tag" th:text="${taxa.shortName}"></span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${'OX: ' + taxa.id}"></h5>
+                    <a href="#" th:href="@{'/taxa/' + ${taxa.id}}" class="btn btn-info">View Proteins</a>
                 </div>
             </div>
+        </div>
+
     </div>
 
-</div>
 
+
+
+</div>
+<div th:replace="fragments/footer" th:remove="tag">...</div>
 </body>
 </html>

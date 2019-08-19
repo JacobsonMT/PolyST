@@ -6,55 +6,45 @@
 
 </head>
 <body>
-    <div class="site">
-        <div th:replace="fragments/header :: title" th:remove="tag">...</div>
-        <div th:replace="fragments/header :: navbar(contact)" th:remove="tag">...</div>
+<div th:replace="fragments/navbar :: navbar(contact)">...</div>
+<div class="container-fluid p-4">
 
-        <div class="content">
-            <div class="section">
-                <h2 class="section-title">Contact Us</h2>
-                <div class="section-content">
-                    <p>Have questions? Want more information?</p>
-                    <p>Contact us at the following:</p>
-                    <dl style="line-height: 1.5em;">
-                        <dt>Nawar Malhis</dt>
-                        <dd><a href="mailto:nmalhis@chibi.ubc.ca">nmalhis@chibi.ubc.ca</a></dd>
-
-                        <dt>Joerg Gsponer</dt>
-                        <dd><a href="mailto:gsponer@chibi.ubc.ca">gsponer@chibi.ubc.ca</a></dd>
-                    </dl>
-                </div>
-            </div>
-
-            <div class="section">
-                <h2 class="section-title">Credits</h2>
-                <div class="section-content">
-
-                    <dl style="line-height: 1.5em;">
-                        <dt>Computational Prediction Software:</dt>
-                        <dd>Nawar Malhis</dd>
-                        <dd>Joerg Gsponer</dd>
-                    </dl>
-
-                    <dl style="line-height: 1.5em;">
-                        <dt>Web Application and Visualizations:</dt>
-                        <dd>Matthew Jacobson</dd>
-                        <dd><a href="https://jacobsonmt.com" target="_blank">https://jacobsonmt.com</a></dd>
-                    </dl>
-                </div>
-            </div>
-
-            <div class="section">
-                <h2 class="section-title">Terms &amp; Conditions</h2>
-                <div class="section-content">
-                    <small>This software is distributed on an as is basis, without any kind of warranties. This software is
-                        not for commercial purposes. Incorporating any part of this software in other applications
-                        should preserve the Author copyright message. Appropriate citation when using LIST in
-                        publication of scientific results.</small>
-                </div>
-            </div>
+    <div class="main-content p-4">
+        <h2 class="section-title">Contact Us</h2>
+        <div style="padding-left: 1rem;">
+            <p>Have questions? Want more information?</p>
+            <p>Contact us at the following:</p>
+            <ul style="list-style-type: none;">
+                <li><b>Nawar Malhis</b></li>
+                <li style="padding-left:1rem;"><a href="mailto:nmalhis@chibi.ubc.ca">nmalhis@chibi.ubc.ca</a></li>
+                <li><b>Joerg Gsponer</b></li>
+                <li style="padding-left:1rem;"><a href="mailto:gsponer@chibi.ubc.ca">gsponer@chibi.ubc.ca</a></li>
+            </ul>
         </div>
 
+        <h2 class="section-title">Credits</h2>
+        <div style="padding-left: 1rem;">
+            <ul style="list-style-type: none;">
+                <li><b>Computational Prediction Software:</b></li>
+                <li style="padding-left:1rem;">Nawar Malhis</li>
+                <li style="padding-left:1rem;">Joerg Gsponer</li>
+                <li><b>Web Application and Visualizations:</b></li>
+                <li style="padding-left:1rem;">Matthew Jacobson</li>
+                <li style="padding-left:1rem;"><a href="https://jacobsonmt.com" target="_blank">https://jacobsonmt.com</a></li>
+            </ul>
+        </div>
+
+        <h2 class="section-title">Credits</h2>
+        <div style="padding-left: 1rem;">
+            <p>This software is distributed on an as is basis, without any kind of warranties. This software is
+                not for commercial purposes. Incorporating any part of this software in other applications
+                should preserve the Author copyright message. Appropriate citation when using LIST in
+                publication of scientific results.</p>
+        </div>
     </div>
+
+
+</div>
+<div th:replace="fragments/footer" th:remove="tag">...</div>
 </body>
 </html>

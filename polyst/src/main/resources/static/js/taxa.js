@@ -19,7 +19,7 @@ $(document).ready(function () {
         columnDefs: [
             {
                 targets: 0,
-                className: 'dt-left mono-font-body',
+                className: 'text-left mono-font-body',
                 data: "accession",
                 render: function ( data, type, row, meta ) {
                     return '<span class="align-middle">' +
@@ -33,14 +33,14 @@ $(document).ready(function () {
             {
                 targets: 1,
                 data: "size",
-                className: 'dt-right mono-font-body'
+                className: 'text-right mono-font-body'
             },
             {
                 targets: 2,
                 data: "accession",
                 searchable: false,
                 orderable: false,
-                className: 'dt-center',
+                className: 'text-center',
                 render: function ( data, type, row, meta ) {
                     return '<span class="align-middle">' +
                         '<a href="/taxa/' + taxa.id + '/proteins/' + data + '" target="_blank" class="align-middle mr-2"><i class="fas fa-chart-area mr-1"></i>Matrix</a>' +

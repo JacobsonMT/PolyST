@@ -10,9 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -22,7 +20,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class TaxaSettings {
-    private Map<Integer, Taxa> taxa = new ConcurrentHashMap<>();
+    private Map<Integer, Taxa> taxa = Collections.synchronizedMap( new LinkedHashMap<>() );
 
     @PostConstruct
     private void postConstruct() {
@@ -39,6 +37,6 @@ public class TaxaSettings {
     }
 
     public List<Taxa> getActiveTaxa() {
-        return taxa.values().stream().filter( Taxa::isActive ).sorted( Comparator.comparing( Taxa::getShortName )).collect( Collectors.toList());
+        return taxa.values().stream().filter( Taxa::isActive ).collect( Collectors.toList());
     }
 }

@@ -4,10 +4,6 @@
     <title th:text="${protein.accession + ' - ' + @siteSettings.title}"></title>
     <object th:include="fragments/head :: head" th:remove="tag" />
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-            crossorigin="anonymous"></script>
-
     <script src="https://code.highcharts.com/6.0.3/highcharts.js"></script>
     <script src="https://code.highcharts.com/6.0.3/modules/heatmap.js"></script>
     <script src="https://code.highcharts.com/6.0.3/modules/boost.js"></script>
@@ -22,37 +18,57 @@
 </head>
 <body>
 
-<div class="site">
-    <div th:replace="fragments/header :: title" th:remove="tag">...</div>
+<div th:replace="fragments/navbar :: navbar(${'taxa-' + (taxa != null ? taxa.id : '')})">...</div>
+<div class="container-fluid p-4">
 
-    <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:center">
-        <a th:href="${'//www.uniprot.org/uniprot/' + protein.accession}" target="_blank" style="margin:0 1em;">
-            <img src="/img/uniprot_rgb_320x146.png" style="width:40px; margin: 0; vertical-align: middle;"/>
-        </a>
-        <h2 style="margin:0;" th:text="${protein.accession}"></h2>
+    <div class="main-content p-4" >
+
+        <div class="mb-2" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:center">
+            <a th:href="${'//www.uniprot.org/uniprot/' + protein.accession}" target="_blank" style="margin:0 1em;">
+                <img src="/img/uniprot_rgb_320x146.png" style="width:60px; margin: 0; vertical-align: middle;"/>
+            </a>
+            <h1 class="text-center mb-0" th:text="${protein.accession}"></h1>
+        </div>
+        <h4 class="text-center text-muted m-0" th:if="${taxa != null}" th:text="${taxa.longName}"></h4>
+        <h5 class="text-center text-muted mt-1 mb-4" th:if="${taxa != null}" th:text="${'OX: ' + taxa.id}"></h5>
+
+        <div class="card mx-auto text-center mb-4 result-card">
+            <div class="card-header">
+                Results
+            </div>
+            <div class="card-body">
+                <div id="protein-graphs">
+
+                    <div id="heatmap-container">
+
+                    </div>
+
+                    <div id="prediction-container">
+
+                    </div>
+
+                    <div id="conservation-container">
+
+                    </div>
+
+                    <div id="depth-container">
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="card mx-auto text-center mb-4 result-card">
+            <div class="card-header">
+                Downloads
+            </div>
+            <div class="card-body">
+                <a th:href="${'/api/taxa/' + taxa.id + '/proteins/' + protein.accession + '/download'}" target="_blank" class="align-middle"><i class="fas fa-file-download mr-1"></i>Download</a>
+            </div>
+        </div>
     </div>
-
-    <div id="protein-graphs">
-
-        <div id="heatmap-container">
-
-        </div>
-
-        <div id="prediction-container">
-
-        </div>
-
-        <div id="conservation-container">
-
-        </div>
-
-        <div id="depth-container">
-
-        </div>
-
-    </div>
-
 </div>
-
+<div th:replace="fragments/footer" th:remove="tag">...</div>
 </body>
 </html>

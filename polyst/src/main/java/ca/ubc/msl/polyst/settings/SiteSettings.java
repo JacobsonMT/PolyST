@@ -17,5 +17,6 @@ public class SiteSettings {
     private String title;
     private String subtitle;
     private String msl;
+    private String contactEmail;
 
 }

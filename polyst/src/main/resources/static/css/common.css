@@ -1,125 +1,141 @@
 @import url('https://fonts.googleapis.com/css?family=Source+Serif+Pro&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap');
 
+html {
+    position: relative;
+    min-height: 100%;
+    font-size: 15px;
+}
+
 body {
-    margin-top: 0;
-    font-family: "Source Serif Pro", serif;
+    /* Margin bottom by footer height */
+    margin-bottom: 55px;
 }
 
-.mono-font {
-    font-family: 'Source Code Pro' , monospace;
+nav.navbar {
+    -webkit-box-shadow: 0 4px 0px 0px #999;
+    -moz-box-shadow: 0 4px 0px 0px #999;
+    box-shadow: 0 4px 0px 0px #999;
+    color: #333333;
+    font-family: 'Open Sans', sans-serif;
+    letter-spacing: 1px;
 }
 
-div.site {
+.footer {
+    position: absolute;
+    bottom: 0;
     width: 100%;
-    margin: 0 auto;
+    height: 55px;
+    line-height: 25px;
+    background-color: #d8d6d6;
+    -webkit-box-shadow: 0 -4px 0px 0px #999;
+    -moz-box-shadow: 0 -4px 0px 0px #999;
+    box-shadow: 0 -4px 0px 0px #999;
+    padding:15px;
 }
 
-@media (min-width: 800px) {
-    div.site {
-        width: 750px;
-    }
-}
-
-@media (min-width: 1200px) {
-    div.site {
-        width: 1150px;
-    }
-}
-
-/* Navbar */
-
-div.navbar {
-    margin-bottom: 25px;
-}
-
-div.title {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-}
-
-div.title > h1 {
-    font-size: 3em;
-    margin: 0 25px;
-    align-self: flex-start;
-    -webkit-box-flex: 1;
-    -webkit-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
-}
-
-div.title > h1 > a {
-    text-decoration: none;
-    color: inherit;
-}
-
-div.title > h4 {
-    font-weight: normal;
-}
-
-div.title > p {
-    font-size: 12px;
-    margin: 0 25px;
-}
-
-div.navbar > ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #89a2a5;
-    width: 100%;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-}
-
-div.navbar > ul > li {
-    float: left;
-}
-
-div.navbar > ul > li.navright {
-    float: right;
-}
-
-div.navbar > ul > li > a:hover {
-    background-color: #2a87ad;
-}
-
-div.navbar > ul > li > a {
+footer .website-attribution {
     display: inline-block;
-    color: black;
-    text-align: center;
-    padding: 14px 16px;
+    position: absolute;
+    right: 25px;
+    top: 15px;
+}
+
+@media screen and (max-width: 1300px) {
+
+    body {
+        /* Margin bottom by footer height */
+        margin-bottom: 80px;
+    }
+
+    .footer {
+        height: 80px;
+    }
+
+    .footer .website-attribution {
+        display: block;
+        position: unset;
+        right: unset;
+    }
+}
+
+.result-card {
+    /*max-width:600px;*/
+}
+
+div.container {
+    overflow-x: hidden;
+}
+
+@media (min-width: 992px) {
+    .navbar-brand.abs
+    {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+@media (max-width: 991px) {
+
+    div.navbar-collapse ul.navbar-nav.collapse-right {
+        text-align:right;
+    }
+
+    div.navbar-collapse ul.navbar-nav.collapse-center {
+        text-align:center;
+    }
+
+
+}
+
+button.icon-only, a.icon-only  {
+    border: none;
+    background-color: transparent;
+}
+
+a[type=button].icon-only  {
+    padding: 1px 6px;
+    -webkit-appearance: none;
+}
+
+a[type=button].icon-only:hover  {
     text-decoration: none;
-    font-weight: bold;
 }
 
-div.navbar > ul > li > a.active {
-    background-color: #2a87ad;
+button.icon-only:focus, a.icon-only:focus {
+    outline: none;
 }
 
-.section {
-    padding-left: 20px;
+.dropdown-menu {
+    white-space: nowrap;
+    border: solid 4px #999;
+    border-top: solid 1px #999;
+    padding: 0;
 }
 
-.section-title {
-    margin-left: 10px;
-    border-width: 1px;
-    border-bottom-style: inset;
-}
-
-.block-center {
+.dropdown-title {
     display: block;
-    margin: auto;
+    white-space: nowrap;
+    padding: .5rem 1.5rem;
+    background-color: #007bff;
 }
 
-.right {
-    float: right;
+.dropdown-divider {
+    border-top-color:#999;
+    margin: 0;
 }
 
-.text-muted {
-    color: #6c757d;
+.dropdown-item:hover {
+    color: black;
+    background-color: #dadada;
+}
+
+.dropdown-item:active, .dropdown-item.active {
+    color: inherit;
+    background-color: #dadada;
+}
+
+.nav-link.active {
+    text-decoration: underline;
 }

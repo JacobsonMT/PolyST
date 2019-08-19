@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-info justify-content-between" style="font-size:90%;" th:fragment="navbar(activeTab)">
+    <div class="navbar-brand m-0 abs" style="vertical-align: middle;display:inline-block;">
+        <h1 class="font-weight-bold m-0" style="text-align: center;font-size:200%" th:text="${@siteSettings.title}">LIST-SI</h1>
+        <h5 th:text="${@siteSettings.subtitle}">Species Independent</h5>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse" id="collapsingNavbar">
+        <ul class="navbar-nav collapse-right"style="font-size:150%;font-weight: bold;">
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'home'} ? 'active' : null" th:href="@{/}" href="/">Home</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarTaxaDropdown" th:classappend="${activeTab.startsWith('taxa')} ? 'active' : null" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Taxa
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarTaxaDropdown">
+                    <a th:each="taxa: ${@taxaSettings.getActiveTaxa()}" class="dropdown-item" th:classappend="${activeTab == 'taxa-' + taxa.id} ? 'active' : null" th:href="@{'/taxa/' + ${taxa.id}}" th:text="${taxa.shortName}"></a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'citing'} ? 'active' : null" th:href="@{/citing}" href="/citing">Citing</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:classappend="${activeTab == 'help'} ? 'active' : null" th:href="@{/help}" href="/help">Help</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto collapse-center">
+            <li class="nav-item">
+                <div class="brand mr-3 mt-3 ubc-brand" style="vertical-align: middle;display:inline-block;">
+                    <h4 class="font-weight-bold m-0 text-center" style="font-size:1.4rem;">Michael Smith Laboratories</h4>
+                    <p class="text-uppercase text-center"><b>University of British Columbia</b></p>
+                </div>
+                <a class="navbar-brand mr-0" href="https://www.ubc.ca/">
+                    <img th:src="@{/img/UBC-logo-signature-blue.gif}" style="height: 75px;" class="pr-2">
+                </a>
+            </li>
+        </ul>
+    </div>
+
+</nav>
+</body>
+</html>
