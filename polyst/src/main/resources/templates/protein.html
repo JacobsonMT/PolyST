@@ -12,6 +12,7 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         const protein = /*[[${protein}]]*/ 'protein';
+        const taxa = /*[[${taxa}]]*/ 'taxa';
         /*]]>*/
     </script>
     <script th:src="@{/js/protein.js}"></script>
@@ -43,7 +44,7 @@
 
                     </div>
 
-                    <div id="prediction-container">
+                    <div th:if="${taxa.disorderPrediction}" id="prediction-container">
 
                     </div>
 

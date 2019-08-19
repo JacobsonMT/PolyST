@@ -14,6 +14,7 @@ public class Taxa {
     private String shortName;
     private String longName;
     private int id;
+    private boolean disorderPrediction;
     @JsonIgnore
     private String subdirectory;
     @JsonIgnore

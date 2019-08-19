@@ -44,7 +44,9 @@ public class FlatFileProteinRepository implements ProteinRepository {
             is = Files.newInputStream( file );
             BufferedReader br = new BufferedReader( new InputStreamReader( is ) );
 
-            List<Base> sequence = br.lines().skip( 1 ).map( mapBase ).collect( Collectors.toList() );
+            List<Base> sequence = taxa.isDisorderPrediction() ?
+                    br.lines().skip( 1 ).map( mapBaseWithDisorder ).collect( Collectors.toList() ) :
+                    br.lines().skip( 1 ).map( mapBaseWithoutDisorder ).collect( Collectors.toList() );
 
             Protein protein = new Protein( accession );
             protein.setSequence( sequence );
@@ -103,10 +105,14 @@ public class FlatFileProteinRepository implements ProteinRepository {
         }
     }
 
-    private static Function<String, Base> mapBase = ( rawLine ) -> {
+    private static Function<String, Base> mapBaseWithDisorder = ( rawLine ) -> {
         List<String> line = Arrays.asList( rawLine.split( "\t" ) );
 
-        Base base = new Base( line.get( 2 ), Integer.parseInt( line.get( 3 ) ), Double.parseDouble( line.get( 4 ) ), Double.parseDouble( line.get( 5 ) ) );
+
+        Base base = new Base( line.get( 2 ), Integer.parseInt( line.get( 3 ) ) );
+
+        base.setIupred( Double.parseDouble( line.get( 4 ) ) );
+        base.setEspritz( Double.parseDouble( line.get( 5 ) ) );
 
         if ( line.size() > 6 ) {
             base.setConservation( Double.parseDouble( line.get( 6 ) ) );
@@ -114,6 +120,22 @@ public class FlatFileProteinRepository implements ProteinRepository {
 
         if ( line.size() > 7 ) {
             base.setList( line.stream().skip( 7 ).map( Double::parseDouble ).collect( Collectors.toList() ) );
+        }
+        return base;
+    };
+
+    private static Function<String, Base> mapBaseWithoutDisorder = ( rawLine ) -> {
+        List<String> line = Arrays.asList( rawLine.split( "\t" ) );
+
+
+        Base base = new Base( line.get( 2 ), Integer.parseInt( line.get( 3 ) ) );
+
+        if ( line.size() > 4 ) {
+            base.setConservation( Double.parseDouble( line.get( 4 ) ) );
+        }
+
+        if ( line.size() > 5 ) {
+            base.setList( line.stream().skip( 5 ).map( Double::parseDouble ).collect( Collectors.toList() ) );
         }
         return base;
     };

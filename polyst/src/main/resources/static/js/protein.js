@@ -69,8 +69,12 @@ $(document).ready(function () {
         // if (x < 100) {
         categories.push(base.reference);
         depth.push(base.depth);
-        iupData.push(base.iupred);
-        espritzData.push(base.espritz);
+
+        if (taxa.disorderPrediction) {
+            iupData.push(base.iupred);
+            espritzData.push(base.espritz);
+        }
+
         conservation.push(base.conservation);
         if (base.list.length === 0) {
             base.list = new Array(20).fill(0);
@@ -83,8 +87,14 @@ $(document).ready(function () {
 
         // }
     });
-
-    let predictionData = [{name: "IUPred -l", type: "area", data: iupData},{name: "ESpritz -D", type: "line", color: "red", data: espritzData}];
+    if (taxa.disorderPrediction) {
+        let predictionData = [{name: "IUPred -l", type: "area", data: iupData}, {
+            name: "ESpritz -D",
+            type: "line",
+            color: "red",
+            data: espritzData
+        }];
+    }
     let conservationData = [{name: "Conservation", type: "area", data: conservation}];
     let depthData = [{name:"Depth",  type: "area", data:depth}];
 
@@ -98,7 +108,7 @@ $(document).ready(function () {
         charts.push( window.heatmapChart );
     }
 
-    if (predictionData.every(function(v) {return v.data.length !== 0})) {
+    if (taxa.disorderPrediction && predictionData.every(function(v) {return v.data.length !== 0})) {
         window.predictionChart = new Highcharts.Chart(
             document.getElementById('prediction-container'),
             createChart( "Disorder Prediction", predictionData, true, true, "linear")
