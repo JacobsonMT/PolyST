@@ -1,8 +1,8 @@
 package ca.ubc.msl.polyst;
 
-import ca.ubc.msl.polyst.model.Taxa;
+import ca.ubc.msl.polyst.model.Species;
 import ca.ubc.msl.polyst.repositories.ProteinRepository;
-import ca.ubc.msl.polyst.settings.TaxaSettings;
+import ca.ubc.msl.polyst.settings.SpeciesSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +21,12 @@ public class PolystApplication {
 
 
 	private final ProteinRepository repository;
-	private final TaxaSettings taxaSettings;
+	private final SpeciesSettings speciesSettings;
 
 	@Autowired
-	public PolystApplication( ProteinRepository repository, TaxaSettings taxaSettings ) {
+	public PolystApplication( ProteinRepository repository, SpeciesSettings speciesSettings ) {
 		this.repository = repository;
-		this.taxaSettings = taxaSettings;
+		this.speciesSettings = speciesSettings;
 	}
 
 	public static void main(String[] args) {
@@ -37,10 +37,10 @@ public class PolystApplication {
 	public void warmCaches() {
 		// Warm main cache every hour, will reload if cache has been cleared
 		log.debug( "Warm caches" );
-		for ( Taxa taxa: taxaSettings.getTaxa().values() ) {
-			if ( taxa.isActive() ) {
-				log.info( "Loading Protein Info cache for " + taxa.getShortName() );
-				repository.allProteinInfo( taxa );
+		for ( Species species : speciesSettings.getSpecies().values() ) {
+			if ( species.isActive() ) {
+				log.info( "Loading Protein Info cache for " + species.getShortName() );
+				repository.allProteinInfo( species );
 			}
 		}
 		log.info( "Protein Info caches populated." );

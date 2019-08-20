@@ -1,9 +1,9 @@
 package ca.ubc.msl.polyst.controllers;
 
 import ca.ubc.msl.polyst.model.Protein;
-import ca.ubc.msl.polyst.model.Taxa;
+import ca.ubc.msl.polyst.model.Species;
 import ca.ubc.msl.polyst.repositories.ProteinRepository;
-import ca.ubc.msl.polyst.settings.TaxaSettings;
+import ca.ubc.msl.polyst.settings.SpeciesSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class HomeController {
 
     private final ProteinRepository repository;
-    private final TaxaSettings taxaSettings;
+    private final SpeciesSettings speciesSettings;
 
     @Autowired
-    public HomeController( ProteinRepository repository, TaxaSettings taxaSettings ) {
+    public HomeController( ProteinRepository repository, SpeciesSettings speciesSettings ) {
         this.repository = repository;
-        this.taxaSettings = taxaSettings;
+        this.speciesSettings = speciesSettings;
     }
 
     @RequestMapping(value = "/")
@@ -31,11 +31,11 @@ public class HomeController {
         return "index";
     }
 
-    @RequestMapping(value = "/taxa/{taxaId}")
-    public String taxa( @PathVariable int taxaId, Model model ) {
-        Taxa taxa = taxaSettings.getTaxa( taxaId );
-        model.addAttribute("taxa", taxa );
-        return "taxa";
+    @RequestMapping(value = "/species/{speciesId}")
+    public String species( @PathVariable int speciesId, Model model ) {
+        Species species = speciesSettings.getSpecies( speciesId );
+        model.addAttribute("species", species );
+        return "species";
     }
 
     @RequestMapping(value = "/help")
@@ -63,16 +63,16 @@ public class HomeController {
         return "humans";
     }
 
-    @RequestMapping(value = "/taxa/{taxaId}/proteins/{accession}", method = RequestMethod.GET)
-    public String protein( @PathVariable int taxaId, @PathVariable String accession, Model model) {
-        Taxa taxa = taxaSettings.getTaxa( taxaId );
+    @RequestMapping(value = "/species/{speciesId}/proteins/{accession}", method = RequestMethod.GET)
+    public String protein( @PathVariable int speciesId, @PathVariable String accession, Model model) {
+        Species species = speciesSettings.getSpecies( speciesId );
 
         Protein protein = null;
-        if ( taxa != null ) {
-            protein = repository.getByAccession( taxa, accession );
+        if ( species != null ) {
+            protein = repository.getByAccession( species, accession );
         }
 
-        model.addAttribute("taxa", taxa );
+        model.addAttribute("species", species );
         model.addAttribute("protein", protein );
         return "protein";
     }

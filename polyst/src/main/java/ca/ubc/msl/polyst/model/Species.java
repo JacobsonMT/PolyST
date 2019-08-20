@@ -10,7 +10,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @EqualsAndHashCode( of = "id" )
-public class Taxa {
+public class Species {
     private String shortName;
     private String longName;
     private int id;

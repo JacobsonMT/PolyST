@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
-    <title th:text="${(taxa != null ? taxa.shortName + ' - ' : '')  + @siteSettings.title}">LIST</title>
+    <title th:text="${(species != null ? species.shortName + ' - ' : '')  + @siteSettings.title}">LIST</title>
     <object th:include="fragments/head :: head" th:remove="tag" />
     <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
-        const taxa = /*[[${taxa}]]*/ 'taxa';
+        const species = /*[[${species}]]*/ 'species';
         /*]]>*/
     </script>
-    <script th:src="@{/js/taxa.js}"></script>
+    <script th:src="@{/js/species.js}"></script>
 
-    <link rel="stylesheet" type="text/css" th:href="@{/css/common-taxa.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common-species.css}"/>
 
 </head>
 <body>
-<div th:replace="fragments/navbar :: navbar(${'taxa-' + (taxa != null ? taxa.id : '')})">...</div>
+<div th:replace="fragments/navbar :: navbar(${'species-' + (species != null ? species.id : '')})">...</div>
 <div class="container-fluid p-4">
 
     <div class="main-content p-4">
         <div id="protein-container">
-            <h4 style="margin: 0;" th:if="${taxa != null}" th:text="${taxa.longName}"></h4>
-            <h5 style="margin-top: 0.25rem; margin-bottom:0.5rem;" class="text-muted"  th:if="${taxa != null}" th:text="${'OX: ' + taxa.id}"></h5>
+            <h4 style="margin: 0;" th:if="${species != null}" th:text="${species.longName}"></h4>
+            <h5 style="margin-top: 0.25rem; margin-bottom:0.5rem;" class="text-muted"  th:if="${species != null}" th:text="${'OX: ' + species.id}"></h5>
             <div>
                 <form id="protein-form" >
                     <textarea class="input"

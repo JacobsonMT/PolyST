@@ -16,11 +16,11 @@
                 <a class="nav-link" th:classappend="${activeTab == 'home'} ? 'active' : null" th:href="@{/}" href="/">Home</a>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarTaxaDropdown" th:classappend="${activeTab.startsWith('taxa')} ? 'active' : null" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Taxa
+                <a class="nav-link dropdown-toggle" href="#" id="navbarSpeciesDropdown" th:classappend="${activeTab.startsWith('species')} ? 'active' : null" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Species
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarTaxaDropdown">
-                    <a th:each="taxa: ${@taxaSettings.getActiveTaxa()}" class="dropdown-item" th:classappend="${activeTab == 'taxa-' + taxa.id} ? 'active' : null" th:href="@{'/taxa/' + ${taxa.id}}" th:text="${taxa.shortName}"></a>
+                <div class="dropdown-menu" aria-labelledby="navbarSpeciesDropdown">
+                    <a th:each="species: ${@speciesSettings.getActiveSpecies()}" class="dropdown-item" th:classappend="${activeTab == 'species-' + species.id} ? 'active' : null" th:href="@{'/species/' + ${species.id}}" th:text="${species.shortName}"></a>
                 </div>
             </li>
             <li class="nav-item">

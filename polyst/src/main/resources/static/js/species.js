@@ -3,7 +3,7 @@ $(document).ready(function () {
     $('#protein-table').DataTable({
         deferRender:    true,
         ajax: {
-            url: '/api/taxa/' + taxa.id + '/proteins/datatable',
+            url: '/api/species/' + species.id + '/proteins/datatable',
             // dataSrc: '',
             data: function (data) {
                 return JSON.stringify(data);
@@ -43,8 +43,8 @@ $(document).ready(function () {
                 className: 'text-center',
                 render: function ( data, type, row, meta ) {
                     return '<span class="align-middle">' +
-                        '<a href="/taxa/' + taxa.id + '/proteins/' + data + '" target="_blank" class="align-middle mr-2"><i class="fas fa-chart-area mr-1"></i>Matrix</a>' +
-                        '<a href="/api/taxa/' + taxa.id + '/proteins/' + data + '/download" target="_blank" class="align-middle"><i class="fas fa-file-download mr-1"></i>Download</a>' +
+                        '<a href="/species/' + species.id + '/proteins/' + data + '" target="_blank" class="align-middle mr-2"><i class="fas fa-chart-area mr-1"></i>Matrix</a>' +
+                        '<a href="/api/species/' + species.id + '/proteins/' + data + '/download" target="_blank" class="align-middle"><i class="fas fa-file-download mr-1"></i>Download</a>' +
                         '</span>';
                 }
             }
@@ -94,7 +94,7 @@ $(document).ready(function () {
         $.ajax( {
             cache : false,
             type : 'POST',
-            url : '/api/taxa/' + taxa.id + '/proteins',
+            url : '/api/species/' + species.id + '/proteins',
             data : JSON.stringify(proteinRequests),
             contentType : "application/json"
         } ).then(function (data) {

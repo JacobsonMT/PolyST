@@ -2,7 +2,7 @@ package ca.ubc.msl.polyst.repositories;
 
 import ca.ubc.msl.polyst.model.Protein;
 import ca.ubc.msl.polyst.model.ProteinInfo;
-import ca.ubc.msl.polyst.model.Taxa;
+import ca.ubc.msl.polyst.model.Species;
 
 import java.util.List;
 
@@ -11,9 +11,9 @@ import java.util.List;
  */
 public interface ProteinRepository {
 
-    Protein getByAccession( Taxa taxa, String accession );
+    Protein getByAccession( Species species, String accession );
 
-    Object getRawData( Taxa taxa, String accession );
+    Object getRawData( Species species, String accession );
 
-    List<ProteinInfo> allProteinInfo( Taxa taxa );
+    List<ProteinInfo> allProteinInfo( Species species );
 }

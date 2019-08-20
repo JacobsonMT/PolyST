@@ -2,7 +2,7 @@ package ca.ubc.msl.polyst.controllers;
 
 import ca.ubc.msl.polyst.model.*;
 import ca.ubc.msl.polyst.repositories.ProteinRepository;
-import ca.ubc.msl.polyst.settings.TaxaSettings;
+import ca.ubc.msl.polyst.settings.SpeciesSettings;
 import com.google.common.collect.Lists;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.List;
@@ -43,36 +42,36 @@ public class ProteinController {
     }
 
     private final ProteinRepository repository;
-    private final TaxaSettings taxaSettings;
+    private final SpeciesSettings speciesSettings;
 
     @Autowired
-    public ProteinController( ProteinRepository repository, TaxaSettings taxaSettings ) {
+    public ProteinController( ProteinRepository repository, SpeciesSettings speciesSettings ) {
         this.repository = repository;
-        this.taxaSettings = taxaSettings;
+        this.speciesSettings = speciesSettings;
     }
 
-    @RequestMapping( value = "/api/taxa/{taxaId}/proteins/{accession}", method = RequestMethod.GET )
-    public Protein getByAccession( @PathVariable int taxaId, @PathVariable String accession ) {
-        Taxa taxa = taxaSettings.getTaxa( taxaId );
+    @RequestMapping( value = "/api/species/{speciesId}/proteins/{accession}", method = RequestMethod.GET )
+    public Protein getByAccession( @PathVariable int speciesId, @PathVariable String accession ) {
+        Species species = speciesSettings.getSpecies( speciesId );
 
-        if ( taxa == null ) {
+        if ( species == null ) {
             return null;
         }
-        return repository.getByAccession( taxa, accession );
+        return repository.getByAccession( species, accession );
     }
 
-    @RequestMapping( value = "/api/taxa/{taxaId}/proteins/{accession}/{location}", method = RequestMethod.GET )
-    public ResponseEntity<?> getByAccession( @PathVariable int taxaId,
+    @RequestMapping( value = "/api/species/{speciesId}/proteins/{accession}/{location}", method = RequestMethod.GET )
+    public ResponseEntity<?> getByAccession( @PathVariable int speciesId,
                                              @PathVariable String accession,
                                              @PathVariable int location ) {
 
-        Taxa taxa = taxaSettings.getTaxa( taxaId );
+        Species species = speciesSettings.getSpecies( speciesId );
 
-        if ( taxa == null ) {
-            return new ResponseEntity<>( "Taxa unavailable.", HttpStatus.BAD_REQUEST );
+        if ( species == null ) {
+            return new ResponseEntity<>( "Species unavailable.", HttpStatus.BAD_REQUEST );
         }
 
-        Protein protein = repository.getByAccession( taxa, accession );
+        Protein protein = repository.getByAccession( species, accession );
 
         if ( protein == null ) {
             return new ResponseEntity<>( "Protein accession unavailable.", HttpStatus.BAD_REQUEST );
@@ -88,20 +87,20 @@ public class ProteinController {
 
     }
 
-    @RequestMapping( value = "/api/taxa/{taxaId}/proteins/{accession}/{location}/{ref}/{alt}", method = RequestMethod.GET )
-    public ResponseEntity<?> getByAccession( @PathVariable int taxaId,
+    @RequestMapping( value = "/api/species/{speciesId}/proteins/{accession}/{location}/{ref}/{alt}", method = RequestMethod.GET )
+    public ResponseEntity<?> getByAccession( @PathVariable int speciesId,
                                              @PathVariable String accession,
                                              @PathVariable int location,
                                              @PathVariable String ref,
                                              @PathVariable String alt ) {
 
-        Taxa taxa = taxaSettings.getTaxa( taxaId );
+        Species species = speciesSettings.getSpecies( speciesId );
 
-        if ( taxa == null ) {
-            return new ResponseEntity<>( "Taxa unavailable.", HttpStatus.BAD_REQUEST );
+        if ( species == null ) {
+            return new ResponseEntity<>( "Species unavailable.", HttpStatus.BAD_REQUEST );
         }
 
-        Protein protein = repository.getByAccession( taxa, accession );
+        Protein protein = repository.getByAccession( species, accession );
 
         if ( protein == null ) {
             return new ResponseEntity<>( "Protein accession unavailable.", HttpStatus.BAD_REQUEST );
@@ -132,33 +131,33 @@ public class ProteinController {
 
     }
 
-    @RequestMapping( value = "/api/taxa/{taxaId}/proteins", method = RequestMethod.GET )
-    public List<ProteinInfo> allProteins( @PathVariable int taxaId ) {
-        Taxa taxa = taxaSettings.getTaxa( taxaId );
+    @RequestMapping( value = "/api/species/{speciesId}/proteins", method = RequestMethod.GET )
+    public List<ProteinInfo> allProteins( @PathVariable int speciesId ) {
+        Species species = speciesSettings.getSpecies( speciesId );
 
-        if ( taxa == null ) {
+        if ( species == null ) {
             return null;
         }
 
-        return repository.allProteinInfo( taxa );
+        return repository.allProteinInfo( species );
     }
 
-    @RequestMapping( value = "/api/taxa/{taxaId}/proteins/datatable", method = RequestMethod.POST )
-    public DataTablesResponse<ProteinInfo> proteinDatatable( @PathVariable int taxaId,
+    @RequestMapping( value = "/api/species/{speciesId}/proteins/datatable", method = RequestMethod.POST )
+    public DataTablesResponse<ProteinInfo> proteinDatatable( @PathVariable int speciesId,
                                                              @RequestBody final DataTablesRequest dataTablesRequest ) {
-        Taxa taxa = taxaSettings.getTaxa( taxaId );
+        Species species = speciesSettings.getSpecies( speciesId );
 
-        if ( taxa == null ) {
+        if ( species == null ) {
             DataTablesResponse<ProteinInfo> response = new DataTablesResponse<>();
             response.setData( Lists.newArrayList() );
             response.setDraw( dataTablesRequest.getDraw() );
             response.setRecordsTotal( 0 );
             response.setRecordsFiltered( 0 );
-            response.setError( "Unsupported Taxa" );
+            response.setError( "Unsupported Species" );
             return response;
         }
 
-        List<ProteinInfo> rawResults = repository.allProteinInfo( taxa );
+        List<ProteinInfo> rawResults = repository.allProteinInfo( species );
         Stream<ProteinInfo> resultStream = rawResults.stream();
 
         List<Predicate<ProteinInfo>> filters = Lists.newArrayList();
@@ -229,20 +228,20 @@ public class ProteinController {
         return response;
     }
 
-    @RequestMapping( value = "/api/taxa/{taxaId}/proteins", method = RequestMethod.POST )
-    public List<Object> manyProteins( @PathVariable int taxaId,
+    @RequestMapping( value = "/api/species/{speciesId}/proteins", method = RequestMethod.POST )
+    public List<Object> manyProteins( @PathVariable int speciesId,
                                       @RequestBody List<ProteinRequest> proteinRequests ) {
 
-        Taxa taxa = taxaSettings.getTaxa( taxaId );
+        Species species = speciesSettings.getSpecies( speciesId );
 
-        if ( taxa == null ) {
+        if ( species == null ) {
             return null;
         }
 
         // This can be expanded for more versatility and efficiency with many calls to same protein
         List<Object> res = Lists.newArrayList();
         for ( ProteinRequest pr : proteinRequests ) {
-            ResponseEntity<?> re = getByAccession( taxa.getId(), pr.getAccession(), pr.getLocation(), pr.getRef(), pr.getAlt() );
+            ResponseEntity<?> re = getByAccession( species.getId(), pr.getAccession(), pr.getLocation(), pr.getRef(), pr.getAlt() );
             if ( re.getBody() != null ) {
                 res.add( re.getBody().toString() );
             }
@@ -250,22 +249,22 @@ public class ProteinController {
         return res;
     }
 
-    @RequestMapping( value = "/api/taxa/{taxaId}/proteins/{accession}/download", method = RequestMethod.GET )
+    @RequestMapping( value = "/api/species/{speciesId}/proteins/{accession}/download", method = RequestMethod.GET )
     public void downloadByAccession( HttpServletResponse response,
-                                     @PathVariable int taxaId,
+                                     @PathVariable int speciesId,
                                      @PathVariable String accession ) throws IOException {
 
-        Taxa taxa = taxaSettings.getTaxa( taxaId );
+        Species species = speciesSettings.getSpecies( speciesId );
 
-        if ( taxa == null ) {
-            String errorMessage = "Sorry. Taxa " + taxaId + " is not supported";
+        if ( species == null ) {
+            String errorMessage = "Sorry. Species " + speciesId + " is not supported";
             OutputStream outputStream = response.getOutputStream();
             outputStream.write( errorMessage.getBytes( StandardCharsets.UTF_8 ) );
             outputStream.close();
             return;
         }
 
-        File file = ( File ) repository.getRawData( taxa, accession );
+        File file = ( File ) repository.getRawData( species, accession );
 
 
         if ( !file.exists() ) {

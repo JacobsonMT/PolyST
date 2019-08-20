@@ -30,15 +30,15 @@
 
     <div class="main-content p-4" >
         <h4 class="mb-4">Select a species to continue:</h4>
-        <div th:each="taxaGroup: ${@taxaSettings.getIndexGroups()}" class="mb-3">
-            <div class="card taxa-card" th:each="taxa: ${taxaGroup}" style="width:200px;display: inline-block;">
+        <div th:each="speciesGroup: ${@speciesSettings.getIndexGroups()}" class="mb-3">
+            <div class="card species-card" th:each="species: ${speciesGroup}" style="width:200px;display: inline-block;">
                 <div class="card-header">
-                    <span th:remove="tag" th:text="${taxa.shortName}"></span>
+                    <span th:remove="tag" th:text="${species.shortName}"></span>
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title" th:text="${'OX: ' + taxa.id}"></h5>
-                    <p class="card-text" th:text="${'Count: ' + @flatFileProteinRepository.allProteinInfo(taxa).size()}"></p>
-                    <a href="#" th:href="@{'/taxa/' + ${taxa.id}}" class="btn btn-info">View Proteins</a>
+                    <h5 class="card-title" th:text="${'OX: ' + species.id}"></h5>
+                    <p class="card-text" th:text="${'Count: ' + @flatFileProteinRepository.allProteinInfo(species).size()}"></p>
+                    <a href="#" th:href="@{'/species/' + ${species.id}}" class="btn btn-info">View Proteins</a>
                 </div>
             </div>
         </div>

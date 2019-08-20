@@ -12,14 +12,14 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         const protein = /*[[${protein}]]*/ 'protein';
-        const taxa = /*[[${taxa}]]*/ 'taxa';
+        const species = /*[[${species}]]*/ 'species';
         /*]]>*/
     </script>
     <script th:src="@{/js/protein.js}"></script>
 </head>
 <body>
 
-<div th:replace="fragments/navbar :: navbar(${'taxa-' + (taxa != null ? taxa.id : '')})">...</div>
+<div th:replace="fragments/navbar :: navbar(${'species-' + (species != null ? species.id : '')})">...</div>
 <div class="container-fluid p-4">
 
     <div class="main-content p-4" >
@@ -30,8 +30,8 @@
             </a>
             <h1 class="text-center mb-0" th:text="${protein.accession}"></h1>
         </div>
-        <h4 class="text-center text-muted m-0" th:if="${taxa != null}" th:text="${taxa.longName}"></h4>
-        <h5 class="text-center text-muted mt-1 mb-4" th:if="${taxa != null}" th:text="${'OX: ' + taxa.id}"></h5>
+        <h4 class="text-center text-muted m-0" th:if="${species != null}" th:text="${species.longName}"></h4>
+        <h5 class="text-center text-muted mt-1 mb-4" th:if="${species != null}" th:text="${'OX: ' + species.id}"></h5>
 
         <div class="card mx-auto text-center mb-4 result-card">
             <div class="card-header">
@@ -44,7 +44,7 @@
 
                     </div>
 
-                    <div th:if="${taxa.disorderPrediction}" id="prediction-container">
+                    <div th:if="${species.disorderPrediction}" id="prediction-container">
 
                     </div>
 
@@ -65,7 +65,7 @@
                 Downloads
             </div>
             <div class="card-body">
-                <a th:href="${'/api/taxa/' + taxa.id + '/proteins/' + protein.accession + '/download'}" target="_blank" class="align-middle"><i class="fas fa-file-download mr-1"></i>Download</a>
+                <a th:href="${'/api/species/' + species.id + '/proteins/' + protein.accession + '/download'}" target="_blank" class="align-middle"><i class="fas fa-file-download mr-1"></i>Download</a>
             </div>
         </div>
     </div>

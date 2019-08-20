@@ -70,7 +70,7 @@ $(document).ready(function () {
         categories.push(base.reference);
         depth.push(base.depth);
 
-        if (taxa.disorderPrediction) {
+        if (species.disorderPrediction) {
             iupData.push(base.iupred);
             espritzData.push(base.espritz);
         }
@@ -87,7 +87,7 @@ $(document).ready(function () {
 
         // }
     });
-    if (taxa.disorderPrediction) {
+    if (species.disorderPrediction) {
         let predictionData = [{name: "IUPred -l", type: "area", data: iupData}, {
             name: "ESpritz -D",
             type: "line",
@@ -108,7 +108,7 @@ $(document).ready(function () {
         charts.push( window.heatmapChart );
     }
 
-    if (taxa.disorderPrediction && predictionData.every(function(v) {return v.data.length !== 0})) {
+    if (species.disorderPrediction && predictionData.every(function(v) {return v.data.length !== 0})) {
         window.predictionChart = new Highcharts.Chart(
             document.getElementById('prediction-container'),
             createChart( "Disorder Prediction", predictionData, true, true, "linear")
