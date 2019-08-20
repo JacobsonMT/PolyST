@@ -19,4 +19,6 @@ public class Taxa {
     private String subdirectory;
     @JsonIgnore
     private boolean active;
+    @JsonIgnore
+    private int indexGroup;
 }
