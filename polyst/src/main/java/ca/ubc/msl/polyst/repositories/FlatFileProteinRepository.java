@@ -93,7 +93,7 @@ public class FlatFileProteinRepository implements ProteinRepository {
                 }
             } )
                     .collect( Collectors.toList() );
-            log.info( "Load Protein Info Complete for " + species.getShortName() );
+            log.info( "Load Protein Info Complete for " + species.getCommonName() );
             return results;
 //            return paths.filter( Files::isRegularFile ).map( p -> p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ) ).collect( Collectors.toList() );
         } catch (IOException e) {

@@ -39,7 +39,7 @@ public class PolystApplication {
 		log.debug( "Warm caches" );
 		for ( Species species : speciesSettings.getSpecies().values() ) {
 			if ( species.isActive() ) {
-				log.info( "Loading Protein Info cache for " + species.getShortName() );
+				log.info( "Loading Protein Info cache for " + species.getCommonName() );
 				repository.allProteinInfo( species );
 			}
 		}

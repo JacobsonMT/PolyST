@@ -33,7 +33,7 @@
         <div th:each="speciesGroup: ${@speciesSettings.getIndexGroups()}" class="mb-3">
             <div class="card species-card" th:each="species: ${speciesGroup}" style="width:200px;display: inline-block;">
                 <div class="card-header">
-                    <span th:remove="tag" th:text="${species.shortName}"></span>
+                    <span th:remove="tag" th:text="${species.commonName}"></span>
                 </div>
                 <div class="card-body">
                     <h5 class="card-title" th:text="${'OX: ' + species.id}"></h5>

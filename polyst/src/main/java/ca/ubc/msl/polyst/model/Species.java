@@ -11,8 +11,9 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode( of = "id" )
 public class Species {
-    private String shortName;
-    private String longName;
+    private String commonName;
+    private String scientificName;
+    private String extra;
     private int id;
     private boolean disorderPrediction;
     @JsonIgnore

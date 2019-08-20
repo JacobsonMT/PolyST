@@ -20,7 +20,7 @@
                     Species
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarSpeciesDropdown">
-                    <a th:each="species: ${@speciesSettings.getActiveSpecies()}" class="dropdown-item" th:classappend="${activeTab == 'species-' + species.id} ? 'active' : null" th:href="@{'/species/' + ${species.id}}" th:text="${species.shortName}"></a>
+                    <a th:each="species: ${@speciesSettings.getActiveSpecies()}" class="dropdown-item" th:classappend="${activeTab == 'species-' + species.id} ? 'active' : null" th:href="@{'/species/' + ${species.id}}" th:text="${species.getScientificName() + ' (' + species.getCommonName() + ')'}"></a>
                 </div>
             </li>
             <li class="nav-item">
