@@ -30,7 +30,7 @@
             </a>
             <h1 class="text-center mb-0" th:text="${protein.accession}"></h1>
         </div>
-        <h4 class="text-center text-muted m-0" th:if="${species != null}" th:text="${species.getScientificName}"></h4>
+        <h4 class="text-center text-muted m-0" th:if="${species != null}" th:text="${species.getScientificName()}"></h4>
         <h5 class="text-center text-muted mt-1 mb-4" th:if="${species != null}" th:text="${'OX: ' + species.id}"></h5>
 
         <div class="card mx-auto text-center mb-4 result-card">

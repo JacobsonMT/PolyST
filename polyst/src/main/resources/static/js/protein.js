@@ -70,10 +70,8 @@ $(document).ready(function () {
         categories.push(base.reference);
         depth.push(base.depth);
 
-        if (species.disorderPrediction) {
-            iupData.push(base.iupred);
-            espritzData.push(base.espritz);
-        }
+        iupData.push(base.iupred);
+        espritzData.push(base.espritz);
 
         conservation.push(base.conservation);
         if (base.list.length === 0) {
@@ -87,14 +85,12 @@ $(document).ready(function () {
 
         // }
     });
-    if (species.disorderPrediction) {
-        let predictionData = [{name: "IUPred -l", type: "area", data: iupData}, {
-            name: "ESpritz -D",
-            type: "line",
-            color: "red",
-            data: espritzData
-        }];
-    }
+    let predictionData = [{name: "IUPred -l", type: "area", data: iupData}, {
+        name: "ESpritz -D",
+        type: "line",
+        color: "red",
+        data: espritzData
+    }];
     let conservationData = [{name: "Conservation", type: "area", data: conservation}];
     let depthData = [{name:"Depth",  type: "area", data:depth}];
 
