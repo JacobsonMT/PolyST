@@ -76,17 +76,16 @@ public class FlatFileProteinRepository implements ProteinRepository {
         return Paths.get( flatFileDirectory, species.getSubdirectory(), accession + ".txt" ).toFile();
     }
 
-
-    @Cacheable(value="protein-info", unless="#result == null or #result.size()==0")
+    @Cacheable(value="protein-info", sync=true)
     @Override
     public List<ProteinInfo> allProteinInfo( Species species ) {
-        try (Stream<Path> paths = Files.list( Paths.get( flatFileDirectory, species.getSubdirectory() ) )) {
+        try ( Stream<Path> paths = Files.list( Paths.get( flatFileDirectory, species.getSubdirectory() ) ) ) {
             List<ProteinInfo> results = paths.filter( Files::isRegularFile ).map( p -> {
                 try {
                     return new ProteinInfo(
                             p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ),
                             Integer.parseInt( lastLine( p.toFile() ).split( "\t" )[1] ) );
-                } catch (Exception e) {
+                } catch ( Exception e ) {
                     log.warn( "Issue Obtaining ProteinInfo from: " + p.getFileName() + " in species: " + species );
                     return new ProteinInfo(
                             p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ), 0 );
@@ -96,7 +95,7 @@ public class FlatFileProteinRepository implements ProteinRepository {
             log.info( "Load Protein Info Complete for " + species.getCommonName() );
             return results;
 //            return paths.filter( Files::isRegularFile ).map( p -> p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ) ).collect( Collectors.toList() );
-        } catch (IOException e) {
+        } catch ( IOException e ) {
             log.error( "Error walking data directory!" );
             return new ArrayList<>();
         } catch ( InvalidPathException e ) {
