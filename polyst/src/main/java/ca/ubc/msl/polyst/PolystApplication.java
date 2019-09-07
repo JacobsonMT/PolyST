@@ -30,12 +30,18 @@ public class PolystApplication implements CommandLineRunner {
 	public void run( String... args ) throws Exception {
 		// Warm main cache, will refresh asynchronously based on FlatFileProteinRepository policies
 		for ( Species species : speciesSettings.getSpecies().values() ) {
+			// We do this first because it's fast and blocks main page load
 			if ( species.isActive() ) {
-				log.info( "Loading cache for " + species.getCommonName() );
-				repository.getProteinInfo( species );
+				log.info( "Loading protein count cache for " + species.getCommonName() );
 				repository.getProteinCount( species );
 			}
 		}
-		log.info( "Protein Info caches populated." );
+		for ( Species species : speciesSettings.getSpecies().values() ) {
+			if ( species.isActive() ) {
+				log.info( "Loading ProteinInfo cache for " + species.getCommonName() );
+				repository.getProteinInfo( species );
+			}
+		}
+		log.info( "Caches populated." );
 	}
 }
