@@ -72,7 +72,7 @@ public class FlatFileProteinRepository implements ProteinRepository {
     }
 
     @Override
-    public Protein getByAccession( Species species, String accession ) {
+    public Protein getProtein( Species species, String accession ) {
         return proteinCache.get( new ProteinCacheKey( species, accession ) );
     }
 
@@ -115,7 +115,7 @@ public class FlatFileProteinRepository implements ProteinRepository {
         return null;
     }
     @Override
-    public Long proteinCount( Species species ) {
+    public Long getProteinCount( Species species ) {
         return proteinCountCache.get( species );
     }
 
@@ -135,7 +135,7 @@ public class FlatFileProteinRepository implements ProteinRepository {
     }
 
     @Override
-    public List<ProteinInfo> allProteinInfo( Species species ) {
+    public List<ProteinInfo> getProteinInfo( Species species ) {
         return proteinInfoCache.get( species );
     }
 
@@ -172,7 +172,7 @@ public class FlatFileProteinRepository implements ProteinRepository {
     }
 
     @Override
-    public File getRawData( Species species, String accession ) {
+    public File getRawProteinData( Species species, String accession ) {
         return Paths.get( flatFileDirectory, species.getSubdirectory(), accession + ".txt" ).toFile();
     }
 

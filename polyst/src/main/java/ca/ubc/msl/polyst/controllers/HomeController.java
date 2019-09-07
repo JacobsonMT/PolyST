@@ -69,7 +69,7 @@ public class HomeController {
 
         Protein protein = null;
         if ( species != null ) {
-            protein = repository.getByAccession( species, accession );
+            protein = repository.getProtein( species, accession );
         }
 
         model.addAttribute("species", species );

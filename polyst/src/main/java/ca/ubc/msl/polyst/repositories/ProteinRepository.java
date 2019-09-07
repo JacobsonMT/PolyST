@@ -11,11 +11,11 @@ import java.util.List;
  */
 public interface ProteinRepository {
 
-    Protein getByAccession( Species species, String accession );
+    Protein getProtein( Species species, String accession );
 
-    Object getRawData( Species species, String accession );
+    Object getRawProteinData( Species species, String accession );
 
-    Long proteinCount( Species species );
+    Long getProteinCount( Species species );
 
-    List<ProteinInfo> allProteinInfo( Species species );
+    List<ProteinInfo> getProteinInfo( Species species );
 }

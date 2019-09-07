@@ -32,8 +32,8 @@ public class PolystApplication implements CommandLineRunner {
 		for ( Species species : speciesSettings.getSpecies().values() ) {
 			if ( species.isActive() ) {
 				log.info( "Loading cache for " + species.getCommonName() );
-				repository.allProteinInfo( species );
-				repository.proteinCount( species );
+				repository.getProteinInfo( species );
+				repository.getProteinCount( species );
 			}
 		}
 		log.info( "Protein Info caches populated." );

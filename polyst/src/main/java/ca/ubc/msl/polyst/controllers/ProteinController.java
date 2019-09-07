@@ -51,17 +51,17 @@ public class ProteinController {
     }
 
     @RequestMapping( value = "/api/species/{speciesId}/proteins/{accession}", method = RequestMethod.GET )
-    public Protein getByAccession( @PathVariable int speciesId, @PathVariable String accession ) {
+    public Protein getProtein( @PathVariable int speciesId, @PathVariable String accession ) {
         Species species = speciesSettings.getSpecies( speciesId );
 
         if ( species == null ) {
             return null;
         }
-        return repository.getByAccession( species, accession );
+        return repository.getProtein( species, accession );
     }
 
     @RequestMapping( value = "/api/species/{speciesId}/proteins/{accession}/{location}", method = RequestMethod.GET )
-    public ResponseEntity<?> getByAccession( @PathVariable int speciesId,
+    public ResponseEntity<?> getProteinBase( @PathVariable int speciesId,
                                              @PathVariable String accession,
                                              @PathVariable int location ) {
 
@@ -71,7 +71,7 @@ public class ProteinController {
             return new ResponseEntity<>( "Species unavailable.", HttpStatus.BAD_REQUEST );
         }
 
-        Protein protein = repository.getByAccession( species, accession );
+        Protein protein = repository.getProtein( species, accession );
 
         if ( protein == null ) {
             return new ResponseEntity<>( "Protein accession unavailable.", HttpStatus.BAD_REQUEST );
@@ -88,11 +88,11 @@ public class ProteinController {
     }
 
     @RequestMapping( value = "/api/species/{speciesId}/proteins/{accession}/{location}/{ref}/{alt}", method = RequestMethod.GET )
-    public ResponseEntity<?> getByAccession( @PathVariable int speciesId,
-                                             @PathVariable String accession,
-                                             @PathVariable int location,
-                                             @PathVariable String ref,
-                                             @PathVariable String alt ) {
+    public ResponseEntity<?> getProteinMutation( @PathVariable int speciesId,
+                                                 @PathVariable String accession,
+                                                 @PathVariable int location,
+                                                 @PathVariable String ref,
+                                                 @PathVariable String alt ) {
 
         Species species = speciesSettings.getSpecies( speciesId );
 
@@ -100,7 +100,7 @@ public class ProteinController {
             return new ResponseEntity<>( "Species unavailable.", HttpStatus.BAD_REQUEST );
         }
 
-        Protein protein = repository.getByAccession( species, accession );
+        Protein protein = repository.getProtein( species, accession );
 
         if ( protein == null ) {
             return new ResponseEntity<>( "Protein accession unavailable.", HttpStatus.BAD_REQUEST );
@@ -132,14 +132,14 @@ public class ProteinController {
     }
 
     @RequestMapping( value = "/api/species/{speciesId}/proteins", method = RequestMethod.GET )
-    public List<ProteinInfo> allProteins( @PathVariable int speciesId ) {
+    public List<ProteinInfo> getProteinInfo( @PathVariable int speciesId ) {
         Species species = speciesSettings.getSpecies( speciesId );
 
         if ( species == null ) {
             return null;
         }
 
-        return repository.allProteinInfo( species );
+        return repository.getProteinInfo( species );
     }
 
     @RequestMapping( value = "/api/species/{speciesId}/proteins/datatable", method = RequestMethod.POST )
@@ -157,7 +157,7 @@ public class ProteinController {
             return response;
         }
 
-        List<ProteinInfo> rawResults = repository.allProteinInfo( species );
+        List<ProteinInfo> rawResults = repository.getProteinInfo( species );
         Stream<ProteinInfo> resultStream = rawResults.stream();
 
         List<Predicate<ProteinInfo>> filters = Lists.newArrayList();
@@ -229,7 +229,7 @@ public class ProteinController {
     }
 
     @RequestMapping( value = "/api/species/{speciesId}/proteins", method = RequestMethod.POST )
-    public List<Object> manyProteins( @PathVariable int speciesId,
+    public List<Object> getProteins( @PathVariable int speciesId,
                                       @RequestBody List<ProteinRequest> proteinRequests ) {
 
         Species species = speciesSettings.getSpecies( speciesId );
@@ -241,7 +241,7 @@ public class ProteinController {
         // This can be expanded for more versatility and efficiency with many calls to same protein
         List<Object> res = Lists.newArrayList();
         for ( ProteinRequest pr : proteinRequests ) {
-            ResponseEntity<?> re = getByAccession( species.getId(), pr.getAccession(), pr.getLocation(), pr.getRef(), pr.getAlt() );
+            ResponseEntity<?> re = getProteinMutation( species.getId(), pr.getAccession(), pr.getLocation(), pr.getRef(), pr.getAlt() );
             if ( re.getBody() != null ) {
                 res.add( re.getBody().toString() );
             }
@@ -250,7 +250,7 @@ public class ProteinController {
     }
 
     @RequestMapping( value = "/api/species/{speciesId}/proteins/{accession}/download", method = RequestMethod.GET )
-    public void downloadByAccession( HttpServletResponse response,
+    public void downloadProtein( HttpServletResponse response,
                                      @PathVariable int speciesId,
                                      @PathVariable String accession ) throws IOException {
 
@@ -264,7 +264,7 @@ public class ProteinController {
             return;
         }
 
-        File file = ( File ) repository.getRawData( species, accession );
+        File file = ( File ) repository.getRawProteinData( species, accession );
 
 
         if ( !file.exists() ) {
