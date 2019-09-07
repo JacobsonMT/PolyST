@@ -80,19 +80,25 @@ public class FlatFileProteinRepository implements ProteinRepository {
     @Override
     public List<ProteinInfo> allProteinInfo( Species species ) {
         try ( Stream<Path> paths = Files.list( Paths.get( flatFileDirectory, species.getSubdirectory() ) ) ) {
+            long startTime = System.currentTimeMillis();
             List<ProteinInfo> results = paths.filter( Files::isRegularFile ).map( p -> {
                 try {
-                    return new ProteinInfo(
-                            p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ),
-                            Integer.parseInt( lastLine( p.toFile() ).split( "\t" )[1] ) );
+                    int lines = 0;
+                    try {
+                        lines = fastCountLines( p.toFile() ) - 1;
+                    } catch ( IOException ignored ) {
+                    }
+                    if (lines == 0) {
+                        lines = ( int ) Files.lines(p).count();
+                    }
+                    return new ProteinInfo( getNameWithoutExtension( p ), lines );
                 } catch ( Exception e ) {
                     log.warn( "Issue Obtaining ProteinInfo from: " + p.getFileName() + " in species: " + species );
-                    return new ProteinInfo(
-                            p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ), 0 );
+                    return new ProteinInfo( getNameWithoutExtension( p ), 0 );
                 }
             } )
                     .collect( Collectors.toList() );
-            log.info( "Load Protein Info Complete for " + species.getCommonName() );
+            log.info( "Load Protein Info Complete for {} in {}s", species.getCommonName(), (System.currentTimeMillis() - startTime)/1000 );
             return results;
 //            return paths.filter( Files::isRegularFile ).map( p -> p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ) ).collect( Collectors.toList() );
         } catch ( IOException e ) {
@@ -139,50 +145,29 @@ public class FlatFileProteinRepository implements ProteinRepository {
         return base;
     };
 
-    private static String lastLine( File file ) {
+    private static String getNameWithoutExtension(Path path) {
+        String fileName = path.toFile().getName();
+        int extensionPos = fileName.lastIndexOf(".");
 
-        RandomAccessFile fileHandler = null;
-        try {
-            fileHandler = new RandomAccessFile( file, "r" );
-            long fileLength = fileHandler.length() - 1;
-            StringBuilder sb = new StringBuilder();
-
-            for ( long filePointer = fileLength; filePointer != -1; filePointer-- ) {
-                fileHandler.seek( filePointer );
-                int readByte = fileHandler.readByte();
-
-                if ( readByte == 0xA ) {
-                    if ( filePointer == fileLength ) {
-                        continue;
-                    }
-                    break;
-
-                } else if ( readByte == 0xD ) {
-                    if ( filePointer == fileLength - 1 ) {
-                        continue;
-                    }
-                    break;
-                }
-
-                sb.append( (char) readByte );
-            }
-
-            return sb.reverse().toString();
-        } catch (java.io.FileNotFoundException e) {
-            log.warn( "No file found for: " + file.getName() );
-            return null;
-        } catch (java.io.IOException e) {
-            log.error( "IO Error for: " + file.getName(), e );
-            return null;
-        } finally {
-            if ( fileHandler != null )
-                try {
-                    fileHandler.close();
-                } catch (IOException e) {
-                /* ignore */
-                }
+        if (extensionPos == -1) {
+            return fileName;
+        } else {
+            return fileName.substring(0, extensionPos);
         }
+
     }
 
-
+    private static int fastCountLines(File aFile) throws IOException {
+        int count = 0;
+        try (FileInputStream stream = new FileInputStream(aFile)) {
+            byte[] buffer = new byte[8192];
+            int n;
+            while ( (n = stream.read( buffer )) > 0 ) {
+                for ( int i = 0; i < n; i++ ) {
+                    if ( buffer[i] == '\n' ) count++;
+                }
+            }
+        }
+        return count;
+    }
 }
