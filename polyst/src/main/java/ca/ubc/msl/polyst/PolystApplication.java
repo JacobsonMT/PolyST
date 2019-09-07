@@ -31,8 +31,9 @@ public class PolystApplication implements CommandLineRunner {
 		// Warm main cache, will refresh asynchronously based on FlatFileProteinRepository policies
 		for ( Species species : speciesSettings.getSpecies().values() ) {
 			if ( species.isActive() ) {
-				log.info( "Loading Protein Info cache for " + species.getCommonName() );
+				log.info( "Loading cache for " + species.getCommonName() );
 				repository.allProteinInfo( species );
+				repository.proteinCount( species );
 			}
 		}
 		log.info( "Protein Info caches populated." );

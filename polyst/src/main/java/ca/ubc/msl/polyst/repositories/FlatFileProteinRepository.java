@@ -39,6 +39,7 @@ public class FlatFileProteinRepository implements ProteinRepository {
     private final SpeciesSettings speciesSettings;
 
     private LoadingCache<Species, List<ProteinInfo>> proteinInfoCache;
+    private LoadingCache<Species, Long> proteinCountCache;
     private LoadingCache<ProteinCacheKey, Protein> proteinCache;
 
     @AllArgsConstructor
@@ -58,6 +59,11 @@ public class FlatFileProteinRepository implements ProteinRepository {
                 .maximumSize(speciesSettings.getSpecies().size())
                 .refreshAfterWrite(1, TimeUnit.HOURS)
                 .build( this::loadProteinInfo );
+
+        proteinCountCache = Caffeine.newBuilder()
+                .maximumSize(speciesSettings.getSpecies().size())
+                .refreshAfterWrite(1, TimeUnit.HOURS)
+                .build( this::loadProteinCount );
 
         proteinCache = Caffeine.newBuilder()
                 .maximumSize(500)
@@ -107,6 +113,25 @@ public class FlatFileProteinRepository implements ProteinRepository {
         }
 
         return null;
+    }
+    @Override
+    public Long proteinCount( Species species ) {
+        return proteinCountCache.get( species );
+    }
+
+    private Long loadProteinCount( Species species ) {
+        try ( Stream<Path> paths = Files.list( Paths.get( flatFileDirectory, species.getSubdirectory() ) ) ) {
+            long startTime = System.currentTimeMillis();
+            long count = paths.count();
+            log.info( "Load Protein Count Complete for {} in {}ms", species.getCommonName(), (System.currentTimeMillis() - startTime) );
+            return count;
+        } catch ( IOException e ) {
+            log.error( "Error walking data directory!" );
+            return 0L;
+        } catch ( InvalidPathException e ) {
+            log.error( "Requested invalid species: " + species );
+            return 0L;
+        }
     }
 
     @Override

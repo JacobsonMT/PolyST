@@ -37,7 +37,7 @@
                 </div>
                 <div class="card-body">
                     <h5 class="card-title" th:text="${'OX: ' + species.id}"></h5>
-                    <p class="card-text" th:text="${'Count: ' + @flatFileProteinRepository.allProteinInfo(species).size()}"></p>
+                    <p class="card-text" th:text="${'Count: ' + @flatFileProteinRepository.proteinCount(species)}"></p>
                     <a href="#" th:href="@{'/species/' + ${species.id}}" class="btn btn-info">View Proteins</a>
                 </div>
             </div>

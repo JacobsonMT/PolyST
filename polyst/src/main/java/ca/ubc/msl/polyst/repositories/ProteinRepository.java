@@ -15,5 +15,7 @@ public interface ProteinRepository {
 
     Object getRawData( Species species, String accession );
 
+    Long proteinCount( Species species );
+
     List<ProteinInfo> allProteinInfo( Species species );
 }
