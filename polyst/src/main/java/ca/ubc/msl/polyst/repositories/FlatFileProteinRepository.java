@@ -4,17 +4,23 @@ import ca.ubc.msl.polyst.model.Base;
 import ca.ubc.msl.polyst.model.Protein;
 import ca.ubc.msl.polyst.model.ProteinInfo;
 import ca.ubc.msl.polyst.model.Species;
+import ca.ubc.msl.polyst.settings.SpeciesSettings;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,41 +36,73 @@ public class FlatFileProteinRepository implements ProteinRepository {
     @Value("${polyst.dataDir}")
     private String flatFileDirectory;
 
-    @Cacheable(value = "protein")
+    private final SpeciesSettings speciesSettings;
+
+    private LoadingCache<Species, List<ProteinInfo>> proteinInfoCache;
+    private LoadingCache<ProteinCacheKey, Protein> proteinCache;
+
+    @AllArgsConstructor
+    @EqualsAndHashCode
+    private static class ProteinCacheKey {
+        private Species species;
+        private String accession;
+    }
+
+    public FlatFileProteinRepository( SpeciesSettings speciesSettings ) {
+        this.speciesSettings = speciesSettings;
+    }
+
+    @PostConstruct
+    private void postConstruct() {
+        proteinInfoCache = Caffeine.newBuilder()
+                .maximumSize(speciesSettings.getSpecies().size())
+                .refreshAfterWrite(1, TimeUnit.HOURS)
+                .build( this::loadProteinInfo );
+
+        proteinCache = Caffeine.newBuilder()
+                .maximumSize(500)
+                .expireAfterWrite(1, TimeUnit.HOURS)
+                .build( this::loadProtein );
+    }
+
     @Override
     public Protein getByAccession( Species species, String accession ) {
+        return proteinCache.get( new ProteinCacheKey( species, accession ) );
+    }
+
+    private Protein loadProtein( ProteinCacheKey key ) {
 
         InputStream is = null;
 
         try {
 
-            Path file = Paths.get( flatFileDirectory, species.getSubdirectory(), accession + ".txt" );
+            Path file = Paths.get( flatFileDirectory, key.species.getSubdirectory(), key.accession + ".txt" );
 
 
             is = Files.newInputStream( file );
             BufferedReader br = new BufferedReader( new InputStreamReader( is ) );
 
-            List<Base> sequence = species.isDisorderPrediction() ?
+            List<Base> sequence = key.species.isDisorderPrediction() ?
                     br.lines().skip( 1 ).map( mapBaseWithDisorder ).collect( Collectors.toList() ) :
                     br.lines().skip( 1 ).map( mapBaseWithoutDisorder ).collect( Collectors.toList() );
 
-            Protein protein = new Protein( accession );
+            Protein protein = new Protein( key.accession );
             protein.setSequence( sequence );
-
+            log.info( "Loaded protein from disk: {}/{}", key.species.getCommonName(), key.accession );
             return protein;
         } catch (NoSuchFileException ex) {
-            log.debug( "No file found for: " + accession + " in species: " + species );
+            log.debug( "No file found for: " + key.accession + " in species: " + key.species );
         } catch (FileNotFoundException | InvalidPathException ex) {
-            log.warn( "File not accessible: " + accession + " in species: " + species );
+            log.warn( "File not accessible: " + key.accession + " in species: " + key.species );
         } catch (IOException ex) {
-            log.error( "IO Error for: " + accession + " in species: " + species, ex );
+            log.error( "IO Error for: " + key.accession + " in species: " + key.species, ex );
         } finally {
             try {
                 if ( is != null ) {
                     is.close();
                 }
             } catch (IOException ex) {
-                log.error( "IO Error when closing: " + accession + " in species: " + species, ex );
+                log.error( "IO Error when closing: " + key.accession + " in species: " + key.species, ex );
             }
         }
 
@@ -72,13 +110,11 @@ public class FlatFileProteinRepository implements ProteinRepository {
     }
 
     @Override
-    public File getRawData( Species species, String accession ) {
-        return Paths.get( flatFileDirectory, species.getSubdirectory(), accession + ".txt" ).toFile();
+    public List<ProteinInfo> allProteinInfo( Species species ) {
+        return proteinInfoCache.get( species );
     }
 
-    @Cacheable(value="protein-info", sync=true)
-    @Override
-    public List<ProteinInfo> allProteinInfo( Species species ) {
+    private List<ProteinInfo> loadProteinInfo( Species species ) {
         try ( Stream<Path> paths = Files.list( Paths.get( flatFileDirectory, species.getSubdirectory() ) ) ) {
             long startTime = System.currentTimeMillis();
             List<ProteinInfo> results = paths.filter( Files::isRegularFile ).map( p -> {
@@ -108,6 +144,11 @@ public class FlatFileProteinRepository implements ProteinRepository {
             log.error( "Requested invalid species: " + species );
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public File getRawData( Species species, String accession ) {
+        return Paths.get( flatFileDirectory, species.getSubdirectory(), accession + ".txt" ).toFile();
     }
 
     private static Function<String, Base> mapBaseWithDisorder = ( rawLine ) -> {

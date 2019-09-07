@@ -3,22 +3,15 @@ package ca.ubc.msl.polyst;
 import ca.ubc.msl.polyst.model.Species;
 import ca.ubc.msl.polyst.repositories.ProteinRepository;
 import ca.ubc.msl.polyst.settings.SpeciesSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 
+@Log4j2
 @SpringBootApplication
-@EnableCaching
-@EnableScheduling
-public class PolystApplication {
-
-	private static final Logger log = LoggerFactory.getLogger( PolystApplication.class );
-
+public class PolystApplication implements CommandLineRunner {
 
 	private final ProteinRepository repository;
 	private final SpeciesSettings speciesSettings;
@@ -33,10 +26,9 @@ public class PolystApplication {
 		SpringApplication.run(PolystApplication.class, args);
 	}
 
-	@Scheduled(fixedDelay = 3600000)
-	public void warmCaches() {
-		// Warm main cache every hour, will reload if cache has been cleared
-		log.debug( "Warm caches" );
+	@Override
+	public void run( String... args ) throws Exception {
+		// Warm main cache, will refresh asynchronously based on FlatFileProteinRepository policies
 		for ( Species species : speciesSettings.getSpecies().values() ) {
 			if ( species.isActive() ) {
 				log.info( "Loading Protein Info cache for " + species.getCommonName() );
@@ -44,7 +36,5 @@ public class PolystApplication {
 			}
 		}
 		log.info( "Protein Info caches populated." );
-
 	}
-
 }
