@@ -1,5 +1,6 @@
 package ca.ubc.msl.polyst.controllers;
 
+import ca.ubc.msl.polyst.exception.ProteinNotFoundException;
 import ca.ubc.msl.polyst.model.Protein;
 import ca.ubc.msl.polyst.model.Species;
 import ca.ubc.msl.polyst.repositories.ProteinRepository;
@@ -70,6 +71,9 @@ public class HomeController {
         Protein protein = null;
         if ( species != null ) {
             protein = repository.getProtein( species, accession );
+        }
+        if (protein == null) {
+            throw new ProteinNotFoundException();
         }
 
         model.addAttribute("species", species );
