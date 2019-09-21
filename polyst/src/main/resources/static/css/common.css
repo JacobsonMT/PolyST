@@ -12,15 +12,6 @@ body {
     margin-bottom: 55px;
 }
 
-nav.navbar {
-    -webkit-box-shadow: 0 4px 0px 0px #999;
-    -moz-box-shadow: 0 4px 0px 0px #999;
-    box-shadow: 0 4px 0px 0px #999;
-    color: #333333;
-    font-family: 'Open Sans', sans-serif;
-    letter-spacing: 1px;
-}
-
 .footer {
     position: absolute;
     bottom: 0;
@@ -67,28 +58,6 @@ div.container {
     overflow-x: hidden;
 }
 
-@media (min-width: 992px) {
-    .navbar-brand.abs
-    {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-}
-
-@media (max-width: 991px) {
-
-    div.navbar-collapse ul.navbar-nav.collapse-right {
-        text-align:right;
-    }
-
-    div.navbar-collapse ul.navbar-nav.collapse-center {
-        text-align:center;
-    }
-
-
-}
-
 button.icon-only, a.icon-only  {
     border: none;
     background-color: transparent;
@@ -105,6 +74,35 @@ a[type=button].icon-only:hover  {
 
 button.icon-only:focus, a.icon-only:focus {
     outline: none;
+}
+
+/* Navbar */
+
+nav.navbar {
+    -webkit-box-shadow: 0 4px 0px 0px #999;
+    -moz-box-shadow: 0 4px 0px 0px #999;
+    box-shadow: 0 4px 0px 0px #999;
+    color: #333333;
+    font-family: 'Open Sans', sans-serif;
+    letter-spacing: 1px;
+}
+
+@media (min-width: 992px) {
+    .navbar-brand.abs
+    {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+@media (max-width: 991px) {
+    div.navbar-collapse ul.navbar-nav.collapse-right {
+        text-align:right;
+    }
+    div.navbar-collapse ul.navbar-nav.collapse-center {
+        text-align:center;
+    }
 }
 
 .dropdown-menu {
@@ -127,7 +125,6 @@ button.icon-only:focus, a.icon-only:focus {
 }
 
 .dropdown-item:hover {
-    color: black;
     background-color: #dadada;
 }
 
@@ -138,4 +135,32 @@ button.icon-only:focus, a.icon-only:focus {
 
 .nav-link.active {
     text-decoration: underline;
+}
+
+@media (max-width: 1250px) {
+    div.navbar-collapse.collapse ul.navbar-nav:first-child {
+        max-width:350px;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 992px) {
+    div.navbar-collapse.collapse ul.navbar-nav:first-child {
+        max-width: none;
+    }
+}
+
+@media (min-width: 991px) {
+    ul.navbar-nav.divided > li.nav-item:not(:last-child) > a.nav-link {
+        border-right: 2px solid #999;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
+ul.navbar-nav.align-items-center {
+    -ms-flex-align: center!important;
+    align-items: center!important;
+    display: flex;
+    justify-content: center;
 }

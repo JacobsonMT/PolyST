@@ -6,11 +6,12 @@
 
 </head>
 <body>
-<div th:replace="fragments/navbar :: navbar(citing)">...</div>
+<div th:replace="fragments/navbar :: navbar(about)">...</div>
 <div class="container-fluid p-4">
 
+    <div th:replace="fragments/title :: title(title='Citation')" th:remove="tag">...</div>
+
     <div class="main-content p-4">
-        <p>Cite as:</p>
         <p style="padding-left:1rem;">Nawar Malhis, Steven J. M. Jones, Jörg Gsponer. <b>Improved measures for evolutionary conservation that exploit taxonomy distances</b>.
             <a href="https://www.nature.com/articles/s41467-019-09583-2" target="_blank">Nature Communications volume 10, Article number: 1556 (2019)</a></p>
     </div>

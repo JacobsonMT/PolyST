@@ -39,14 +39,14 @@ public class HomeController {
         return "species";
     }
 
-    @RequestMapping(value = "/help")
-    public String about() {
-        return "help";
+    @RequestMapping(value = "/documentation")
+    public String documentation() {
+        return "documentation";
     }
 
-    @RequestMapping(value = "/citing")
-    public String citing() {
-        return "citing";
+    @RequestMapping(value = "/about")
+    public String about() {
+        return "about";
     }
 
     @RequestMapping(value = "/contact")

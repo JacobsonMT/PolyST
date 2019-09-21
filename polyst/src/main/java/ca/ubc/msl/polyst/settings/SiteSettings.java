@@ -19,4 +19,7 @@ public class SiteSettings {
     private String msl;
     private String contactEmail;
 
+    private String apiSite;
+    private String htmlSite;
+
 }

@@ -29,8 +29,10 @@
     </style>
 </head>
 <body>
-<div th:replace="fragments/navbar :: navbar(help)">...</div>
+<div th:replace="fragments/navbar :: navbar(documentation)">...</div>
 <div class="container-fluid p-4">
+
+    <div th:replace="fragments/title :: title(title='Instructions')" th:remove="tag">...</div>
 
     <div class="main-content p-4">
         <p>
