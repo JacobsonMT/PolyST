@@ -23,9 +23,13 @@
     </button>
     <div class="navbar-collapse collapse" id="collapsingNavbar">
         <ul class="navbar-nav collapse-right align-items-center" style="font-size:150%;font-weight: bold;">
-            <li class="nav-item">
-                <a class="nav-link" th:classappend="${activeTab == 'home'} ? 'active' : null"
-                   th:href="@{/}" href="/">Home</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarSpeciesDropdown"
+                   th:classappend="${activeTab.startsWith('home') or activeTab.startsWith('species')} ? 'active' : null"
+                   role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Home</a>
+                <div class="dropdown-menu" aria-labelledby="navbarSpeciesDropdown">
+                    <a th:each="species: ${@speciesSettings.getActiveSpecies()}" class="dropdown-item" th:classappend="${activeTab == 'species-' + species.id} ? 'active' : null" th:href="@{'/species/' + ${species.id}}" th:text="${species.getScientificName() + ' (' + species.getCommonName() + ')'}"></a>
+                </div>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:classappend="${activeTab == 'documentation'} ? 'active' : null"
@@ -34,14 +38,6 @@
             <li class="nav-item">
                 <a class="nav-link" th:classappend="${activeTab == 'about'} ? 'active' : null"
                    th:href="@{/about}" href="/about">About</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarSpeciesDropdown" th:classappend="${activeTab.startsWith('species')} ? 'active' : null" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Species
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarSpeciesDropdown">
-                    <a th:each="species: ${@speciesSettings.getActiveSpecies()}" class="dropdown-item" th:classappend="${activeTab == 'species-' + species.id} ? 'active' : null" th:href="@{'/species/' + ${species.id}}" th:text="${species.getScientificName() + ' (' + species.getCommonName() + ')'}"></a>
-                </div>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto collapse-center">
