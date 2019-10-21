@@ -9,13 +9,33 @@
 <div th:replace="fragments/navbar :: navbar(about)">...</div>
 <div class="container-fluid p-4">
 
+    <div th:replace="fragments/title :: title(title='About')" th:remove="tag">...</div>
+
+    <div class="main-content p-4">
+        <p><b th:text="${@siteSettings.title}">LIST-S2</b> (species specific) predicts the deleteriousness of amino acid mutations in protein sequences. First, it
+            aligns (high Local identity Pair-wise Sequence Alignment, LPSA) the query sequence to all protein sequences in the UniProt Swiss-Prot/TrEMBL
+            database and then it identifies the most relevant homologies based on their local identity to the query
+            sequence around that position. And finally, it estimates the potential deleteriousness
+            of mutations based on Taxonomy distance of species with variations to the query.</p>
+
+        <p> Prediction scores are in the range [0 .. 1], where lower scores indicate more benign and higher indicate
+            deleteriousness effect.</p>
+
+    </div>
+
     <div th:replace="fragments/title :: title(title='Citation')" th:remove="tag">...</div>
 
     <div class="main-content p-4">
-        <p style="padding-left:1rem;">Nawar Malhis, Steven J. M. Jones, Jörg Gsponer. <b>Improved measures for evolutionary conservation that exploit taxonomy distances</b>.
-            <a href="https://www.nature.com/articles/s41467-019-09583-2" target="_blank">Nature Communications volume 10, Article number: 1556 (2019)</a></p>
+        <p>Citation pending.</p>
     </div>
 
+    <div th:replace="fragments/title :: title(title='Terms & Conditions')" th:remove="tag">...</div>
+
+    <div class="main-content p-4" >
+        <p>This software is distributed on an as is basis, without any kind of warranties. This software is free for
+            academic not for profit research only. Appropriate citation when using LIST-S2 in publication of scientific
+            results. </p>
+    </div>
 
 </div>
 <div th:replace="fragments/footer" th:remove="tag">...</div>
