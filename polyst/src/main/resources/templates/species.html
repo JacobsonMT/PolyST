@@ -25,8 +25,10 @@
             <h5 style="margin-top: 0.25rem; margin-bottom:0.5rem;" class="text-muted"  th:if="${species != null}" th:text="${'OX: ' + species.id}"></h5>
             <div>
                 <form id="protein-form" >
-                    <textarea class="input"
-                              placeholder="Example Input:                                         Q8WVH0:112:D:G                                         P53365:312:N:K                                         Q9ULP0:254:T:V                                         Q8NHW4:15:A:M                                         Q96EW2:436:I:Y"></textarea>
+                    <textarea th:if="${species.id==9606}" class="input"
+                              placeholder="Example Input:                                         P04637_ENST00000269305:118:T:M                                         P04637_ENST00000269305:377:T:P                                         P07766_ENST00000361763:152:S:F"></textarea>
+                    <textarea th:if="${species.id!=9606}" class="input"
+                              placeholder="Example Input:                                         O08586:295:L:H                                         O08586:175:V:M                                         E1BMF7:727:Q:P                                         E1BMF7:727:Q:E"></textarea>
                     <input type="submit" value=">>" />
                     <textarea class="output" placeholder="Output Predictions" disabled="disabled"></textarea>
                 </form>

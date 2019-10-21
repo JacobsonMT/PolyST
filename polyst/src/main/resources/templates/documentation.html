@@ -36,18 +36,16 @@
 
     <div class="main-content p-4">
         <p>
-            <b>LIST</b> predicts the deleteriousness of amino acid mutations in human proteomes. The current release,
-            0.9 includes precomputed predictions of ~20,000 SwissProt protein sequences identified by their UniProt
-            accession number. Prediction scores in the range [0 .. 1], where lower scores indicate more benign and
-            higher indicate deleteriousness effect.
+            <b>LIST-S2</b> predicts the deleteriousness of amino acid mutations in proteomes. Prediction scores in the
+            range [0 .. 1], where lower scores indicate more benign and higher indicate deleteriousness effect.
         </p>
         <p>
-            <b>Per Mutation:</b> To obtain LIST prediction for a list of mutations, copy and paste these mutations in
+            <b>Per Mutation:</b> To obtain LIST-S2 predictions for a list of mutations, copy and paste these mutations in
             the input text box and then click <button class="submit-example">>></button>. Each entry should have the following format: <i>AC:Pos:RefAA:AlleleAA</i>
         </p>
 
         <ul>
-            <li><i>AC:</i> protein accession number.</li>
+            <li><i>AC:</i> protein accession number (for human data it should be followed by _ENST000...).</li>
             <li><i>Pos:</i> protein position.</li>
             <li><i>RefAA:</i> the reference amino acid at position <i>Pos</i>.</li>
             <li><i>AlleleAA:</i> the allele amino acid.</li>
@@ -55,28 +53,33 @@
 
         <div style="padding-left:1rem;">
         <b>Example Input:</b>
-        <pre style="padding-left: 1rem;"><code>A0A0A0MRZ7:28:P:G
-A0A0A0MRZ7:112:Y:F
-A0A096LP49:133:E:K
-A0A0J9YX94:197:T:K
-P07766:192:R:T</code></pre>
+        <pre style="padding-left: 1rem;"><code>O08586:295:L:H
+O08586:175:V:M
+E1BMF7:727:Q:P
+E1BMF7:727:Q:E
+P07766:192:R:T
+P04637_ENST00000269305:118:T:M
+P04637_ENST00000269305:377:T:P
+P07766_ENST00000361763:152:S:F</code></pre>
 
         <b>Output:</b>
-            <pre style="padding-left: 1rem;"><code>A0A0A0MRZ7:28:P:G&#9;0.951352
-A0A0A0MRZ7:112:Y:F&#9;0.498739
-A0A096LP49:133:E:K&#9;0.731489
-A0A0J9YX94:197:T:K&#9;0.829466
-P07766:192:R:T&#9;0.885529</code></pre>
+            <pre style="padding-left: 1rem;"><code>A0A0A0O08586:295:L:H&#9;0.718928
+O08586:175:V:M&#9;0.997573
+E1BMF7:727:Q:P&#9;0.787321
+E1BMF7:727:Q:E&#9;0.929907
+P04637_ENST00000269305:118:T:M&#9;0.974003
+P04637_ENST00000269305:377:T:P&#9;0.59504
+P07766_ENST00000361763:152:S:F&#9;0.919908</code></pre>
 
         </div>
 
         <p>
-            <b>Per Protein:</b> One can also visualize/download LIST scores for all possible mutation of a specific
+            <b>Per Protein:</b> One can also visualize/download LIST-S2 scores for all possible mutations of a specific
             protein sequence identified by its accession number.
         </p>
         <div style="padding-left:1rem;">
             <p>
-            Enter an accession value under <i>Accession</i> and then select:
+            Enter an id value under <i>Accession</i> and then select:
             <br/>
             <i>Download:</i> to download all scores, or
             <br/>
