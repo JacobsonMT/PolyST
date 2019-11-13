@@ -58,6 +58,23 @@ $(document).ready(function () {
         });
     });
 
+    $('#cutoff').bind('input', function () {
+        window.heatmapChart.heatmapCutoff = this.value;
+        $('#cutoff-value').html(parseFloat(this.value).toFixed(2));
+    });
+
+    $('#cutoff').bind('mouseup', function () {
+        if (window.heatmapChart.colorAxis[0].stops.length === 4) {
+            window.heatmapChart.colorAxis[0].update({
+                stops: [[0, '#a1dab4'],
+                    [window.heatmapChart.heatmapCutoff, '#a1dab4'],
+                    [window.heatmapChart.heatmapCutoff, '#253494'],
+                    [1, '#253494']],
+                tickPositions: [0, window.heatmapChart.heatmapCutoff, 1]
+            });
+        }
+    });
+
     let data = [];
     let categories = [];
     let depth = [];
@@ -101,6 +118,7 @@ $(document).ready(function () {
             document.getElementById('heatmap-container'),
             createHeatMap( "Position Conservation Matrix", data, categories)
         );
+        window.heatmapChart.heatmapCutoff = 0.88;
         charts.push( window.heatmapChart );
     }
 
@@ -372,7 +390,70 @@ function createHeatMap(title,
             turboThreshold: 1000,
         }],
 
+        lang: {
+            axis_toggle: 'Toggle Color Axis: Gradient/Binary'
+        },
+
         exporting: {
+            buttons: {
+                scaleToggle: {
+                    theme: {
+                        fill: 'white',
+                        stroke: 'silver',
+                        r: 5,
+                        style: {
+                            fontSize: '10px'
+                        },
+                        states: {
+                            hover: {
+                                fill: '#41739D',
+                                style: {
+                                    color: 'white'
+                                }
+                            }
+                        }
+                    },
+                    align: 'left',
+                    //verticalAlign:'middle',
+                    x: 400,
+                    y:-10,
+                    onclick: function () {
+                        // The toggling of the text is not using an official API, can break with version update!
+                        var axis = this.colorAxis[0];
+                        if (axis.stops.length !== 4) {
+                            this.exportSVGElements[3].element.nextSibling.innerHTML = "Binary";
+                            $("#cutoff-container").show();
+                            axis.update({
+                                stops: [[0, '#a1dab4'],
+                                    [this.heatmapCutoff, '#a1dab4'],
+                                    [this.heatmapCutoff, '#253494'],
+                                    [1, '#253494']],
+                                tickPositions: [0, this.heatmapCutoff, 1]
+                            });
+                        } else {
+                            this.exportSVGElements[3].element.nextSibling.innerHTML = "Grad";
+                            $("#cutoff-container").hide();
+                            axis.update({
+                                stops: [[0, '#ffffff'],
+                                    [0.1, '#ffffcc'],
+                                    [0.6, '#a1dab4'],
+                                    [0.8, '#41b6c4'],
+                                    [0.9, '#2c7fb8'],
+                                    [0.95, '#253494']],
+                                tickPositions: [0, 1]
+                            });
+                        }
+
+                    },
+                    symbol: 'circle',
+                    symbolFill: '#bada55',
+                    symbolStroke: '#330033',
+                    symbolStrokeWidth: 1,
+                    symbolSize: 10,
+                    _titleKey: 'axis_toggle',
+                    text: 'Binary'
+                }
+            },
             filename: protein.accession,
             sourceWidth: 1200,
             sourceHeight: 500,
