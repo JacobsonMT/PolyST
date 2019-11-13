@@ -32,21 +32,29 @@ footer .website-attribution {
     top: 15px;
 }
 
+footer .website-sourcecode {
+    display: inline-block;
+    position: absolute;
+    left: 25px;
+    top: 15px;
+}
+
 @media screen and (max-width: 1300px) {
 
     body {
         /* Margin bottom by footer height */
-        margin-bottom: 80px;
+        margin-bottom: 105px;
     }
 
     .footer {
-        height: 80px;
+        height: 105px;
     }
 
-    .footer .website-attribution {
+    .footer .website-attribution, .footer .website-sourcecode {
         display: block;
         position: unset;
         right: unset;
+        left: unset;
     }
 }
 
