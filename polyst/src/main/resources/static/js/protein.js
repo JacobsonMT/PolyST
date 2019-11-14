@@ -48,6 +48,24 @@
     };
 }(Highcharts));
 
+function updateBinaryCutoff() {
+    window.heatmapChart.colorAxis[0].update({
+        stops: [[0, '#a1dab4'],
+            [window.heatmapChart.heatmapCutoff, '#a1dab4'],
+            [window.heatmapChart.heatmapCutoff, '#253494'],
+            [1, '#253494']],
+        tickPositions: [0, window.heatmapChart.heatmapCutoff, 1]
+    });
+}
+
+function resetCutoff() {
+    window.heatmapChart.heatmapCutoff = 0.88;
+    $('#cutoff').val(window.heatmapChart.heatmapCutoff);
+    $('#cutoff-value').html(parseFloat(window.heatmapChart.heatmapCutoff).toFixed(2));
+    if ($('#binary-radio').prop("checked", true)) {
+        updateBinaryCutoff();
+    }
+}
 
 $(document).ready(function () {
 
@@ -58,20 +76,31 @@ $(document).ready(function () {
         });
     });
 
-    $('#cutoff').bind('input', function () {
-        window.heatmapChart.heatmapCutoff = this.value;
-        $('#cutoff-value').html(parseFloat(this.value).toFixed(2));
+    const $cutoffContainer = $('#cutoff-container');
+
+    const $gradRad = $('#grad-radio');
+    $gradRad.bind('change', function () {
+        $cutoffContainer.hide();
+        window.heatmapChart.colorAxis[0].update(window.heatmapChart.gradientColorAxis);
     });
 
-    $('#cutoff').bind('mouseup', function () {
-        if (window.heatmapChart.colorAxis[0].stops.length === 4) {
-            window.heatmapChart.colorAxis[0].update({
-                stops: [[0, '#a1dab4'],
-                    [window.heatmapChart.heatmapCutoff, '#a1dab4'],
-                    [window.heatmapChart.heatmapCutoff, '#253494'],
-                    [1, '#253494']],
-                tickPositions: [0, window.heatmapChart.heatmapCutoff, 1]
-            });
+    const $binRad = $('#binary-radio');
+    $binRad.bind('change', function () {
+        $cutoffContainer.show();
+        updateBinaryCutoff();
+    });
+
+
+    const $cutoff = $('#cutoff');
+    const $cutoffVal = $('#cutoff-value');
+    $cutoff.bind('input', function () {
+        window.heatmapChart.heatmapCutoff = this.value;
+        $cutoffVal.html(parseFloat(this.value).toFixed(2));
+    });
+
+    $cutoff.bind('mouseup touchend', function () {
+        if ($binRad.prop("checked", true)) {
+            updateBinaryCutoff();
         }
     });
 
@@ -119,6 +148,11 @@ $(document).ready(function () {
             createHeatMap( "Position Conservation Matrix", data, categories)
         );
         window.heatmapChart.heatmapCutoff = 0.88;
+        window.heatmapChart.gradientColorAxis = {
+            stops: window.heatmapChart.colorAxis[0].stops,
+            tickPositions: window.heatmapChart.colorAxis[0].tickPositions
+        };
+        $("#heatmap-axis-toggle").show();
         charts.push( window.heatmapChart );
     }
 
@@ -390,70 +424,7 @@ function createHeatMap(title,
             turboThreshold: 1000,
         }],
 
-        lang: {
-            axis_toggle: 'Toggle Color Axis: Gradient/Binary'
-        },
-
         exporting: {
-            buttons: {
-                scaleToggle: {
-                    theme: {
-                        fill: 'white',
-                        stroke: 'silver',
-                        r: 5,
-                        style: {
-                            fontSize: '10px'
-                        },
-                        states: {
-                            hover: {
-                                fill: '#41739D',
-                                style: {
-                                    color: 'white'
-                                }
-                            }
-                        }
-                    },
-                    align: 'left',
-                    //verticalAlign:'middle',
-                    x: 400,
-                    y:-10,
-                    onclick: function () {
-                        // The toggling of the text is not using an official API, can break with version update!
-                        var axis = this.colorAxis[0];
-                        if (axis.stops.length !== 4) {
-                            this.exportSVGElements[3].element.nextSibling.innerHTML = "Binary";
-                            $("#cutoff-container").show();
-                            axis.update({
-                                stops: [[0, '#a1dab4'],
-                                    [this.heatmapCutoff, '#a1dab4'],
-                                    [this.heatmapCutoff, '#253494'],
-                                    [1, '#253494']],
-                                tickPositions: [0, this.heatmapCutoff, 1]
-                            });
-                        } else {
-                            this.exportSVGElements[3].element.nextSibling.innerHTML = "Grad";
-                            $("#cutoff-container").hide();
-                            axis.update({
-                                stops: [[0, '#ffffff'],
-                                    [0.1, '#ffffcc'],
-                                    [0.6, '#a1dab4'],
-                                    [0.8, '#41b6c4'],
-                                    [0.9, '#2c7fb8'],
-                                    [0.95, '#253494']],
-                                tickPositions: [0, 1]
-                            });
-                        }
-
-                    },
-                    symbol: 'circle',
-                    symbolFill: '#bada55',
-                    symbolStroke: '#330033',
-                    symbolStrokeWidth: 1,
-                    symbolSize: 10,
-                    _titleKey: 'axis_toggle',
-                    text: 'Binary'
-                }
-            },
             filename: protein.accession,
             sourceWidth: 1200,
             sourceHeight: 500,

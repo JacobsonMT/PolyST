@@ -17,11 +17,19 @@
     </script>
     <script th:src="@{/js/protein.js}"></script>
     <style>
-        #cutoff-container {
+        #heatmap-axis-toggle {
             position: absolute;
-            top: 50px;
-            left: 520px;
+            top: 55px;
+            left: 420px;
             z-index: 99;
+        }
+
+        #heatmap-axis-toggle i.fas.fa-undo {
+            color: rgba(0,0,0,.5);
+        }
+
+        #heatmap-axis-toggle i.fas.fa-undo:hover {
+            color: rgba(0,0,0,.7);
         }
     </style>
 </head>
@@ -47,11 +55,27 @@
             </div>
             <div class="card-body">
                 <div id="protein-graphs">
-                    <div id="cutoff-container" style="display: none;">
-                        <div>
-                            <span for="cutoff">Binary Cutoff: </span><span id="cutoff-value">0.88</span>
+                    <div id="heatmap-axis-toggle" style="width:300px;display: none;">
+                        <div class="form-group row">
+                            <div class="col-sm-4 text-left">
+                                <div class="form-check">
+                                    <input class="form-check-input" name="heatmap-axis-toggle" type="radio"
+                                           id="grad-radio" value="grad" checked>
+                                    <label class="form-check-label" for="grad-radio">Gradient</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="heatmap-axis-toggle" type="radio"
+                                           id="binary-radio" value="binary">
+                                    <label class="form-check-label" for="binary-radio">Binary</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div id="cutoff-container" class="form-group" style="display: none;">
+                                    <label for="cutoff" style="margin-bottom: 0;"><a onclick="resetCutoff();" title="reset" class="align-middle mr-2" style="cursor: pointer;"><i class="fas fa-undo"></i></a>Binary Cutoff: <span id="cutoff-value">0.88</span></label>
+                                    <input type="range" min="0.01" max="0.99" value="0.88" step="0.01" class="custom-range" id="cutoff">
+                                </div>
+                            </div>
                         </div>
-                        <input type="range" min="0.01" max="0.99" value="0.88" step="0.01" name="cutoff" id="cutoff"/>
                     </div>
                     <div id="heatmap-container">
 
