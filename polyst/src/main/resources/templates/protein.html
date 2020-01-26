@@ -17,9 +17,13 @@
     </script>
     <script th:src="@{/js/protein.js}"></script>
     <style>
+        #protein-graphs {
+            position: relative;
+        }
+
         #heatmap-axis-toggle {
             position: absolute;
-            top: 55px;
+            top: -10px;
             left: 420px;
             z-index: 99;
         }
@@ -51,7 +55,8 @@
 
         <div class="card mx-auto text-center mb-4 result-card" style="min-width:750px;">
             <div class="card-header">
-                Results
+                <h5 class="mb-0 text-center">Results</h5>
+                <span class="d-block text-center text-muted">To zoom in, use the mouse to select a region of interest</span>
             </div>
             <div class="card-body">
                 <div id="protein-graphs">
@@ -81,15 +86,15 @@
 
                     </div>
 
-                    <div th:if="${species.disorderPrediction}" id="prediction-container">
-
-                    </div>
-
                     <div id="conservation-container">
 
                     </div>
 
                     <div id="depth-container">
+
+                    </div>
+
+                    <div th:if="${species.disorderPrediction}" id="prediction-container">
 
                     </div>
 
@@ -99,7 +104,7 @@
 
         <div class="card mx-auto text-center mb-4 result-card">
             <div class="card-header">
-                Downloads
+                <h5 class="mb-0 text-center">Downloads</h5>
             </div>
             <div class="card-body">
                 <a th:href="${'/api/species/' + species.id + '/proteins/' + protein.accession + '/download'}" target="_blank" class="align-middle"><i class="fas fa-file-download mr-1"></i>Download</a>

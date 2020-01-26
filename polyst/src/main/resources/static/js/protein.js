@@ -159,7 +159,8 @@ $(document).ready(function () {
     if (species.disorderPrediction && predictionData.every(function(v) {return v.data.length !== 0})) {
         window.predictionChart = new Highcharts.Chart(
             document.getElementById('prediction-container'),
-            createChart( "Disorder Prediction", predictionData, true, true, "linear")
+            createChart( "Disorder Prediction", predictionData, true, true,
+                "linear", 0, 1)
         );
         charts.push( window.predictionChart );
     }
@@ -167,7 +168,8 @@ $(document).ready(function () {
     if (conservationData.every(function(v) {return v.data.length !== 0})) {
         window.conservationChart = new Highcharts.Chart(
             document.getElementById('conservation-container'),
-            createChart( "Conservation", conservationData, true, false, "linear")
+            createChart( "Conservation (Average LIST-S2 Scores)", conservationData, true, false,
+                "linear", 0, 1)
         );
         charts.push( window.conservationChart );
     }
@@ -175,7 +177,8 @@ $(document).ready(function () {
     if (depthData.every(function(v) {return v.data.length !== 0})) {
         window.depthChart = new Highcharts.Chart(
             document.getElementById('depth-container'),
-            createChart( "Alignment Depth", depthData, true, true, "linear")
+            createChart( "Alignment Depth", depthData, true, true,
+                "linear", null, null)
         );
         charts.push( window.depthChart );
     }
@@ -477,7 +480,9 @@ function createChart(title,
                      data,
                      xAxisVisible,
                      enableCredit,
-                     yAxisType) {
+                     yAxisType,
+                     yAxisMin,
+                     yAxisMax) {
 
     const options = {
 
@@ -616,6 +621,8 @@ function createChart(title,
 
         yAxis: {
             title: null,
+            min: yAxisMin,
+            max: yAxisMax,
             type: yAxisType,
             maxPadding: 0,
             minPadding:0,
