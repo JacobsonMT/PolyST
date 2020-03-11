@@ -13,6 +13,7 @@ import lombok.ToString;
 public class Species {
     private String commonName;
     private String scientificName;
+    private String updated;
     private String extra;
     private int id;
     private boolean disorderPrediction;
