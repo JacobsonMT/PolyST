@@ -21,7 +21,7 @@
 
     <div class="main-content p-4">
         <div id="protein-container">
-            <span style="position: absolute;right: 0;" class="text-muted" th:text="${'Updated: ' + species.updated}"></span>
+            <span style="position: absolute;right: 0;" class="text-muted" th:text="${'Release: ' + species.release}"></span>
             <h4 style="margin: 0;" th:if="${species != null}" th:text="${species.getScientificName() + ' (' + species.getCommonName() + ')' + (species.getExtra() != '' ? ' - ' + species.getExtra() : '')}"></h4>
             <h5 style="margin-top: 0.25rem; margin-bottom:0.5rem;" class="text-muted"  th:if="${species != null}" th:text="${'OX: ' + species.id}"></h5>
             <div>

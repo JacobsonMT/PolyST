@@ -37,7 +37,7 @@
                 </div>
                 <div class="card-body">
                     <h5 class="card-title mb-2" th:text="${'OX: ' + species.id}"></h5>
-                    <p class="card-text mb-0" th:text="${'Updated: ' + species.updated}"></p>
+                    <p class="card-text mb-0" th:text="${'Release: ' + species.release}"></p>
                     <p class="card-text mb-0" th:text="${'Count: ' + @flatFileProteinRepository.getProteinCount(species)}"></p>
                     <a href="#" th:href="@{'/species/' + ${species.id}}" class="btn btn-info mt-1">View Proteins</a>
                 </div>

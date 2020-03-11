@@ -3,7 +3,7 @@ polyst:
     9606:
       common-name: Human
       scientific-name: Homo sapiens
-      updated: '2019-10'
+      release: '2019_10'
       extra:
       id: 9606
       subdirectory: d9606
@@ -13,7 +13,7 @@ polyst:
     10090:
       common-name: Mouse
       scientific-name: Mus musculus
-      updated: '2019-09'
+      release: '2019_09'
       extra:
       id: 10090
       subdirectory: d10090
@@ -23,7 +23,7 @@ polyst:
     9823:
       common-name: Wild boar
       scientific-name: Sus scrofa
-      updated: '2019-09'
+      release: '2019_09'
       extra:
       id: 9823
       subdirectory: d9823
@@ -33,7 +33,7 @@ polyst:
     9913:
       common-name: Cow
       scientific-name: Bos taurus
-      updated: '2019-09'
+      release: '2019_09'
       extra:
       id: 9913
       subdirectory: d9913
@@ -43,7 +43,7 @@ polyst:
     9940:
       common-name: Sheep
       scientific-name: Ovis aries
-      updated: '2019-09'
+      release: '2019_09'
       extra:
       id: 9940
       subdirectory: d9940
@@ -53,7 +53,7 @@ polyst:
     7955:
       common-name: Zebrafish
       scientific-name: Danio rerio
-      updated: '2019-09'
+      release: '2019_09'
       extra:
       id: 7955
       subdirectory: d7955
@@ -63,7 +63,7 @@ polyst:
     9031:
       common-name: Chicken
       scientific-name: Gallus gallus
-      updated: '2019-09'
+      release: '2019_09'
       extra:
       id: 9031
       subdirectory: d9031
@@ -73,7 +73,7 @@ polyst:
     9443:
       common-name: Primates
       scientific-name: Primates
-      updated: '2019-10'
+      release: '2019_10'
       extra:
       id: 9443
       subdirectory: d9443
@@ -83,7 +83,7 @@ polyst:
     40674:
       common-name: Mammals
       scientific-name: Mammalia
-      updated: '2019-10'
+      release: '2019_10'
       extra: excluding Primates, Mouse, Wild boar, Cow, and Sheep
       id: 40674
       subdirectory: d40674
@@ -93,7 +93,7 @@ polyst:
     7742:
       common-name: Vertebrates
       scientific-name: Vertebrata
-      updated: '2019-10'
+      release: '2019_10'
       extra: excluding Mammalia, Zebrafish, and Chicken
       id: 7742
       subdirectory: d7742
