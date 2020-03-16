@@ -87,6 +87,17 @@ E1BMF7:727:Q:E&#9;0.929907</code></pre>
 
     </div>
 
+    <div th:replace="fragments/title :: title(title='Versions')" th:remove="tag">...</div>
+    <div class="main-content p-4">
+        <p class="card-text">LIST-S2: <b>v1.10 (2020)</b></p>
+        <div th:each="species: ${@speciesSettings.getActiveSpecies()}" class="mb-3">
+            <p class="card-text mb-0" th:text="${'Species: ' + species.scientificName}"></p>
+            <footer class="blockquote-footer">Based on <cite th:title="${'UniProt Release: ' + species.release}"
+                                                             th:text="${'UniProt Release: ' + species.release}">
+            </cite></footer>
+        </div>
+    </div>
+
 
 </div>
 <div th:replace="fragments/footer" th:remove="tag">...</div>
