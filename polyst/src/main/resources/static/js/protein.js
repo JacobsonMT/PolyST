@@ -59,7 +59,7 @@ function updateBinaryCutoff() {
 }
 
 function resetCutoff() {
-    window.heatmapChart.heatmapCutoff = 0.88;
+    window.heatmapChart.heatmapCutoff = defaultHeatmapCutoff;
     $('#cutoff').val(window.heatmapChart.heatmapCutoff);
     $('#cutoff-value').html(parseFloat(window.heatmapChart.heatmapCutoff).toFixed(2));
     if ($('#binary-radio').prop("checked", true)) {
@@ -147,7 +147,7 @@ $(document).ready(function () {
             document.getElementById('heatmap-container'),
             createHeatMap( "Position Conservation Matrix", data, categories)
         );
-        window.heatmapChart.heatmapCutoff = 0.88;
+        window.heatmapChart.heatmapCutoff = defaultHeatmapCutoff;
         window.heatmapChart.gradientColorAxis = {
             stops: window.heatmapChart.colorAxis[0].stops,
             tickPositions: window.heatmapChart.colorAxis[0].tickPositions

@@ -13,6 +13,7 @@
         /*<![CDATA[*/
         const protein = /*[[${protein}]]*/ 'protein';
         const species = /*[[${species}]]*/ 'species';
+        const defaultHeatmapCutoff = /*[[${@siteSettings.defaultHeatmapCutoff}]]*/ 0.85;
         /*]]>*/
     </script>
     <script th:src="@{/js/protein.js}"></script>
@@ -76,8 +77,8 @@
                             </div>
                             <div class="col-sm-8">
                                 <div id="cutoff-container" class="form-group" style="display: none;">
-                                    <label for="cutoff" style="margin-bottom: 0;"><a onclick="resetCutoff();" title="reset" class="align-middle mr-2" style="cursor: pointer;"><i class="fas fa-undo"></i></a>Binary Cutoff: <span id="cutoff-value">0.88</span></label>
-                                    <input type="range" min="0.01" max="0.99" value="0.88" step="0.01" class="custom-range" id="cutoff">
+                                    <label for="cutoff" style="margin-bottom: 0;"><a onclick="resetCutoff();" title="reset" class="align-middle mr-2" style="cursor: pointer;"><i class="fas fa-undo"></i></a>Binary Cutoff: <span id="cutoff-value" th:text="${@siteSettings.defaultHeatmapCutoff}">0.85</span></label>
+                                    <input type="range" min="0.01" max="0.99" th:value="${@siteSettings.defaultHeatmapCutoff}" value="0.85" step="0.01" class="custom-range" id="cutoff">
                                 </div>
                             </div>
                         </div>

@@ -22,4 +22,6 @@ public class SiteSettings {
     private String apiSite;
     private String htmlSite;
 
+    private double defaultHeatmapCutoff = 0.85;
+
 }
