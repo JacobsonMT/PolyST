@@ -1,5 +1,6 @@
 package ca.ubc.msl.polyst;
 
+import ca.ubc.msl.polyst.exception.CacheWarmingException;
 import ca.ubc.msl.polyst.model.Species;
 import ca.ubc.msl.polyst.repositories.ProteinRepository;
 import ca.ubc.msl.polyst.settings.SpeciesSettings;
@@ -39,7 +40,13 @@ public class PolystApplication implements CommandLineRunner {
 		for ( Species species : speciesSettings.getSpecies().values() ) {
 			if ( species.isActive() ) {
 				log.info( "Loading ProteinInfo cache for " + species.getCommonName() );
-				repository.getProteinInfo( species );
+				try {
+					repository.warm(species);
+					log.info("Loaded ProteinInfo cache from disk for {}", species.getCommonName());
+				} catch (CacheWarmingException e) {
+					log.warn("{}. Computing ProteinInfo cache for {}", e.getMessage(), species.getCommonName());
+					repository.getProteinInfo( species ); // Force load
+				}
 			}
 		}
 		log.info( "Caches populated." );

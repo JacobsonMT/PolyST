@@ -1,5 +1,6 @@
 package ca.ubc.msl.polyst.repositories;
 
+import ca.ubc.msl.polyst.exception.CacheWarmingException;
 import ca.ubc.msl.polyst.model.Base;
 import ca.ubc.msl.polyst.model.Protein;
 import ca.ubc.msl.polyst.model.ProteinInfo;
@@ -7,16 +8,20 @@ import ca.ubc.msl.polyst.model.Species;
 import ca.ubc.msl.polyst.settings.SpeciesSettings;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import java.io.*;
-import java.nio.file.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +29,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.PostConstruct;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by mjacobson on 11/12/17.
@@ -32,6 +44,9 @@ import java.util.stream.Stream;
 public class FlatFileProteinRepository implements ProteinRepository {
 
     private static final Logger log = LoggerFactory.getLogger( FlatFileProteinRepository.class );
+
+    private static final String SPECIES_CACHE_DIR = "cache";
+    private static final String CACHE_FILENAME = "info.cache";
 
     @Value("${polyst.dataDir}")
     private String flatFileDirectory;
@@ -69,6 +84,59 @@ public class FlatFileProteinRepository implements ProteinRepository {
                 .maximumSize(500)
                 .expireAfterWrite(1, TimeUnit.HOURS)
                 .build( this::loadProtein );
+    }
+
+    /**
+     * Persist cached values for a species to disk. Used to warm the cache after restarts.
+     *
+     * @param species species
+     * @param values values to persist
+     * @throws IOException When issues creating or writing to cache file
+     */
+    private synchronized void persist(Species species, List<ProteinInfo> values) throws IOException {
+        Path cacheFile = Paths.get(flatFileDirectory, species.getSubdirectory(), SPECIES_CACHE_DIR,
+            CACHE_FILENAME);
+        Files.createDirectories(cacheFile.getParent());
+
+        if (!Files.exists(cacheFile)) {
+            Files.createFile(cacheFile);
+        }
+
+        if (values == null) {
+            return;
+        }
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(cacheFile))) {
+            oos.writeObject(values);
+        }
+    }
+
+    /**
+     * Warm cache for species from disk
+     *
+     * @param species species
+     * @throws CacheWarmingException When cache cannot be warmed from disk
+     */
+    @Override
+    public synchronized void warm(Species species) throws CacheWarmingException {
+        Path cacheFile = Paths.get(flatFileDirectory, species.getSubdirectory(), SPECIES_CACHE_DIR, CACHE_FILENAME);
+
+        if (!Files.exists(cacheFile)) {
+            throw new CacheWarmingException("Cache not found");
+        }
+
+        try ( ObjectInputStream ois = new ObjectInputStream( Files.newInputStream( cacheFile ) ) ) {
+            List<ProteinInfo> values = (List<ProteinInfo>) ois.readObject();
+
+            if (values.size() != getProteinCount( species )) {
+                throw new CacheWarmingException("Cache is stale");
+            }
+            proteinInfoCache.put(species, values);
+        } catch (IOException e ) {
+            throw new CacheWarmingException("Error reading from cache");
+        } catch (ClassNotFoundException e) {
+            throw new CacheWarmingException("Cache File Corrupt");
+        }
     }
 
     @Override
@@ -122,7 +190,7 @@ public class FlatFileProteinRepository implements ProteinRepository {
     private Long loadProteinCount( Species species ) {
         try ( Stream<Path> paths = Files.list( Paths.get( flatFileDirectory, species.getSubdirectory() ) ) ) {
             long startTime = System.currentTimeMillis();
-            long count = paths.count();
+            long count = paths.filter( Files::isRegularFile ).count();
             log.info( "Load Protein Count Complete for {} in {}ms", species.getCommonName(), (System.currentTimeMillis() - startTime) );
             return count;
         } catch ( IOException e ) {
@@ -140,9 +208,10 @@ public class FlatFileProteinRepository implements ProteinRepository {
     }
 
     private List<ProteinInfo> loadProteinInfo( Species species ) {
+        List<ProteinInfo> results;
         try ( Stream<Path> paths = Files.list( Paths.get( flatFileDirectory, species.getSubdirectory() ) ) ) {
             long startTime = System.currentTimeMillis();
-            List<ProteinInfo> results = paths.filter( Files::isRegularFile ).map( p -> {
+            results = paths.filter( Files::isRegularFile ).map( p -> {
                 try {
                     int lines = 0;
                     try {
@@ -160,15 +229,27 @@ public class FlatFileProteinRepository implements ProteinRepository {
             } )
                     .collect( Collectors.toList() );
             log.info( "Load Protein Info Complete for {} in {}s", species.getCommonName(), (System.currentTimeMillis() - startTime)/1000 );
-            return results;
 //            return paths.filter( Files::isRegularFile ).map( p -> p.getFileName().toString().substring( 0, p.getFileName().toString().length() - 4 ) ).collect( Collectors.toList() );
         } catch ( IOException e ) {
             log.error( "Error walking data directory!" );
-            return new ArrayList<>();
+            results = new ArrayList<>();
         } catch ( InvalidPathException e ) {
             log.error( "Requested invalid species: " + species );
-            return new ArrayList<>();
+            results = new ArrayList<>();
         }
+
+        if (!results.isEmpty()) {
+            try {
+                persist(species, results);
+                log.info("ProteinInfo persisted to disk for {}", species.getCommonName());
+            } catch (IOException e) {
+                log.error("Failed to persist to disk", e);
+            }
+        } else {
+            log.info("Not persisting empty ProteinInfo to disk for {}", species.getCommonName());
+        }
+
+        return results;
     }
 
     @Override

@@ -1,9 +1,9 @@
 package ca.ubc.msl.polyst.repositories;
 
+import ca.ubc.msl.polyst.exception.CacheWarmingException;
 import ca.ubc.msl.polyst.model.Protein;
 import ca.ubc.msl.polyst.model.ProteinInfo;
 import ca.ubc.msl.polyst.model.Species;
-
 import java.util.List;
 
 /**
@@ -18,4 +18,6 @@ public interface ProteinRepository {
     Long getProteinCount( Species species );
 
     List<ProteinInfo> getProteinInfo( Species species );
+
+    void warm( Species species ) throws CacheWarmingException;
 }

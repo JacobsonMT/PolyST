@@ -1,5 +1,6 @@
 package ca.ubc.msl.polyst.model;
 
+import java.io.Serializable;
 import lombok.*;
 
 /**
@@ -10,7 +11,9 @@ import lombok.*;
 @RequiredArgsConstructor
 @EqualsAndHashCode(of = {"accession"})
 @ToString
-public class ProteinInfo {
+public class ProteinInfo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final String accession;
     private final int size;
