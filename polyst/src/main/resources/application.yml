@@ -100,3 +100,103 @@ polyst:
       active: true
       disorder-prediction: false
       index-group: 3
+    3635:
+      common-name: Cotton
+      scientific-name: Gossypium hirsutum
+      release: '2020_01'
+      extra:
+      id: 3635
+      subdirectory: d3635
+      active: true
+      disorder-prediction: false
+      index-group: 4
+    3847:
+      common-name: Soybean
+      scientific-name: Glycine max
+      release: '2020_01'
+      extra:
+      id: 3847
+      subdirectory: d3847
+      active: true
+      disorder-prediction: false
+      index-group: 4
+    3879:
+      common-name: Alfalfa
+      scientific-name: Medicago sativa
+      release: '2020_01'
+      extra:
+      id: 3879
+      subdirectory: d3879
+      active: true
+      disorder-prediction: false
+      index-group: 4
+    4081:
+      common-name: Tomato
+      scientific-name: Solanum lycopersicum
+      release: '2020_01'
+      extra:
+      id: 4081
+      subdirectory: d4081
+      active: true
+      disorder-prediction: false
+      index-group: 4
+    4113:
+      common-name: Potato
+      scientific-name: Solanum tuberosum
+      release: '2020_01'
+      extra:
+      id: 4113
+      subdirectory: d4113
+      active: true
+      disorder-prediction: false
+      index-group: 4
+    4513:
+      common-name: Barley
+      scientific-name: Hordeum vulgare
+      release: '2020_01'
+      extra:
+      id: 4513
+      subdirectory: d4513
+      active: true
+      disorder-prediction: false
+      index-group: 4
+    4530:
+      common-name: Rice
+      scientific-name: Oryza sativa
+      release: '2020_01'
+      extra:
+      id: 4530
+      subdirectory: d4530
+      active: true
+      disorder-prediction: false
+      index-group: 4
+    4565:
+      common-name: Wheat
+      scientific-name: Triticum aestivum
+      release: '2020_01'
+      extra:
+      id: 4565
+      subdirectory: d4565
+      active: true
+      disorder-prediction: false
+      index-group: 4
+    4577:
+      common-name: Maize
+      scientific-name: Zea mays
+      release: '2020_01'
+      extra:
+      id: 4577
+      subdirectory: d4577
+      active: true
+      disorder-prediction: false
+      index-group: 4
+    381124:
+      common-name: Corn
+      scientific-name: Zea mays subsp. mays
+      release: '2020_01'
+      extra:
+      id: 381124
+      subdirectory: d381124
+      active: true
+      disorder-prediction: false
+      index-group: 4
